@@ -7,7 +7,7 @@
           <v-card-title>
             Preferably a v-card like this
           </v-card-title>
-          <v-card-text>Using it's own component</v-card-text>
+          <v-card-text>Using its own component</v-card-text>
         </v-card>
       </v-col>
       <v-col cols="12" lg="6">
@@ -16,7 +16,7 @@
           <v-card-title>
             Preferably a v-card like this
           </v-card-title>
-          <v-card-text>Using it's own component</v-card-text>
+          <v-card-text>Using its own component</v-card-text>
         </v-card>
       </v-col>
 
