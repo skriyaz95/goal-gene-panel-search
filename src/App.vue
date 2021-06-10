@@ -1,10 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
+    <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
         <v-img
           alt="Vuetify Logo"
@@ -31,19 +27,55 @@
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue from "vue";
+import axios from "axios";
+import { mapGetters } from "vuex";
+import { PanelPayload } from "@/types/panel-types";
 
 export default Vue.extend({
-  name: 'App',
+  name: "App",
 
   data: () => ({
-    //
+    sourceDir: "source_panels/",
+    panelNames: new Array<string>(),
+    publicPath: process.env.BASE_URL,
   }),
+  methods: {
+    importExistingPanels(r: any) {
+      this.$store.commit("resetPanels");
+      var jsonPanels = new Array<any>();
+      r.keys().forEach((key: any) => jsonPanels.push(key));
+      for (var i = 0; i < jsonPanels.length; i++) {
+        var path = this.publicPath + this.sourceDir + jsonPanels[i];
+        axios
+          .get(path, {
+            params: {},
+          })
+          .then((response) => {
+            var panel = response.data;
+            this.$store.commit("addPanel", new PanelPayload(panel));
+          })
+          .catch((error) => {
+            alert(error);
+          });
+      }
+    },
+  },
+  mounted() {
+    this.importExistingPanels(
+      require.context("../public/source_panels/", false, /\.json$/)
+    );
+  },
+  computed: {
+    ...mapGetters({
+      panels: "getPanels",
+    }),
+  },
 });
 </script>
