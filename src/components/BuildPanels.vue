@@ -1,3 +1,4 @@
+/* eslint-disable vue/html-indent */
 <template>
   <v-container fluid>
     <v-row>
@@ -5,11 +6,12 @@
         <v-card>
           <v-card-text>
             <div class="mb-1 mt-1">Existing Panel Files:</div>
-            <v-chip text-color="black"
-                    class="ma-2 secondary"
-                    v-for="panel in panels"
-                    :key="panel.name"
-            >{{ panel.name }} ({{panel.genes.length}} genes)</v-chip
+            <v-chip
+              text-color="black"
+              class="ma-2 secondary"
+              v-for="panel in panels"
+              :key="panel.name"
+            >{{ panel.name }} ({{ panel.genes.length }} genes)</v-chip
             >
             <div class="mb-1 mt-1">Raw Panel Files:</div>
             <v-chip
@@ -22,31 +24,36 @@
           <v-card-actions>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn v-on="on" @click="buildPanels" class="primary">Build Panels</v-btn>
+                <v-btn v-on="on" @click="buildPanels" class="primary"
+                >Build Panels</v-btn
+                >
               </template>
               <span>Parse CSV Files to JSON Gene Panels</span>
             </v-tooltip>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn v-on="on"
-                       @click="downloadAllPanels"
-                       class="primary ml-2"
-                       :disabled="isEmptyPanels()"
+                <v-btn
+                  v-on="on"
+                  @click="downloadAllPanels"
+                  class="primary ml-2"
+                  :disabled="isEmptyPanels()"
                 >Save All</v-btn
                 >
               </template>
               <span>Download all JSON Gene Panels</span>
             </v-tooltip>
-            
           </v-card-actions>
         </v-card>
       </v-col>
       <v-col cols="12" lg="8">
-        <v-card class="mb-2"><v-card-text>
-          Click "BUILD PANELS" to create panels from the raw files.<br/>
-          Then save all to download them all as JSON and place them in public/source_panels.<br/>
+        <v-card class="mb-2"
+        ><v-card-text>
+          Click "BUILD PANELS" to create panels from the raw files.<br />
+          Then save all to download them all as JSON and place them in
+          public/source_panels.<br />
           They will automatically be added to the existing panels.
-        </v-card-text></v-card>
+        </v-card-text></v-card
+        >
         <v-expansion-panels>
           <v-expansion-panel v-for="panel in tempPanels" :key="panel.name">
             <v-expansion-panel-header disable-icon-rotate
@@ -55,9 +62,7 @@
                 <v-btn @click.stop="downloadPanel(panel)" icon>
                   <v-icon>mdi-content-save</v-icon>
                 </v-btn>
-                <v-icon>
-                  mdi-chevron-down
-                </v-icon>
+                <v-icon> mdi-chevron-down </v-icon>
               </template>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -96,9 +101,8 @@ export default Vue.extend({
           })
           .then((response) => {
             var reponseURLItems = response.request.responseURL.split("/");
-            var panelName = reponseURLItems[reponseURLItems.length - 1].split(
-              ".csv",
-            )[0];
+            var panelName =
+              reponseURLItems[reponseURLItems.length - 1].split(".csv")[0];
             var allRows = response.data.split(/\r?\n|\r/);
             //remove dups
             var uniqueRows = new Set<string>();
@@ -158,38 +162,16 @@ export default Vue.extend({
       this.panelNames = [];
       r.keys().forEach((key: any) => this.panelNames.push(key));
     },
-    importExistingPanels(r: any) {
-      this.$store.commit("resetPanels");
-      var jsonPanels = new Array<any>();
-      r.keys().forEach((key: any) => jsonPanels.push(key));
-      for (var i = 0; i < jsonPanels.length; i++) {
-        var path = this.publicPath + this.sourceDir + jsonPanels[i];
-        axios
-          .get(path, {
-            params: {},
-          })
-          .then((response) => {
-            var panel = response.data;
-            this.$store.commit("addPanel",  new PanelPayload(panel));
-          })
-          .catch((error) => {
-            alert(error);
-          });
-      }
-    },
   },
   computed: {
     ...mapGetters({
       tempPanels: "getTempPanels",
-      panels: "getPanels"
+      panels: "getPanels",
     }),
   },
   mounted() {
     this.listCSVFiles(
-      require.context("../../public/raw_panels/", false, /\.csv$/),
-    );
-    this.importExistingPanels(
-      require.context("../../public/source_panels/", false, /\.json$/),
+      require.context("../../public/raw_panels/", false, /\.csv$/)
     );
   },
 });
