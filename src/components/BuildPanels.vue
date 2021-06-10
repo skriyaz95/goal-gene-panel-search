@@ -5,15 +5,15 @@
       <v-col cols="12" lg="4">
         <v-card>
           <v-card-text>
-            <div class="mb-1 mt-1">Existing Panel Files:</div>
+            <div class="mb-1 mt-1">{{$t("buildPanels.existingPanels.text")}}</div>
             <v-chip
               text-color="black"
               class="ma-2 secondary"
               v-for="panel in panels"
               :key="panel.name"
-            >{{ panel.name }} ({{ panel.genes.length }} genes)</v-chip
+            >{{ panel.name }} ({{ $tc("count.gene", panel.genes.length) }})</v-chip
             >
-            <div class="mb-1 mt-1">Raw Panel Files:</div>
+            <div class="mb-1 mt-1">{{$t("buildPanels.rawPanels.text")}}</div>
             <v-chip
               class="ma-2 primary"
               v-for="panelName in panelNames"
@@ -25,10 +25,10 @@
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
                 <v-btn v-on="on" @click="buildPanels" class="primary"
-                >Build Panels</v-btn
+                >{{ $t("button.buildPanels.text")}}</v-btn
                 >
               </template>
-              <span>Parse CSV Files to JSON Gene Panels</span>
+              <span>{{ $t("button.buildPanels.tooltip")}}</span>
             </v-tooltip>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
@@ -37,10 +37,10 @@
                   @click="downloadAllPanels"
                   class="primary ml-2"
                   :disabled="isEmptyPanels()"
-                >Save All</v-btn
+                >{{ $t("button.saveAll.text")}}</v-btn
                 >
               </template>
-              <span>Download all JSON Gene Panels</span>
+              <span>{{ $t("button.saveAll.tooltip")}}</span>
             </v-tooltip>
           </v-card-actions>
         </v-card>
@@ -48,16 +48,13 @@
       <v-col cols="12" lg="8">
         <v-card class="mb-2"
         ><v-card-text>
-          Click "BUILD PANELS" to create panels from the raw files.<br />
-          Then save all to download them all as JSON and place them in
-          public/source_panels.<br />
-          They will automatically be added to the existing panels.
+          <span v-html="$t('buildPanels.help.text')"></span>
         </v-card-text></v-card
         >
         <v-expansion-panels>
           <v-expansion-panel v-for="panel in tempPanels" :key="panel.name">
             <v-expansion-panel-header disable-icon-rotate
-            >{{ panel.name }} ({{ panel.genes.length }} genes)
+            >{{ panel.name }} ({{ $tc("count.gene", panel.genes.length) }})
               <template v-slot:actions>
                 <v-btn @click.stop="downloadPanel(panel)" icon>
                   <v-icon>mdi-content-save</v-icon>
@@ -92,7 +89,7 @@ export default Vue.extend({
   }),
   methods: {
     buildPanels() {
-      this.$store.commit("resetPanels");
+      this.$store.commit("resetTempPanels");
       for (var i = 0; i < this.panelNames.length; i++) {
         var path = this.publicPath + this.rawDir + this.panelNames[i];
         axios

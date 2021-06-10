@@ -15,15 +15,20 @@
       </div>
 
       <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/skriyaz95/goal-gene-panel-search"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{on}">
+          <v-btn
+            v-on="on"
+            href="https://github.com/skriyaz95/goal-gene-panel-search"
+            target="_blank"
+            text
+          >
+            <span class="mr-2">{{$t("button.link.repo.text")}}</span>
+            <v-icon>mdi-open-in-new</v-icon>
+          </v-btn>
+        </template>
+        <span>{{$t("button.link.repo.tooltip")}}</span>
+      </v-tooltip>
     </v-app-bar>
 
     <v-main>

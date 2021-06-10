@@ -1,0 +1,32 @@
+{
+  "buildPanels": {
+    "existingPanels": {
+      "text": "Existing Panel Files:"
+    },
+    "help": {
+      "text": "Click BUILD PANELS to create panels from the raw files.<br/>Then save all to download them all as JSON and place them in public/source_panels.<br/>They will automatically be added to the existing panels."
+    },
+    "rawPanels": {
+      "text": "Raw Panel Files:"
+    }
+  },
+  "button": {
+    "buildPanels": {
+      "text": "Build Panels",
+      "tooltip": "Parse CSV Files to JSON Gene Panels"
+    },
+    "link": {
+      "repo": {
+        "text": "Latest Version",
+        "tooltip": "Opens Github"
+      }
+    },
+    "saveAll": {
+      "text": "Save All",
+      "tooltip": "Download all JSON Gene Panels"
+    }
+  },
+  "count": {
+    "gene": "{count} gene | {count} genes"
+  }
+}
