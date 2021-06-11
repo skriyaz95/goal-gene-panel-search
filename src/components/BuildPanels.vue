@@ -3,7 +3,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" lg="4">
-        <v-card>
+        <v-card outlined>
           <v-card-text>
             <div class="mb-1 mt-1">{{$t("buildPanels.existingPanels.text")}}</div>
             <v-chip
@@ -37,36 +37,43 @@
                   @click="downloadAllPanels"
                   class="primary ml-2"
                   :disabled="isEmptyPanels()"
-                >{{ $t("button.saveAll.text")}}</v-btn
+                >{{ $t("button.saveAllPanels.text")}}</v-btn
                 >
               </template>
-              <span>{{ $t("button.saveAll.tooltip")}}</span>
+              <span>{{ $t("button.saveAllPanels.tooltip")}}</span>
             </v-tooltip>
           </v-card-actions>
         </v-card>
       </v-col>
       <v-col cols="12" lg="8">
-        <v-card class="mb-2"
+        <v-card outlined class="mb-2"
         ><v-card-text>
           <span v-html="$t('buildPanels.help.text')"></span>
         </v-card-text></v-card
         >
-        <v-expansion-panels>
-          <v-expansion-panel v-for="panel in tempPanels" :key="panel.name">
-            <v-expansion-panel-header disable-icon-rotate
-            >{{ panel.name }} ({{ $tc("count.gene", panel.genes.length) }})
-              <template v-slot:actions>
-                <v-btn @click.stop="downloadPanel(panel)" icon>
-                  <v-icon>mdi-content-save</v-icon>
-                </v-btn>
-                <v-icon> mdi-chevron-down </v-icon>
-              </template>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <div class="pa-2" v-text="formatPanel(panel, true)"></div>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
+        <v-card outlined v-if="tempPanels.length  > 0">
+          <v-expansion-panels flat focusable>
+            <v-expansion-panel v-for="panel in tempPanels" :key="panel.name">
+              <v-expansion-panel-header disable-icon-rotate
+              >{{ panel.name }} ({{ $tc("count.gene", panel.genes.length) }})
+                <template v-slot:actions>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                      <v-btn v-on="on" @click.stop="downloadPanel(panel)" icon>
+                        <v-icon>mdi-content-save</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>{{ $t("button.saveOnePanel.tooltip")}}</span>
+                  </v-tooltip>
+                  <v-icon> mdi-chevron-down </v-icon>
+                </template>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <div class="pa-2" v-text="formatPanel(panel, true)"></div>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>

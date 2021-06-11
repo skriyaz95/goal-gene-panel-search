@@ -18,15 +18,29 @@
     "link": {
       "repo": {
         "text": "Latest Version",
-        "tooltip": "Opens Github"
+        "tooltip": "Open Github in a new tab"
       }
     },
-    "saveAll": {
+    "saveAllPanels": {
       "text": "Save All",
       "tooltip": "Download all JSON Gene Panels"
+    },
+    "saveOnePanel": {
+      "tooltip": "Save this Panel"
     }
   },
   "count": {
     "gene": "{count} gene | {count} genes"
+  },
+  "themePicker": {
+    "primary": {
+      "text": "Primary (toolbars and buttons)"
+    },
+    "result": {
+      "text": "Merge this theme in vuetify.ts (under light or dark)"
+    },
+    "secondary": {
+      "text": "Secondary (alternate color)"
+    }
   }
 }

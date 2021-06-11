@@ -1,6 +1,6 @@
 <template>
-  <v-app>
-    <v-app-bar app color="primary" dark>
+  <v-app :style="getBackgroundStyle()">
+    <v-app-bar app color="primary" dark flat>
       <div class="d-flex align-center">
         <v-img
           alt="Vuetify Logo"
@@ -71,16 +71,35 @@ export default Vue.extend({
           });
       }
     },
+    getBackgroundStyle() {
+      var background:any = this.$vuetify.theme.themes[this.theme].background;
+      var backgroundString = "";
+      if (background.base) { //check if string or object
+        backgroundString = background.lighten5;
+      }
+      return {background: backgroundString}
+     }
+  },
+   computed: {
+     theme() {
+       if (this.$vuetify.theme.dark) {
+         return "dark";
+       }
+       else {
+         return "light";
+       }
+     },
+    ...mapGetters({
+      panels: "getPanels",
+    }),
+    
   },
   mounted() {
     this.importExistingPanels(
       require.context("../public/source_panels/", false, /\.json$/)
     );
   },
-  computed: {
-    ...mapGetters({
-      panels: "getPanels",
-    }),
-  },
+ 
 });
 </script>
+
