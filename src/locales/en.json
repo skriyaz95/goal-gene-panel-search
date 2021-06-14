@@ -42,5 +42,18 @@
     "secondary": {
       "text": "Secondary (alternate color)"
     }
+  },
+  "userInput" : {
+    "gene-list": "Gene List",
+    "label": "Paste Gene List",
+    "button": {
+      "submit": "Submit",
+      "clear": "Clear"
+    },
+    "validation": {
+      "list-empty": "Gene List must not be empty",
+      "list-min-characters": "Gene List must be atleast 2 characters",
+      "list-regex": "Gene List must only contain letters, numbers, dashes, commas, spaces and underscores"
+    }
   }
 }

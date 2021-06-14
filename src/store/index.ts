@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { GenePanel, PanelPayload } from "@/types/panel-types";
+import {Gene, GenePanel, PanelPayload} from "@/types/panel-types";
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     tempPanels: new Array<GenePanel>(),
-    panels: new Array<GenePanel>()
+    panels: new Array<GenePanel>(),
+    userGenes: new Array<Gene>()
   },
   mutations: {
     addTempPanel(state, payload: PanelPayload) {
@@ -16,11 +17,17 @@ export default new Vuex.Store({
     addPanel(state, payload: PanelPayload) {
       state.panels.push(payload.panel);
     },
+    addUserGenes(state, payload: Gene[]) {
+      state.userGenes.push(...payload);
+    },
     resetTempPanels(state) {
       state.tempPanels = [];
     },
     resetPanels(state) {
       state.panels = [];
+    },
+    resetUserGenes(state) {
+      state.userGenes = [];
     },
   },
   actions: {
