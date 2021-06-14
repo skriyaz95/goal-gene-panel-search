@@ -41,9 +41,14 @@
     },
     "secondary": {
       "text": "Secondary (alternate color)"
+    },
+    "button": {
+      "theme": {
+        "text": "Theme"
+      }
     }
   },
-  "userInput" : {
+  "userInput": {
     "gene-list": "Gene List",
     "label": "Paste Gene List",
     "button": {

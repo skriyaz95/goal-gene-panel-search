@@ -4,17 +4,25 @@ import colors from 'vuetify/lib/util/colors';
 
 Vue.use(Vuetify);
 
+export const lightThemes = [
+  {
+    primary: colors.indigo.lighten2,
+    secondary: colors.amber.lighten2,
+    background: "#f2f3f8"
+  },
+  {
+    primary: "#40978D",
+    secondary: colors.amber.lighten2,
+    background: "#f2f3f8"
+  },
+];
+
+
 export default new Vuetify({
     theme: {
         themes: {
-          light: {
-            // primary: colors.cyan,
-            // secondary: colors.amber.lighten2,
-            // background: colors.cyan, //App.vue applies a lighten5 on it
-            primary: colors.indigo.lighten2,
-            secondary: colors.amber.lighten2,
-            background: colors.grey.base //App.vue applies a lighten5 on it
-          },
+          light: lightThemes[0]
+          ,
         //   dark: {
         //     primary: colors.blue.lighten3,
         //   },

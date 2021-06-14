@@ -6,6 +6,16 @@
         <v-card outlined>
           <v-card-text>
             <v-row>
+              <v-col cols="6" lg="2">
+                <v-radio-group v-model="themeSelected"   @change="changeTheme">
+                  <v-radio
+                    v-for="n in themes.length"
+                    :key="n"
+                    :label="getThemeLabel(n)"
+                    :value="n"
+                  ></v-radio>
+                </v-radio-group>
+              </v-col>
               <v-col cols="6" lg="3">
                 <color-picker :title="$t('themePicker.primary.text')"
                               :defaultColor="getPrimary()" @update-color="updatePrimary"/>
@@ -16,7 +26,7 @@
                               :defaultColor="getSecondary()" @update-color="updateSecondary"/>
 
               </v-col>
-              <v-col cols="12" lg="6">
+              <v-col cols="12" lg="4">
                 <a href="https://vuetifyjs.com/en/styles/colors/#material-colors"
                    target="_blank" >Vuetify Material Colors</a><br/><br/>
                 <div class="mb-2" >{{$t('themePicker.result.text')}}:</div>
@@ -33,12 +43,15 @@
 <script lang="ts">
 import Vue from "vue";
 import ColorPicker from "@/components/ColorPicker.vue"
+import { lightThemes } from "@/plugins/vuetify"
 
 export default Vue.extend({
   name: "ThemePicker",
 components: { ColorPicker
 },
  data: () => ({
+   themeSelected: 1,
+   themes: lightThemes
   }),
   methods: {
      getPrimary() {
@@ -48,10 +61,14 @@ components: { ColorPicker
        return this.$vuetify.theme.themes[this.theme].secondary;
     },
       updatePrimary(color: string) {
-       return this.$vuetify.theme.themes[this.theme].primary = color;
+        if (this.isValidColor(color)) {
+          this.$vuetify.theme.themes[this.theme].primary = color;
+        }
     },
       updateSecondary(color: string) {
-       return this.$vuetify.theme.themes[this.theme].secondary = color;
+        if (this.isValidColor(color)) {
+       this.$vuetify.theme.themes[this.theme].secondary = color;
+        }
     },
     formatThemeResult() {
       var json = {
@@ -59,6 +76,16 @@ components: { ColorPicker
         secondary: this.getSecondary()
       };
       return JSON.stringify(json, null, 2);
+    },
+    isValidColor(color: string) {
+      return color != "#FF0000FF";
+    },
+    changeTheme() {
+      this.updatePrimary(this.themes[this.themeSelected - 1].primary);
+      this.updateSecondary(this.themes[this.themeSelected - 1].secondary);
+    },
+    getThemeLabel(n: number) {
+      return this.$t("themePicker.button.theme.text") + " #" + n;
     }
   },
   computed: {
@@ -72,6 +99,7 @@ components: { ColorPicker
      },
   },
   mounted() {
+    this.changeTheme();
   },
 });
 </script>

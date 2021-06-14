@@ -16,6 +16,9 @@ export class GenePanel {
     }
   }
   
+  /** payload object to commit to the Vuex store
+   * It's best to commit a payload object rather than the panel directly
+  */
   export class PanelPayload {
     panel: GenePanel;
   

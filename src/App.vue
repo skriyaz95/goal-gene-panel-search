@@ -71,11 +71,14 @@ export default Vue.extend({
           });
       }
     },
-    getBackgroundStyle() {
+    getBackgroundStyle(lighten : boolean) {
       var background:any = this.$vuetify.theme.themes[this.theme].background;
       var backgroundString = "";
-      if (background.base) { //check if string or object
+      if (lighten && background.base) { //check if string or object
         backgroundString = background.lighten5;
+      }
+      else {
+        backgroundString = background;
       }
       return {background: backgroundString}
      }
