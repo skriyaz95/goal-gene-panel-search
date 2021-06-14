@@ -17,8 +17,8 @@ export default new Vuex.Store({
     addPanel(state, payload: PanelPayload) {
       state.panels.push(payload.panel);
     },
-    addUserGenes(state, payload: Gene[]) {
-      state.userGenes.push(...payload);
+    setUserGenes(state, payload: Gene[]) {
+      state.userGenes = payload;
     },
     resetTempPanels(state) {
       state.tempPanels = [];
@@ -26,7 +26,7 @@ export default new Vuex.Store({
     resetPanels(state) {
       state.panels = [];
     },
-    resetUserGenes(state) {
+    clearUserGenes(state) {
       state.userGenes = [];
     },
   },

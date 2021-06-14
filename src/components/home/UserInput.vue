@@ -43,7 +43,7 @@ export default Vue.extend({
         let userGenes: Gene[] = genes.map(name => {
           return new Gene(name);
         })
-        this.$store.commit("addUserGenes", userGenes)
+        this.$store.commit("setUserGenes", userGenes)
       }
     },
     clear() {
