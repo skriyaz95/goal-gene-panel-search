@@ -5,7 +5,7 @@
     </v-card-title>
     <v-card-text>
       <v-form ref="form" v-model="isFormValid">
-        <v-textarea outlined name="gene-list" :label="$t('userInput.label')" v-model="geneList" :rules="geneListRules()"
+        <v-textarea outlined name="gene-list" :label="$t('userInput.label')" v-model="geneList" :rules="geneListRules"
                     required></v-textarea>
         <v-btn class="ma-2" large depressed color="primary" @click="saveUserInput()" :disabled="!isFormValid">{{ $t("userInput.button.submit") }}
         </v-btn>
@@ -26,14 +26,6 @@ export default Vue.extend({
     geneList: String()
   }),
   methods: {
-    geneListRules() {
-      const x = this.$t('userInput.validation.list-empty')
-      const y = this.$t('userInput.validation.list-min-characters')
-      const z = this.$t('userInput.validation.list-regex')
-
-      return [(v:string) => !!v || x, (v:string) => (v && v.length >= 2) || y,
-        (v:string) => (v && v.match(/^[-,\w\s]+$/)) || z]
-    },
     saveUserInput() {
       let validate:boolean = (this.$refs.form as Vue & { validate: () => boolean }).validate()
       if (!validate) {
@@ -50,6 +42,17 @@ export default Vue.extend({
       let form:any = this.$refs.form
       form.reset()
       this.geneList = ''
+    },
+  },
+  computed: {
+     geneListRules() {
+      const x = this.$t('userInput.validation.list-empty')
+      const y = this.$t('userInput.validation.list-min-characters')
+      const z = this.$t('userInput.validation.list-regex')
+      const emptyRule = (v:string) => !!v || x;
+      const lengthRule = (v:string) => (v && v.length >= 2) || y;
+      const symbolRule = (v:string) => /^[-,\w\s]+$/.test(v) || z
+      return [emptyRule, lengthRule, symbolRule]
     },
   }
 })

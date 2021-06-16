@@ -65,7 +65,7 @@
     "label": "Paste Gene List",
     "validation": {
       "list-empty": "Gene List must not be empty",
-      "list-min-characters": "Gene List must be atleast 2 characters",
+      "list-min-characters": "Gene List must be at least 2 characters",
       "list-regex": "Gene List must only contain letters, numbers, dashes, commas, spaces and underscores"
     }
   }
