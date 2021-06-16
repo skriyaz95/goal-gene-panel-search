@@ -32,7 +32,20 @@
   "count": {
     "gene": "{count} gene | {count} genes"
   },
+  "navigation": {
+    "home": {
+      "text": "Home"
+    },
+    "utils": {
+      "text": "Utils"
+    }
+  },
   "themePicker": {
+    "button": {
+      "theme": {
+        "text": "Theme"
+      }
+    },
     "primary": {
       "text": "Primary (toolbars and buttons)"
     },
@@ -41,20 +54,15 @@
     },
     "secondary": {
       "text": "Secondary (alternate color)"
-    },
-    "button": {
-      "theme": {
-        "text": "Theme"
-      }
     }
   },
   "userInput": {
+    "button": {
+      "clear": "Clear",
+      "submit": "Submit"
+    },
     "gene-list": "Gene List",
     "label": "Paste Gene List",
-    "button": {
-      "submit": "Submit",
-      "clear": "Clear"
-    },
     "validation": {
       "list-empty": "Gene List must not be empty",
       "list-min-characters": "Gene List must be atleast 2 characters",
