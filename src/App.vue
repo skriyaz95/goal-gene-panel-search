@@ -1,25 +1,25 @@
 <template>
   <v-app :style="getBackgroundStyle()">
-    <navigation-menu/>
+    <navigation-menu />
     <v-app-bar app color="primary" dark flat clipped-left>
       <div class="d-flex align-center">
-        <span class="title">Find Genes in Panels</span>
+        <span class="title" v-text="toolbarTitle"></span>
       </div>
 
       <v-spacer></v-spacer>
       <v-tooltip bottom>
-        <template v-slot:activator="{on}">
+        <template v-slot:activator="{ on }">
           <v-btn
             v-on="on"
             href="https://github.com/skriyaz95/goal-gene-panel-search"
             target="_blank"
             text
           >
-            <span class="mr-2">{{$t("button.link.repo.text")}}</span>
+            <span class="mr-2">{{ $t("button.link.repo.text") }}</span>
             <v-icon>mdi-open-in-new</v-icon>
           </v-btn>
         </template>
-        <span>{{$t("button.link.repo.tooltip")}}</span>
+        <span>{{ $t("button.link.repo.tooltip") }}</span>
       </v-tooltip>
     </v-app-bar>
 
@@ -34,11 +34,12 @@ import Vue from "vue";
 import axios from "axios";
 import { mapGetters } from "vuex";
 import { PanelPayload } from "@/types/panel-types";
-import NavigationMenu from "@/components/NavigationMenu.vue"
+import NavigationMenu from "@/components/NavigationMenu.vue";
+import { TranslateResult } from "vue-i18n";
 
 export default Vue.extend({
   name: "App",
-  components: {NavigationMenu},
+  components: { NavigationMenu },
 
   data: () => ({
     sourceDir: "source_panels/",
@@ -46,7 +47,7 @@ export default Vue.extend({
     publicPath: process.env.BASE_URL,
   }),
   methods: {
-    importExistingPanels(r: any) {
+    importExistingPanels(r: any): any {
       this.$store.commit("resetPanels");
       var jsonPanels = new Array<any>();
       r.keys().forEach((key: any) => jsonPanels.push(key));
@@ -65,43 +66,37 @@ export default Vue.extend({
           });
       }
     },
-    getBackgroundStyle(lighten : boolean) {
-      var background:any = this.$vuetify.theme.themes[this.theme].background;
+    getBackgroundStyle(lighten: boolean) {
+      var background: any = this.$vuetify.theme.themes[this.theme].background;
       var backgroundString = "";
-      if (lighten && background.base) { //check if string or object
+      if (lighten && background.base) {
+        //check if string or object
         backgroundString = background.lighten5;
-      }
-      else {
+      } else {
         backgroundString = background;
       }
-      return {background: backgroundString}
-     }
+      return { background: backgroundString };
+    },
   },
-   computed: {
-     theme() {
-       if (this.$vuetify.theme.dark) {
-         return "dark";
-       }
-       else {
-         return "light";
-       }
-     },
+  computed: {
+    theme() {
+      if (this.$vuetify.theme.dark) {
+        return "dark";
+      } else {
+        return "light";
+      }
+    },
     ...mapGetters({
       panels: "getPanels",
     }),
-    
+    toolbarTitle(): TranslateResult {
+      return this.$t(this.$route.meta.i18n + ".toolbar.text");
+    },
   },
   mounted() {
     this.importExistingPanels(
       require.context("../public/source_panels/", false, /\.json$/)
     );
   },
- 
 });
 </script>
-
-<style scoped>
-.no-transition {
-  transition: none;
-}
-</style>

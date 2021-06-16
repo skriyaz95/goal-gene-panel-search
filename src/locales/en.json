@@ -34,10 +34,20 @@
   },
   "navigation": {
     "home": {
-      "text": "Home"
+      "text": "Home",
+      "toolbar": {
+        "text": "Find Genes in Panel"
+      }
+    },
+    "mini": {
+      "text": "Hide Menu",
+      "tooltip": "Show/Hide Menu"
     },
     "utils": {
-      "text": "Utils"
+      "text": "Utils",
+      "toolbar": {
+        "text": "Tools for Admins"
+      }
     }
   },
   "themePicker": {
@@ -66,7 +76,7 @@
     "validation": {
       "list-empty": "Gene List must not be empty",
       "list-min-characters": "Gene List must be at least 2 characters",
-      "list-regex": "Gene List must only contain letters, numbers, dashes, commas, spaces and underscores"
+      "list-regex": "Remove special characters ($%^&<> etc.)"
     }
   }
 }
