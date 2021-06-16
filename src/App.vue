@@ -1,17 +1,56 @@
 <template>
   <v-app :style="getBackgroundStyle()">
-    <v-app-bar app color="primary" dark flat>
+    <v-navigation-drawer
+      expand-on-hover
+      bottom
+      clipped
+      app
+      :mini-variant.sync="mini"
+    >
+      <v-card v-show="mini" flat min-height="256" >
+        <v-img src="./assets/gti/gti_logo_nolabel_128.png"
+               alt="GTI Logo" width="80%" 
+               class="mt-2"
+               style="margin:auto"></v-img>
+        <v-img src="./assets/gti/gti_acronym_orig.png"
+               alt="GTI Logo" 
+               class="ml-2 mr-2 mt-10"
+               width="35px" min-width="35px" max-width="35px"
+        ></v-img>  
+      </v-card>
+      <v-card v-show="!mini" flat min-height="256" >  
+        <v-img src="./assets/gti/gti_logo_256.png"
+               alt="GTI Logo" width="70%" 
+               class="mt-2 mb-4"
+               style="margin:auto"></v-img>     
+        <v-img src="./assets/gti/gti_label_512.png"
+               alt="GTI Title"
+               class="ma-2"
+               width="225px" min-width="225px" max-width="225px"
+        ></v-img>
+      </v-card>
+      <v-divider></v-divider>
+      <v-list
+        nav
+        dense
+      >
+        <v-list-item link :to="{name: 'Home'}" active-class="primary" exact>
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Home</v-list-item-title>
+        </v-list-item>
+        <v-list-item link :to="{name: 'Utils'}" active-class="primary" exact>
+          <v-list-item-icon>
+            <v-icon>mdi-cog</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Utils</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+    <v-app-bar app color="primary" dark flat clipped-left>
       <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <span class="title">Gene Panel Search</span>
+        <span class="title">Find Genes in Panels</span>
       </div>
 
       <v-spacer></v-spacer>
@@ -50,6 +89,7 @@ export default Vue.extend({
     sourceDir: "source_panels/",
     panelNames: new Array<string>(),
     publicPath: process.env.BASE_URL,
+    mini: true
   }),
   methods: {
     importExistingPanels(r: any) {
@@ -106,3 +146,8 @@ export default Vue.extend({
 });
 </script>
 
+<style scoped>
+.no-transition {
+  transition: none;
+}
+</style>
