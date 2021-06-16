@@ -1,17 +1,9 @@
 <template>
   <v-app :style="getBackgroundStyle()">
-    <v-app-bar app color="primary" dark flat>
+    <navigation-menu/>
+    <v-app-bar app color="primary" dark flat clipped-left>
       <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <span class="title">Gene Panel Search</span>
+        <span class="title">Find Genes in Panels</span>
       </div>
 
       <v-spacer></v-spacer>
@@ -42,9 +34,11 @@ import Vue from "vue";
 import axios from "axios";
 import { mapGetters } from "vuex";
 import { PanelPayload } from "@/types/panel-types";
+import NavigationMenu from "@/components/NavigationMenu.vue"
 
 export default Vue.extend({
   name: "App",
+  components: {NavigationMenu},
 
   data: () => ({
     sourceDir: "source_panels/",
@@ -106,3 +100,8 @@ export default Vue.extend({
 });
 </script>
 
+<style scoped>
+.no-transition {
+  transition: none;
+}
+</style>

@@ -21,7 +21,7 @@ export const lightThemes = [
 export default new Vuetify({
     theme: {
         themes: {
-          light: lightThemes[0]
+          light: lightThemes[1]
           ,
         //   dark: {
         //     primary: colors.blue.lighten3,

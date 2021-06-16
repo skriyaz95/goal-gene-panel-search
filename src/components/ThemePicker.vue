@@ -50,7 +50,7 @@ export default Vue.extend({
 components: { ColorPicker
 },
  data: () => ({
-   themeSelected: 1,
+   themeSelected: -1,
    themes: lightThemes
   }),
   methods: {
@@ -81,8 +81,10 @@ components: { ColorPicker
       return color != "#FF0000FF";
     },
     changeTheme() {
-      this.updatePrimary(this.themes[this.themeSelected - 1].primary);
-      this.updateSecondary(this.themes[this.themeSelected - 1].secondary);
+      if (this.themeSelected > -1) {
+        this.updatePrimary(this.themes[this.themeSelected - 1].primary);
+        this.updateSecondary(this.themes[this.themeSelected - 1].secondary);
+      }
     },
     getThemeLabel(n: number) {
       return this.$t("themePicker.button.theme.text") + " #" + n;
