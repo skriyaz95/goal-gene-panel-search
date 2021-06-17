@@ -1,45 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {Gene, GenePanel, PanelPayload} from "@/types/panel-types";
+import state from "@/store/state"
+import mutations from "@/store/mutations"
+import actions from "@/store/actions"
+import getters from "@/store/getters"
+import modules from "@/store/modules"
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
-    tempPanels: new Array<GenePanel>(),
-    panels: new Array<GenePanel>(),
-    userGenes: new Array<Gene>()
-  },
-  mutations: {
-    addTempPanel(state, payload: PanelPayload) {
-      state.tempPanels.push(payload.panel);
-    },
-    addPanel(state, payload: PanelPayload) {
-      state.panels.push(payload.panel);
-    },
-    setUserGenes(state, payload: Gene[]) {
-      state.userGenes = payload;
-    },
-    resetTempPanels(state) {
-      state.tempPanels = [];
-    },
-    resetPanels(state) {
-      state.panels = [];
-    },
-    clearUserGenes(state) {
-      state.userGenes = [];
-    },
-  },
-  actions: {
-  },
-  getters: {
-    getTempPanels: (state) => {
-      return state.tempPanels;
-    },
-    getPanels: (state) => {
-      return state.panels;
-    }
-  },
-  modules: {
-  }
+    state,
+    mutations,
+    actions,
+    getters,
+    modules
 })

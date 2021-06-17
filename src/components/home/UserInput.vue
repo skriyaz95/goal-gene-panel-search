@@ -5,9 +5,9 @@
     </v-card-title>
     <v-card-text>
       <v-form ref="form" v-model="isFormValid">
-        <v-textarea outlined name="gene-list" :label="$t('userInput.label')" 
+        <v-textarea outlined name="gene-list" :label="$t('userInput.label')"
                     v-model="geneList" :rules="geneListRules" clearable
-                    @click:clear="clear" rows="10" @blur="clearIfEmpty"
+                    @click:clear="clear()" rows="10" @blur="clearIfEmpty"
         ></v-textarea>
         <v-btn class="ma-2" large depressed color="primary" @click="saveUserInput()" :disabled="!isFormValid">{{ $t("userInput.button.submit") }}
         </v-btn>

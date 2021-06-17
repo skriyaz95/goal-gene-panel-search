@@ -9,7 +9,7 @@
           <v-card-title>
             Result
           </v-card-title>
-          <v-card-text>Using its own component</v-card-text>
+          <v-card-text>{{ getUserGenesInPanels }}</v-card-text>
         </v-card>
       </v-col>
 
@@ -19,12 +19,18 @@
 
 <script lang="ts">
   import Vue from 'vue'
-  import UserInput from "@/components/home/UserInput.vue";
+  import UserInput from "@/components/home/UserInput.vue"
+  import {mapGetters} from "vuex"
 
   export default Vue.extend({
     name: 'HomePage',
     components: {
       UserInput,
     },
+    computed: {
+      ...mapGetters({
+        getUserGenesInPanels: "getUserGenesInPanels",
+      }),
+    }
   })
 </script>
