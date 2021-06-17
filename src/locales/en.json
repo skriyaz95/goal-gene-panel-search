@@ -37,6 +37,9 @@
       "text": "Home",
       "toolbar": {
         "text": "Find Genes in Panel"
+      },
+      "title": {
+        "text": "Home"
       }
     },
     "mini": {
@@ -47,6 +50,9 @@
       "text": "Utils",
       "toolbar": {
         "text": "Tools for Admins"
+      },
+      "title": {
+        "text": "Utils"
       }
     }
   },
