@@ -14,12 +14,11 @@
  * @returns
  */
 
-export default function debounce(fn, delay) {
-  var timeoutID = null
-  return function() {
+export default function (fn: any, delay: number): any {
+  let timeoutID: number | undefined = undefined
+  return function(this: any, ...args: IArguments[]) {
     clearTimeout(timeoutID)
-    var args = arguments
-    var that = this
+    const that = this
     timeoutID = setTimeout(function() {
       fn.apply(that, args)
     }, delay)

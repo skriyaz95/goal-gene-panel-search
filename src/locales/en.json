@@ -8,6 +8,9 @@
     },
     "rawPanels": {
       "text": "Raw Panel Files:"
+    },
+    "panelName": {
+      "text": "Panel Name"
     }
   },
   "button": {

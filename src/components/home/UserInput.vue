@@ -38,7 +38,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Gene } from '@/types/panel-types'
-import debounce from '@/plugins/debounce'
+import debounce from '@/utils/debounce'
 
 export default Vue.extend({
   name: 'UserInput',
@@ -48,6 +48,24 @@ export default Vue.extend({
     validSeparators: /[ ,;\s]+/,
     validCharacters: /^[-,;~\w\s]+$/,
   }),
+  computed: {
+    geneListRules(): any {
+      // const x = this.$t('userInput.validation.list-empty')
+      const y = this.$t('userInput.validation.list-min-characters')
+      const z = this.$t('userInput.validation.list-regex')
+      // const emptyRule = (v:string) => (v != null && v.trim().length > 0) || x;
+      const lengthRule = (v: string) => (v != null && v.trim().length >= 2) || y
+      const symbolRule = (v: string) => this.validCharacters.test(v) || z
+      // return [lengthRule, symbolRule]
+      console.log(y, lengthRule)
+      return [lengthRule, symbolRule]
+    },
+  },
+  watch: {
+    geneList: debounce(function (this: any, value: string) {
+      this.submitUserInput(value)
+    }, 500),
+  },
   methods: {
     saveUserInput() {
       let validate: boolean = (
@@ -102,22 +120,6 @@ export default Vue.extend({
         this.clear()
       }
     },
-  },
-  computed: {
-    geneListRules() {
-      // const x = this.$t('userInput.validation.list-empty')
-      const y = this.$t('userInput.validation.list-min-characters')
-      const z = this.$t('userInput.validation.list-regex')
-      // const emptyRule = (v:string) => (v != null && v.trim().length > 0) || x;
-      const lengthRule = (v: string) => (v != null && v.trim().length >= 2) || y
-      const symbolRule = (v: string) => this.validCharacters.test(v) || z
-      return [lengthRule, symbolRule]
-    },
-  },
-  watch: {
-    geneList: debounce(function (this: any, value: string) {
-      this.submitUserInput(value)
-    }, 500),
   },
 })
 </script>

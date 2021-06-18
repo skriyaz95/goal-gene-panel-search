@@ -66,7 +66,7 @@
                   <v-col cols="6" lg="3">
                     <v-text-field
                       v-model="panel.name"
-                      label="Panel Name"
+                      :label="$t('buildPanels.panelName.text')"
                       hide-details
                       dense
                       @click.stop=""
