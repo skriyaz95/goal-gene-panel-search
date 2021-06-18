@@ -15,11 +15,11 @@
             target="_blank"
             text
           >
-            <span class="mr-2">{{ $t("button.link.repo.text") }}</span>
+            <span class="mr-2">{{ $t('button.link.repo.text') }}</span>
             <v-icon>mdi-open-in-new</v-icon>
           </v-btn>
         </template>
-        <span>{{ $t("button.link.repo.tooltip") }}</span>
+        <span>{{ $t('button.link.repo.tooltip') }}</span>
       </v-tooltip>
     </v-app-bar>
 
@@ -30,73 +30,79 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import axios from "axios";
-import { mapGetters } from "vuex";
-import { PanelPayload } from "@/types/panel-types";
-import NavigationMenu from "@/components/NavigationMenu.vue";
-import { TranslateResult } from "vue-i18n";
+import Vue from 'vue'
+import axios from 'axios'
+import { mapGetters } from 'vuex'
+import { PanelPayload } from '@/types/panel-types'
+import NavigationMenu from '@/components/NavigationMenu.vue'
+import { TranslateResult } from 'vue-i18n'
 
 export default Vue.extend({
-  name: "App",
+  name: 'App',
   components: { NavigationMenu },
 
   data: () => ({
-    sourceDir: "source_panels/",
+    sourceDir: 'source_panels/',
     panelNames: new Array<string>(),
     publicPath: process.env.BASE_URL,
   }),
   methods: {
     importExistingPanels(r: any): any {
-      this.$store.commit("resetPanels");
-      var jsonPanels = new Array<any>();
-      r.keys().forEach((key: any) => jsonPanels.push(key));
+      this.$store.commit('resetPanels')
+      var jsonPanels = new Array<any>()
+      r.keys().forEach((key: any) => jsonPanels.push(key))
       for (var i = 0; i < jsonPanels.length; i++) {
-        var path = this.publicPath + this.sourceDir + jsonPanels[i];
+        var path = this.publicPath + this.sourceDir + jsonPanels[i]
         axios
           .get(path, {
             params: {},
           })
           .then((response) => {
-            var panel = response.data;
-            this.$store.commit("addPanel", new PanelPayload(panel));
+            var panel = response.data
+            this.$store.commit('addPanel', new PanelPayload(panel))
           })
           .catch((error) => {
-            alert(error);
-          });
+            alert(error)
+          })
       }
     },
     getBackgroundStyle(lighten: boolean) {
-      var background: any = this.$vuetify.theme.themes[this.theme].background;
-      var backgroundString = "";
+      var background: any = this.$vuetify.theme.themes[this.theme].background
+      var backgroundString = ''
       if (lighten && background.base) {
         //check if string or object
-        backgroundString = background.lighten5;
+        backgroundString = background.lighten5
       } else {
-        backgroundString = background;
+        backgroundString = background
       }
-      return { background: backgroundString };
+      return { background: backgroundString }
     },
   },
   computed: {
     theme() {
       if (this.$vuetify.theme.dark) {
-        return "dark";
+        return 'dark'
       } else {
-        return "light";
+        return 'light'
       }
     },
     ...mapGetters({
-      panels: "getPanels",
+      panels: 'getPanels',
     }),
     toolbarTitle(): TranslateResult {
-      return this.$t(this.$route.meta.i18n + ".toolbar.text");
+      return this.$t(this.$route.meta.i18n + '.toolbar.text')
     },
   },
   mounted() {
     this.importExistingPanels(
-      require.context("../public/source_panels/", false, /\.json$/)
-    );
+      require.context('../public/source_panels/', false, /\.json$/)
+    )
   },
-});
+})
 </script>
+
+<style>
+.v-input.v-text-field.v-textarea .v-text-field__slot {
+  padding: 5px 10px 5px 5px; /*fix scrollbar overlapping with textarea outlined */
+}
+</style>
