@@ -14,7 +14,7 @@
           outlined
           clear-icon="mdi-close-circle"
           @click:clear="clear()"
-          rows="10"
+          rows="13"
           @blur="clearIfEmpty"
         ></v-textarea>
         <v-btn

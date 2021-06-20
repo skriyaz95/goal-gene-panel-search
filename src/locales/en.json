@@ -87,5 +87,33 @@
       "list-min-characters": "Gene List must be at least 2 characters",
       "list-regex": "Remove special characters ($%^&<> etc.)"
     }
+  },
+  "panel-result" : {
+    "result": {
+      "name": "Results",
+      "title": "Total Genes Evaluated"
+    },
+    "table": {
+      "headers": {
+        "panel-name" : "Gene Panel Name",
+        "genes-found": "Number of Genes Found",
+        "genes-not-found": "Number of Genes Not Found",
+        "actions": "Actions"
+      }
+    },
+    "chip": {
+      "show-genes": "Show Genes"
+    },
+    "tooltip": {
+      "save-result": "Save this Result"
+    },
+    "dialog": {
+      "title-genes-in-panel": "Genes in GenePanel",
+      "title-genes-not-in-panel": "Genes Not in GenePanel",
+      "button": {
+        "close": "Close",
+        "save": "Save"
+      }
+    }
   }
 }

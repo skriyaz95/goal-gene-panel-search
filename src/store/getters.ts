@@ -1,4 +1,4 @@
-import {Gene, GenePanel} from "@/types/panel-types";
+import {Gene, GenePanel, UserGenesSearchInPanel} from "@/types/panel-types";
 
 export default {
     getTempPanels: (state: any) => {
@@ -7,24 +7,33 @@ export default {
     getPanels: (state: any) => {
         return state.panels
     },
+    getUserGenes: (state: any) => {
+        return state.userGenes
+    },
     getUserGenesInPanels: (state: any, getters: any) => {
-        const result = new Array<GenePanel>()
+        const result = new Array<UserGenesSearchInPanel>()
         state.panels.forEach((panel: GenePanel) => {
-            const genesInPanel = getters.getUserGenesInSelectedPanel(panel);
-            if (genesInPanel.length > 0) {
-                result.push(new GenePanel(panel.name, genesInPanel));
+            const genes = getters.getUserGenesInSelectedPanel(panel);
+            if (genes.genesInPanel.length > 0 || genes.genesNotInPanel.length > 0) {
+                result.push(new UserGenesSearchInPanel(panel.name.toUpperCase(), genes.genesInPanel, genes.genesNotInPanel));
             }
         })
         return result
     },
     getUserGenesInSelectedPanel: (state: any) => (panel: GenePanel) => {
         const genesInPanel = new Array<Gene>();
-        const panelGenesSet = new Set(panel.genes.map((gene: Gene) => gene.name));
+        const genesNotInPanel = new Array<Gene>();
+        const panelGenesSet = new Set(panel.genes.map((gene: Gene) => gene.name.toUpperCase()));
         state.userGenes.forEach((userGene: Gene) => {
             if (panelGenesSet.has(userGene.name)) {
                 genesInPanel.push(new Gene(userGene.name));
+            } else {
+                genesNotInPanel.push(new Gene(userGene.name));
             }
         })
-        return genesInPanel
+        return {
+            "genesInPanel": genesInPanel,
+            "genesNotInPanel": genesNotInPanel
+        }
     }
 }
