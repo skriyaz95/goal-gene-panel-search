@@ -28,6 +28,27 @@ export class PanelSearchResult {
     }
   }
 
+  /**
+   * Represents genes with symbol, db ids, and list of synonyms
+   * For example when parsing a gene_info file
+   */
+  export class FullGene {
+    symbol!: string
+    hgncId!: string
+    synonyms!: string[]
+    loci: string
+    ensemblId: string
+
+    constructor(symbol: string, hgncId: string, synonyms: string[], loci: string,
+      ensemblId: string) {
+      this.symbol = symbol;
+      this.hgncId = hgncId;
+      this.synonyms = synonyms;
+      this.loci = loci;
+      this.ensemblId = ensemblId
+    }
+  }
+
   /** payload object to commit to the Vuex store
    * It's best to commit a payload object rather than the panel directly
   */
