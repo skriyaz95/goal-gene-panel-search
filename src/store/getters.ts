@@ -1,4 +1,4 @@
-import {Gene, GenePanel, UserGenesSearchInPanel} from "@/types/panel-types";
+import {Gene, GenePanel, PanelSearchResult} from "@/types/panel-types";
 
 export default {
     getTempPanels: (state: any) => {
@@ -11,11 +11,11 @@ export default {
         return state.userGenes
     },
     getUserGenesInPanels: (state: any, getters: any) => {
-        const result = new Array<UserGenesSearchInPanel>()
+        const result = new Array<PanelSearchResult>()
         state.panels.forEach((panel: GenePanel) => {
             const genes = getters.getUserGenesInSelectedPanel(panel);
             if (genes.genesInPanel.length > 0 || genes.genesNotInPanel.length > 0) {
-                result.push(new UserGenesSearchInPanel(panel.name.toUpperCase(), genes.genesInPanel, genes.genesNotInPanel));
+                result.push(new PanelSearchResult(panel.name.toUpperCase(), genes.genesInPanel, genes.genesNotInPanel));
             }
         })
         return result

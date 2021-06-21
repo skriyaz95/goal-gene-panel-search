@@ -96,8 +96,8 @@
     "table": {
       "headers": {
         "panel-name" : "Gene Panel Name",
-        "genes-found": "Number of Genes Found",
-        "genes-not-found": "Number of Genes Not Found",
+        "genes-found": "Genes Found",
+        "genes-not-found": "Genes Not Found",
         "actions": "Actions"
       }
     },
@@ -108,8 +108,8 @@
       "save-result": "Save this Result"
     },
     "dialog": {
-      "title-genes-in-panel": "Genes in GenePanel",
-      "title-genes-not-in-panel": "Genes Not in GenePanel",
+      "title-genes-in-panel": "Genes in Panel",
+      "title-genes-not-in-panel": "Genes Not in Panel",
       "button": {
         "close": "Close",
         "save": "Save"

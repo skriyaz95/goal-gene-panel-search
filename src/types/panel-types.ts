@@ -8,7 +8,7 @@ export class GenePanel {
     }
   }
 
-export class UserGenesSearchInPanel {
+export class PanelSearchResult {
     name: string;
     genesInPanel: Gene[];
     genesNotInPanel: Gene[];
@@ -39,7 +39,7 @@ export class UserGenesSearchInPanel {
     }
   }
 
-  export class PanelSearchResult {
+  export class PanelResultFormattedRow {
       name: string
       countGenesInPanel: number
       countGenesNotInPanel: number
