@@ -5,32 +5,22 @@
         <user-input/>
       </v-col>
       <v-col cols="12" lg="6">
-        <v-card outlined>
-          <v-card-title>
-            Result
-          </v-card-title>
-          <v-card-text>{{ getUserGenesInPanels }}</v-card-text>
-        </v-card>
+        <panel-result/>
       </v-col>
-
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
-  import UserInput from "@/components/home/UserInput.vue"
-  import {mapGetters} from "vuex"
+import Vue from 'vue'
+import UserInput from "@/components/home/UserInput.vue"
+import PanelResult from "@/components/home/PanelResult.vue";
 
-  export default Vue.extend({
-    name: 'HomePage',
-    components: {
-      UserInput,
-    },
-    computed: {
-      ...mapGetters({
-        getUserGenesInPanels: "getUserGenesInPanels",
-      }),
-    }
-  })
+export default Vue.extend({
+  name: 'HomePage',
+  components: {
+    UserInput,
+    PanelResult
+  }
+})
 </script>
