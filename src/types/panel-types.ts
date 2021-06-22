@@ -28,6 +28,15 @@ export class PanelSearchResult {
     }
   }
 
+  export class ParsedGene {
+    gene: Gene;
+    state!: string
+
+    constructor(gene: Gene) {
+      this.gene = gene;
+    }
+  }
+
   /**
    * Represents genes with symbol, db ids, and list of synonyms
    * For example when parsing a gene_info file
@@ -49,6 +58,21 @@ export class PanelSearchResult {
     }
   }
 
+    /**
+   * Represents synonyms and the FullGene they are synonyms of
+   * It's a reverse lookup way of finding a gene by synonym
+   * For example when parsing a gene_info file
+   */
+     export class SynonymGene {
+      synonym!: string
+      gene!: FullGene
+  
+      constructor(synonym: string, gene: FullGene) {
+        this.synonym = synonym;
+        this.gene = gene;
+      }
+    }
+    
   /** payload object to commit to the Vuex store
    * It's best to commit a payload object rather than the panel directly
   */

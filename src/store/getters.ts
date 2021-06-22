@@ -1,4 +1,4 @@
-import {Gene, GenePanel, PanelSearchResult} from "@/types/panel-types";
+import {Gene, GenePanel, PanelSearchResult, FullGene, SynonymGene} from "@/types/panel-types";
 
 export default {
     getTempPanels: (state: any) => {
@@ -9,6 +9,17 @@ export default {
     },
     getUserGenes: (state: any) => {
         return state.userGenes
+    },
+    getUserGenesSorted: (state: any) => {
+        return state.userGenes.sort((a: Gene,b:Gene) => {
+           if (a.name < b.name) {
+               return -1;
+           }
+           if (a.name > b.name) {
+               return 1;
+           }
+           return 0;
+        })
     },
     getUserGenesInPanels: (state: any, getters: any) => {
         const result = new Array<PanelSearchResult>()
@@ -35,5 +46,25 @@ export default {
             "genesInPanel": genesInPanel,
             "genesNotInPanel": genesNotInPanel
         }
-    }
+    },
+    getAllGenes: (state: any) => {
+        return state.allGenes;
+    },
+    getAllGeneMap: (state: any) => {
+        const allGeneMap = new Map<String, FullGene>()
+        state.allGenes.forEach((gene: FullGene) => {
+            allGeneMap.set(gene.symbol, gene)
+        });
+        return allGeneMap
+    },
+    getSynonyms: (state: any) => {
+        return state.synonyms
+    },
+    getSynonymMap: (state: any) => {
+        const allSynonymMap = new Map<String, SynonymGene>()
+        state.synonyms.forEach((synonym: SynonymGene) => {
+            allSynonymMap.set(synonym.synonym, synonym)
+        });
+        return allSynonymMap
+    },
 }

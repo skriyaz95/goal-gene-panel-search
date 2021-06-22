@@ -57,7 +57,6 @@ export default Vue.extend({
       const lengthRule = (v: string) => (v != null && v.trim().length >= 2) || y
       const symbolRule = (v: string) => this.validCharacters.test(v) || z
       // return [lengthRule, symbolRule]
-      console.log(y, lengthRule)
       return [lengthRule, symbolRule]
     },
   },
@@ -74,7 +73,7 @@ export default Vue.extend({
       if (!validate) {
         alert('Form is not valid')
       } else {
-        let genes = this.geneList.split(this.validSeparators)
+        let genes = this.geneList.toUpperCase().split(this.validSeparators)
         let uniqGenes = Array.from(new Set(genes)) //remove duplicates
         let userGenes: Gene[] = []
         for (let symbol of uniqGenes) {
@@ -92,7 +91,7 @@ export default Vue.extend({
       if (!validate) {
         return
       } else {
-        let genes = userinput.split(this.validSeparators)
+        let genes = userinput.toUpperCase().split(this.validSeparators)
         let uniqGenes = Array.from(new Set(genes)) //remove duplicates
         let userGenes: Gene[] = []
         for (let symbol of uniqGenes) {

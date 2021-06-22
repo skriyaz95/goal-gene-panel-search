@@ -1,4 +1,4 @@
-import {Gene, PanelPayload} from "@/types/panel-types"
+import {Gene, PanelPayload, SynonymGene} from "@/types/panel-types"
 
 export default {
     addTempPanel(state: any, payload: PanelPayload) {
@@ -19,4 +19,7 @@ export default {
     clearUserGenes(state: any) {
         state.userGenes = [];
     },
+    updateSynonyms(state: any, payload: SynonymGene[]) {
+        state.synonyms = payload
+    }
 }

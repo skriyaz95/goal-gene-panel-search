@@ -132,5 +132,10 @@
     "replace": {
       "title": { "text": "Replace file assets/all_genes.json " }
     }
+  },
+  "parseInput": {
+    "title": {
+      "text": "Parsed List"
+    }
   }
 }

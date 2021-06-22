@@ -113,16 +113,21 @@ export default Vue.extend({
       }
       for (let i = 1; i < rows.length; i++) {
         var items = rows[i].split('\t')
-        var symbol = items[headerByRowNb.get(this.headerSymbol) as number]
-        if (this.invalidSymbolCharacters.test(symbol)) {
+        var symbolItem = items[headerByRowNb.get(this.headerSymbol) as number]
+        var symbol = ''
+        if (symbolItem) {
+          symbol = symbolItem.toUpperCase()
+        }
+        if (!symbol || this.invalidSymbolCharacters.test(symbol)) {
           continue //skip symbols with non alphanumeric characters
         }
         var synonymString =
           items[headerByRowNb.get(this.headerSynonyms) as number]
         var synonyms = new Array<string>()
         if (synonymString) {
-          synonyms =
-            items[headerByRowNb.get(this.headerSynonyms) as number].split('|')
+          synonyms = items[headerByRowNb.get(this.headerSynonyms) as number]
+            .split('|')
+            .map((s) => s.toUpperCase())
         }
         var dbIds = items[headerByRowNb.get(this.headerDBIds) as number]
         if (!dbIds) {
