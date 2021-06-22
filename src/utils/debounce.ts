@@ -24,3 +24,5 @@ export default function (fn: any, delay: number): any {
     }, delay)
   }
 }
+
+

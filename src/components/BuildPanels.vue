@@ -14,10 +14,8 @@
               class="ma-2 secondary"
               v-for="panel in panels"
             >
-              {{ panel.name }} ({{
-                $tc('count.gene', panel.genes.length)
-              }})</v-chip
-            >
+              {{ panel.name }} ({{ $tc('count.gene', $n(panel.genes.length)) }})
+            </v-chip>
             <div class="mb-1 mt-1">{{ $t('buildPanels.rawPanels.text') }}</div>
             <v-chip
               class="ma-2 primary"
@@ -74,7 +72,9 @@
                     </v-text-field>
                   </v-col>
                   <v-col cols="6" lg="9">
-                    <span>({{ $tc('count.gene', panel.genes.length) }})</span>
+                    <span>
+                      ({{ $tc('count.gene', $n(panel.genes.length)) }})</span
+                    >
                   </v-col>
                 </v-row>
 
@@ -106,6 +106,8 @@ import Vue from 'vue'
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 import { Gene, GenePanel, PanelPayload } from '@/types/panel-types'
+import download from '@/utils/download'
+import { formatObjetToJson } from '@/utils/download'
 
 export default Vue.extend({
   name: 'BuildPanel',
@@ -161,20 +163,12 @@ export default Vue.extend({
       }
     },
     formatPanel(panel: GenePanel, pretty: boolean) {
-      var string = pretty
-        ? JSON.stringify(panel, null, 2)
-        : JSON.stringify(panel)
-      return string
+      return formatObjetToJson(panel, pretty)
     },
     downloadPanel(panel: GenePanel) {
-      var content = this.formatPanel(panel, false)
-      var a = document.createElement('a')
-      var file = new Blob([content], { type: 'text/json' })
-      a.href = URL.createObjectURL(file)
-      a.download = panel.name.replaceAll(/[ ]+/g, '_') + '.json'
-      a.click()
-      URL.revokeObjectURL(a.href)
-      a.remove()
+      const content = this.formatPanel(panel, false)
+      const filename = panel.name.replaceAll(/[ ]+/g, '_') + '.json'
+      download(filename, content, 'text/json')
     },
     downloadAllPanels() {
       for (var i = 0; i < this.tempPanels.length; i++) {

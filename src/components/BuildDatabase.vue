@@ -2,12 +2,13 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="12" lg="3">
+      <v-col cols="12" lg="4">
         <v-card>
-          <v-card-title>Update Gene Reference Database:</v-card-title>
+          <v-card-title>{{ $t('build-database.title.text') }}:</v-card-title>
           <v-card-text>
             <div>
-              Step 1: Download and unzip this file:
+              {{ $t('build-database.step.text') }} 1:
+              {{ $t('build-database.download.title.text') }}:
               <v-btn
                 :href="sourceFileUrl"
                 target="_blank"
@@ -18,7 +19,7 @@
               </v-btn>
             </div>
             <v-row align="center">
-              <v-col md="auto">Step 2:</v-col>
+              <v-col md="auto">{{ $t('build-database.step.text') }} 2:</v-col>
               <v-col>
                 <v-file-input
                   accept=".gene_info"
@@ -29,17 +30,30 @@
                 ></v-file-input>
               </v-col>
               <v-col md="auto">
-                <v-btn
-                  @click="downloadGenes"
-                  icon
-                  class="primary--text"
-                  :disabled="allGenes.length == 0"
-                  :loading="loading"
-                >
-                  <v-icon>mdi-download</v-icon>
-                </v-btn>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      v-on="on"
+                      @click="downloadGenes"
+                      icon
+                      class="primary--text"
+                      :disabled="allGenes.length == 0"
+                      :loading="loading"
+                    >
+                      <v-icon>mdi-content-save</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>{{ $t('button.saveAllGenes.tootip') }}</span>
+                </v-tooltip>
               </v-col>
             </v-row>
+            <div>
+              {{ $t('build-database.step.text') }} 3:
+              {{ $t('build-database.replace.title.text') }}
+              <span v-show="allGenes.length != 0">
+                ({{ $tc('count.gene', $n(allGenes.length)) }})
+              </span>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -53,6 +67,8 @@ import Vue from 'vue'
 // import axios from 'axios'
 import { mapGetters } from 'vuex'
 // import { Gene, GenePanel, PanelPayload } from '@/types/panel-types'
+import download from '@/utils/download'
+import { formatObjetToJson } from '@/utils/download'
 
 export default Vue.extend({
   name: 'BuildDatabase',
@@ -71,6 +87,7 @@ export default Vue.extend({
     headerLoci: 'map_location',
     hgncRegex: /[.]*HGNC:HGNC:([0-9]+)/,
     ensemblRegex: /[.]*Ensembl:([A-Z0-9]+)/,
+    invalidSymbolCharacters: /[^A-Z0-9]+/,
     allGenes: new Array<FullGene>(),
     loading: false,
   }),
@@ -97,6 +114,9 @@ export default Vue.extend({
       for (let i = 1; i < rows.length; i++) {
         var items = rows[i].split('\t')
         var symbol = items[headerByRowNb.get(this.headerSymbol) as number]
+        if (this.invalidSymbolCharacters.test(symbol)) {
+          continue //skip symbols with non alphanumeric characters
+        }
         var synonymString =
           items[headerByRowNb.get(this.headerSynonyms) as number]
         var synonyms = new Array<string>()
@@ -132,7 +152,8 @@ export default Vue.extend({
       if (!this.allGenes) {
         return
       }
-      console.log('downloading', this.allGenes.length, 'genes')
+      const filename = 'all_genes.json'
+      download(filename, formatObjetToJson(this.allGenes, false), 'text/json')
     },
   },
   computed: {
