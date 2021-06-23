@@ -1,19 +1,33 @@
 <template>
   <div>
-    <v-dialog v-model="showDialog" persistent max-width="800px">
+    <v-dialog
+      v-model="showDialog"
+      persistent
+      max-width="800px"
+    >
       <v-card>
         <v-card-title>
-          <span v-if="geneType === 'genesInPanel'" class="text-h5">
+          <span
+            v-if="geneType === 'genesInPanel'"
+            class="text-h5"
+          >
             {{ $t('panel-result.dialog.title-genes-in-panel') }}:
             {{ panelName }}
           </span>
-          <span v-else class="text-h5">
+          <span
+            v-else
+            class="text-h5"
+          >
             {{ $t('panel-result.dialog.title-genes-not-in-panel') }}:
             {{ panelName }}
           </span>
         </v-card-title>
         <v-card-text>
-          <v-virtual-scroll :items="genes" height="400" item-height="64">
+          <v-virtual-scroll
+            :items="genes"
+            height="400"
+            item-height="64"
+          >
             <template v-slot:default="{ item }">
               <v-list-item :key="item">
                 <v-list-item-content>
@@ -25,11 +39,19 @@
           </v-virtual-scroll>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="showDialog = false">
+          <v-spacer />
+          <v-btn
+            color="green darken-1"
+            text
+            @click="showDialog = false"
+          >
             {{ $t('panel-result.dialog.button.close') }}
           </v-btn>
-          <v-btn color="green darken-1" text @click="downloadGenes(genes)">
+          <v-btn
+            color="green darken-1"
+            text
+            @click="downloadGenes(genes)"
+          >
             {{ $t('panel-result.dialog.button.save') }}
           </v-btn>
         </v-card-actions>
@@ -57,11 +79,11 @@
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
                 <v-chip
-                  v-on="on"
-                  @click.stop="openDialog(item, 'genesInPanel')"
                   class="ma-2"
                   color="primary"
                   text-color="white"
+                  v-on="on"
+                  @click.stop="openDialog(item, 'genesInPanel')"
                 >
                   {{ item.countGenesInPanel }}
                 </v-chip>
@@ -73,13 +95,13 @@
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
                 <v-chip
-                  v-on="on"
-                  @click.stop="openDialog(item, 'genesNotInPanel')"
                   class="ma-2 secondary"
                   text-color="black"
+                  v-on="on"
+                  @click.stop="openDialog(item, 'genesNotInPanel')"
                 >
-                  {{ item.countGenesNotInPanel }}</v-chip
-                >
+                  {{ item.countGenesNotInPanel }}
+                </v-chip>
               </template>
               <span>{{ $t('panel-result.chip.show-genes') }}</span>
             </v-tooltip>
@@ -87,7 +109,11 @@
           <template v-slot:[`item.actions`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn v-on="on" @click.stop="downloadResult(item)" icon>
+                <v-btn
+                  icon
+                  v-on="on"
+                  @click.stop="downloadResult(item)"
+                >
                   <v-icon>mdi-content-save</v-icon>
                 </v-btn>
               </template>

@@ -2,25 +2,30 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="12" lg="4">
+      <v-col
+        cols="12"
+        lg="4"
+      >
         <v-card outlined>
           <v-card-text>
             <div class="mb-1 mt-1">
               {{ $t('buildPanels.existingPanels.text') }}
             </div>
             <v-chip
+              v-for="panel in panels"
               :key="panel.name"
               text-color="black"
               class="ma-2 secondary"
-              v-for="panel in panels"
             >
               {{ panel.name }} ({{ $tc('count.gene', $n(panel.genes.length)) }})
             </v-chip>
-            <div class="mb-1 mt-1">{{ $t('buildPanels.rawPanels.text') }}</div>
+            <div class="mb-1 mt-1">
+              {{ $t('buildPanels.rawPanels.text') }}
+            </div>
             <v-chip
-              class="ma-2 primary"
               v-for="panelName in panelFileNames"
               :key="panelName"
+              class="ma-2 primary"
             >
               {{ panelName }}
             </v-chip>
@@ -28,60 +33,89 @@
           <v-card-actions>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn v-on="on" @click="buildPanels" class="primary">{{
-                  $t('button.buildPanels.text')
-                }}</v-btn>
+                <v-btn
+                  class="primary"
+                  v-on="on"
+                  @click="buildPanels"
+                >
+                  {{
+                    $t('button.buildPanels.text')
+                  }}
+                </v-btn>
               </template>
               <span>{{ $t('button.buildPanels.tooltip') }}</span>
             </v-tooltip>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
                 <v-btn
-                  v-on="on"
-                  @click="downloadAllPanels"
                   class="primary ml-2"
                   :disabled="isEmptyPanels()"
+                  v-on="on"
+                  @click="downloadAllPanels"
                 >
-                  {{ $t('button.saveAllPanels.text') }}</v-btn
-                >
+                  {{ $t('button.saveAllPanels.text') }}
+                </v-btn>
               </template>
               <span>{{ $t('button.saveAllPanels.tooltip') }}</span>
             </v-tooltip>
           </v-card-actions>
         </v-card>
       </v-col>
-      <v-col cols="12" lg="8">
-        <v-card outlined class="mb-2">
+      <v-col
+        cols="12"
+        lg="8"
+      >
+        <v-card
+          outlined
+          class="mb-2"
+        >
           <v-card-text>
-            <span v-html="$t('buildPanels.help.text')"></span>
+            <span v-html="$t('buildPanels.help.text')" />
           </v-card-text>
         </v-card>
-        <v-card outlined v-if="tempPanels.length > 0">
-          <v-expansion-panels flat focusable>
-            <v-expansion-panel v-for="panel in tempPanels" :key="panel.name">
+        <v-card
+          v-if="tempPanels.length > 0"
+          outlined
+        >
+          <v-expansion-panels
+            flat
+            focusable
+          >
+            <v-expansion-panel
+              v-for="panel in tempPanels"
+              :key="panel.name"
+            >
               <v-expansion-panel-header disable-icon-rotate>
                 <v-row align="center">
-                  <v-col cols="6" lg="3">
+                  <v-col
+                    cols="6"
+                    lg="3"
+                  >
                     <v-text-field
                       v-model="panel.name"
                       :label="$t('buildPanels.panelName.text')"
                       hide-details
                       dense
                       @click.stop=""
-                    >
-                    </v-text-field>
+                    />
                   </v-col>
-                  <v-col cols="6" lg="9">
+                  <v-col
+                    cols="6"
+                    lg="9"
+                  >
                     <span>
-                      ({{ $tc('count.gene', $n(panel.genes.length)) }})</span
-                    >
+                      ({{ $tc('count.gene', $n(panel.genes.length)) }})</span>
                   </v-col>
                 </v-row>
 
                 <template v-slot:actions>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
-                      <v-btn v-on="on" @click.stop="downloadPanel(panel)" icon>
+                      <v-btn
+                        icon
+                        v-on="on"
+                        @click.stop="downloadPanel(panel)"
+                      >
                         <v-icon>mdi-content-save</v-icon>
                       </v-btn>
                     </template>
@@ -91,7 +125,10 @@
                 </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <div class="pa-2" v-text="formatPanel(panel, true)"></div>
+                <div
+                  class="pa-2"
+                  v-text="formatPanel(panel, true)"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>

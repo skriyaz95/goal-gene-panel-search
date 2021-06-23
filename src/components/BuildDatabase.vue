@@ -2,7 +2,10 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="12" lg="4">
+      <v-col
+        cols="12"
+        lg="4"
+      >
         <v-card>
           <v-card-title>{{ $t('build-database.title.text') }}:</v-card-title>
           <v-card-text>
@@ -19,26 +22,28 @@
               </v-btn>
             </div>
             <v-row align="center">
-              <v-col md="auto">{{ $t('build-database.step.text') }} 2:</v-col>
+              <v-col md="auto">
+                {{ $t('build-database.step.text') }} 2:
+              </v-col>
               <v-col>
                 <v-file-input
+                  v-model="geneFile"
                   accept=".gene_info"
-                  @change="handleFileUpload"
                   label="Upload Gene Info File"
                   show-size
-                  v-model="geneFile"
-                ></v-file-input>
+                  @change="handleFileUpload"
+                />
               </v-col>
               <v-col md="auto">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
                     <v-btn
-                      v-on="on"
-                      @click="downloadGenes"
                       icon
                       class="primary--text"
                       :disabled="allGenes.length == 0"
                       :loading="loading"
+                      v-on="on"
+                      @click="downloadGenes"
                     >
                       <v-icon>mdi-content-save</v-icon>
                     </v-btn>

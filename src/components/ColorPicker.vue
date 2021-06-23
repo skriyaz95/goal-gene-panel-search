@@ -1,10 +1,15 @@
 /* eslint-disable vue/html-indent */
 <template>
   <div>
-    <div class="pb-2">{{ title }}:</div>
-    <v-color-picker mode="hexa" v-model="color" @update:color="updateColor"></v-color-picker>
+    <div class="pb-2">
+      {{ title }}:
+    </div>
+    <v-color-picker
+      v-model="color"
+      mode="hexa"
+      @update:color="updateColor"
+    />
   </div>
-          
 </template>
 
 <script lang="ts">
@@ -19,15 +24,15 @@ export default Vue.extend({
   data: () => ({
     color: ""
   }),
-  methods: {
-    updateColor() {
-      this.$emit("update-color", this.color);
-    }
-  },
   computed: {
   },
   mounted() {
     this.color = this.defaultColor;
+  },
+  methods: {
+    updateColor() {
+      this.$emit("update-color", this.color);
+    }
   },
 });
 </script>

@@ -1,19 +1,28 @@
 <template>
   <v-app :style="getBackgroundStyle()">
     <navigation-menu />
-    <v-app-bar app color="primary" dark flat clipped-left>
+    <v-app-bar
+      app
+      color="primary"
+      dark
+      flat
+      clipped-left
+    >
       <div class="d-flex align-center">
-        <span class="title" v-text="toolbarTitle"></span>
+        <span
+          class="title"
+          v-text="toolbarTitle"
+        />
       </div>
 
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
           <v-btn
-            v-on="on"
             href="https://github.com/skriyaz95/goal-gene-panel-search"
             target="_blank"
             text
+            v-on="on"
           >
             <span class="mr-2">{{ $t('button.link.repo.text') }}</span>
             <v-icon>mdi-open-in-new</v-icon>

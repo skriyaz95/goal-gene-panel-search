@@ -4,32 +4,42 @@
       {{ $t('userInput.gene-list') }}
     </v-card-title>
     <v-card-text>
-      <v-form ref="form" v-model="isFormValid">
+      <v-form
+        ref="form"
+        v-model="isFormValid"
+      >
         <v-textarea
+          v-model="geneList"
           name="gene-list"
           :label="$t('userInput.label')"
-          v-model="geneList"
           :rules="geneListRules"
           clearable
           outlined
           clear-icon="mdi-close-circle"
-          @click:clear="clear()"
           rows="13"
+          @click:clear="clear()"
           @blur="clearIfEmpty"
-        ></v-textarea>
+        />
         <v-btn
           class="ma-2"
           large
           depressed
           color="primary"
-          @click="saveUserInput()"
           :disabled="!isFormValid"
+          @click="saveUserInput()"
         >
           {{ $t('userInput.button.submit') }}
         </v-btn>
-        <v-btn class="ma-2" large depressed @click="clear()">{{
-          $t('userInput.button.clear')
-        }}</v-btn>
+        <v-btn
+          class="ma-2"
+          large
+          depressed
+          @click="clear()"
+        >
+          {{
+            $t('userInput.button.clear')
+          }}
+        </v-btn>
       </v-form>
     </v-card-text>
   </v-card>

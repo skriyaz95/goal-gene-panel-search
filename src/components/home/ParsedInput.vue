@@ -2,10 +2,17 @@
   <v-card outlined>
     <v-card-title>
       {{ $t('parseInput.title.text') }}:
-      <span v-if="userGenes.length > 0" class="ml-3">
+      <span
+        v-if="userGenes.length > 0"
+        class="ml-3"
+      >
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-chip v-on="on" color="error" class="ml-1 mr-1">
+            <v-chip
+              color="error"
+              class="ml-1 mr-1"
+              v-on="on"
+            >
               {{ $t('parseInput.notFound.text') }} ({{
                 $tc('count.gene', $n(formattedGenes.notFoundGenes.length))
               }})
@@ -15,7 +22,11 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-chip v-on="on" color="warning" class="ml-1 mr-1">
+            <v-chip
+              color="warning"
+              class="ml-1 mr-1"
+              v-on="on"
+            >
               {{ $t('parseInput.synonyms.text') }} ({{
                 $tc('count.gene', $n(formattedGenes.synonymFoundGenes.length))
               }})
@@ -25,7 +36,11 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-chip v-on="on" color="success" class="ml-1 mr-1">
+            <v-chip
+              color="success"
+              class="ml-1 mr-1"
+              v-on="on"
+            >
               {{ $t('parseInput.symbols.text') }} ({{
                 $tc('count.gene', $n(formattedGenes.symbolFoundGenes.length))
               }})
@@ -100,6 +115,12 @@ export default Vue.extend({
   watch: {
     userGenes: 'formatGenes',
   },
+  mounted() {
+    this.initWorkers()
+  },
+  destroyed() {
+    this.findGenesWorker.terminate()
+  },
   methods: {
     formatState(state: string) {
       if (state == 'symbol') {
@@ -132,12 +153,6 @@ export default Vue.extend({
         this.formattedGenes = event.data.parsedGenes
       }
     },
-  },
-  mounted() {
-    this.initWorkers()
-  },
-  destroyed() {
-    this.findGenesWorker.terminate()
   },
 })
 </script>
