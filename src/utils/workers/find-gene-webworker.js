@@ -1,20 +1,20 @@
 import {
-  FullGene,
-  Gene,
+  // FullGene,
+  // Gene,
   ParsedGene,
-  SynonymGene,
+  // SynonymGene,
   ParsedGenes,
 } from "@/types/panel-types"
 
-const ctx: Worker = self as any
-let allGeneMap = new Map<string, FullGene>()
-let synonymMap = new Map<string, SynonymGene>()
+const ctx = self
+let allGeneMap = new Map()
+let synonymMap = new Map()
 
 const stateSymbol = "symbol"
 const stateSynonym = "synonym"
 const stateNotFound = "notfound"
 
-function findAllGenes(userGenes: Array<Gene>): ParsedGenes {
+function findAllGenes(userGenes) {
   const parsedGenes = new ParsedGenes()
   for (let i = 0; i < userGenes.length; i++) {
     const userGene = userGenes[i]
@@ -30,7 +30,7 @@ function findAllGenes(userGenes: Array<Gene>): ParsedGenes {
   return parsedGenes
 }
 
-function applyState(userGene: Gene) {
+function applyState(userGene) {
   const parsedGene = new ParsedGene(userGene)
   //look by exact match
   if (allGeneMap.has(userGene.name)) {

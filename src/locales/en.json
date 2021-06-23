@@ -153,6 +153,9 @@
     },
     "empty": {
       "text": "Nothing yet. Type some genes above first."
+    },
+    "tooMany": {
+      "text": "Too many too display (> 1000)"
     }
   }
 }

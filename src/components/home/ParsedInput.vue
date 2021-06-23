@@ -2,17 +2,10 @@
   <v-card outlined>
     <v-card-title>
       {{ $t('parseInput.title.text') }}:
-      <span
-        v-if="userGenes.length > 0"
-        class="ml-3"
-      >
+      <span v-if="userGenes.length > 0" class="ml-3">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-chip
-              color="error"
-              class="ml-1 mr-1"
-              v-on="on"
-            >
+            <v-chip color="error" class="ml-1 mr-1" v-on="on">
               {{ $t('parseInput.notFound.text') }} ({{
                 $tc('count.gene', $n(formattedGenes.notFoundGenes.length))
               }})
@@ -22,11 +15,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-chip
-              color="warning"
-              class="ml-1 mr-1"
-              v-on="on"
-            >
+            <v-chip color="warning" class="ml-1 mr-1" v-on="on">
               {{ $t('parseInput.synonyms.text') }} ({{
                 $tc('count.gene', $n(formattedGenes.synonymFoundGenes.length))
               }})
@@ -36,11 +25,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-chip
-              color="success"
-              class="ml-1 mr-1"
-              v-on="on"
-            >
+            <v-chip color="success" class="ml-1 mr-1" v-on="on">
               {{ $t('parseInput.symbols.text') }} ({{
                 $tc('count.gene', $n(formattedGenes.symbolFoundGenes.length))
               }})
@@ -49,45 +34,29 @@
           <span>{{ $t('parseInput.symbols.tooltip') }}</span>
         </v-tooltip>
       </span>
+      <v-spacer></v-spacer>
+      <v-progress-circular v-if="loading" indeterminate></v-progress-circular>
     </v-card-title>
     <v-card-text>
       <div v-if="userGenes.length == 0">
         {{ $t('parseInput.empty.text') }}
       </div>
       <div v-else>
-        <div>
-          <div>{{ $t('parseInput.notFound.text') }}:</div>
-          <v-chip
-            v-for="gene in formattedGenes.notFoundGenes"
-            :key="gene.gene.name"
-            class="ma-1"
-            :color="formatState(gene.state)"
-          >
-            {{ gene.gene.name }}
-          </v-chip>
-        </div>
-        <div>
-          <div>{{ $t('parseInput.synonyms.text') }}:</div>
-          <v-chip
-            v-for="gene in formattedGenes.synonymFoundGenes"
-            :key="gene.gene.name"
-            class="ma-1"
-            :color="formatState(gene.state)"
-          >
-            {{ gene.gene.name }}
-          </v-chip>
-        </div>
-        <div>
-          <div>{{ $t('parseInput.symbols.text') }}:</div>
-          <v-chip
-            v-for="gene in formattedGenes.symbolFoundGenes"
-            :key="gene.gene.name"
-            class="ma-1"
-            :color="formatState(gene.state)"
-          >
-            {{ gene.gene.name }}
-          </v-chip>
-        </div>
+        <parsed-list-item
+          color="error"
+          :items="formattedGenes.notFoundGenes"
+          :title="$t('parseInput.notFound.text')"
+        />
+        <parsed-list-item
+          color="warning"
+          :items="formattedGenes.synonymFoundGenes"
+          :title="$t('parseInput.synonyms.text')"
+        />
+        <parsed-list-item
+          color="success"
+          :items="formattedGenes.symbolFoundGenes"
+          :title="$t('parseInput.symbols.text')"
+        />
       </div>
     </v-card-text>
   </v-card>
@@ -97,12 +66,15 @@
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { ParsedGenes } from '@/types/panel-types'
+import ParsedListItem from './ParsedListItem.vue'
 
 export default Vue.extend({
+  components: { ParsedListItem },
   name: 'ParsedInput',
   data: () => ({
     formattedGenes: new ParsedGenes(),
     findGenesWorker: {} as Worker,
+    loading: false,
   }),
   computed: {
     ...mapGetters({
@@ -139,7 +111,7 @@ export default Vue.extend({
     },
     initWorkers() {
       this.findGenesWorker = new Worker(
-        '@/utils/workers/find-gene-webworker.ts',
+        '@/utils/workers/find-gene-webworker.js',
         {
           type: 'module',
         }
@@ -152,6 +124,9 @@ export default Vue.extend({
       this.findGenesWorker.onmessage = (event: any) => {
         this.formattedGenes = event.data.parsedGenes
       }
+    },
+    showChips(length: number) {
+      return length < 1000
     },
   },
 })
