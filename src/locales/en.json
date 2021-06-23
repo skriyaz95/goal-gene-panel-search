@@ -130,12 +130,29 @@
       "title": { "text": "Download and unzip this file" }
     },
     "replace": {
-      "title": { "text": "Replace file assets/all_genes.json " }
+      "title": {
+        "text": "Replace files assets/all_genes.json & assets/synonyms.json"
+      }
     }
   },
   "parseInput": {
     "title": {
       "text": "Parsed List"
+    },
+    "symbols": {
+      "text": "Symbols",
+      "tooltip": "It's an exact match to a gene symbol."
+    },
+    "synonyms": {
+      "text": "Synonyms",
+      "tooltip": "You submitted a synonym. Make sure to use symbols only"
+    },
+    "notFound": {
+      "text": "Not Found",
+      "tooltip": "It could be a typo or a non-standard gene."
+    },
+    "empty": {
+      "text": "Nothing yet. Type some genes above first."
     }
   }
 }

@@ -27,7 +27,6 @@ function findAllGenes(userGenes: Array<Gene>): ParsedGenes {
       parsedGenes.notFoundGenes.push(parsedGene)
     }
   }
-  console.log(parsedGenes)
   return parsedGenes
 }
 

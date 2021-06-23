@@ -1,41 +1,78 @@
 <template>
   <v-card outlined>
     <v-card-title>
-      {{ $t('parseInput.title.text') }}
+      {{ $t('parseInput.title.text') }}:
+      <span v-if="userGenes.length > 0" class="ml-3">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-chip v-on="on" color="error" class="ml-1 mr-1">
+              {{ $t('parseInput.notFound.text') }} ({{
+                $tc('count.gene', $n(formattedGenes.notFoundGenes.length))
+              }})
+            </v-chip>
+          </template>
+          <span>{{ $t('parseInput.notFound.tooltip') }}</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-chip v-on="on" color="warning" class="ml-1 mr-1">
+              {{ $t('parseInput.synonyms.text') }} ({{
+                $tc('count.gene', $n(formattedGenes.synonymFoundGenes.length))
+              }})
+            </v-chip>
+          </template>
+          <span>{{ $t('parseInput.synonyms.tooltip') }}</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-chip v-on="on" color="success" class="ml-1 mr-1">
+              {{ $t('parseInput.symbols.text') }} ({{
+                $tc('count.gene', $n(formattedGenes.symbolFoundGenes.length))
+              }})
+            </v-chip>
+          </template>
+          <span>{{ $t('parseInput.symbols.tooltip') }}</span>
+        </v-tooltip>
+      </span>
     </v-card-title>
     <v-card-text>
-      <div>
-        <div>Not Found:</div>
-        <v-chip
-          v-for="gene in formattedGenes.notFoundGenes"
-          :key="gene.gene.name"
-          class="ma-1"
-          :color="formatState(gene.state)"
-        >
-          {{ gene.gene.name }}
-        </v-chip>
+      <div v-if="userGenes.length == 0">
+        {{ $t('parseInput.empty.text') }}
       </div>
-      <div>
-        <div>Synonyms:</div>
-        <v-chip
-          v-for="gene in formattedGenes.synonymFoundGenes"
-          :key="gene.gene.name"
-          class="ma-1"
-          :color="formatState(gene.state)"
-        >
-          {{ gene.gene.name }}
-        </v-chip>
-      </div>
-      <div>
-        <div>Symbols:</div>
-        <v-chip
-          v-for="gene in formattedGenes.symbolFoundGenes"
-          :key="gene.gene.name"
-          class="ma-1"
-          :color="formatState(gene.state)"
-        >
-          {{ gene.gene.name }}
-        </v-chip>
+      <div v-else>
+        <div>
+          <div>{{ $t('parseInput.notFound.text') }}:</div>
+          <v-chip
+            v-for="gene in formattedGenes.notFoundGenes"
+            :key="gene.gene.name"
+            class="ma-1"
+            :color="formatState(gene.state)"
+          >
+            {{ gene.gene.name }}
+          </v-chip>
+        </div>
+        <div>
+          <div>{{ $t('parseInput.synonyms.text') }}:</div>
+          <v-chip
+            v-for="gene in formattedGenes.synonymFoundGenes"
+            :key="gene.gene.name"
+            class="ma-1"
+            :color="formatState(gene.state)"
+          >
+            {{ gene.gene.name }}
+          </v-chip>
+        </div>
+        <div>
+          <div>{{ $t('parseInput.symbols.text') }}:</div>
+          <v-chip
+            v-for="gene in formattedGenes.symbolFoundGenes"
+            :key="gene.gene.name"
+            class="ma-1"
+            :color="formatState(gene.state)"
+          >
+            {{ gene.gene.name }}
+          </v-chip>
+        </div>
       </div>
     </v-card-text>
   </v-card>
@@ -86,15 +123,12 @@ export default Vue.extend({
           type: 'module',
         }
       )
-      console.log(this.synonymMap)
       this.findGenesWorker.postMessage({
         init: true,
         allGeneMap: this.allGeneMap,
         synonymMap: this.synonymMap,
       })
-      // console.log('before onmessage')
       this.findGenesWorker.onmessage = (event: any) => {
-        console.log("I'm back")
         this.formattedGenes = event.data.parsedGenes
       }
     },
