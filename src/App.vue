@@ -33,7 +33,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import { mapGetters } from 'vuex'
-import { PanelPayload, SynonymGene } from '@/types/panel-types'
+import { PanelPayload } from '@/types/panel-types'
 import NavigationMenu from '@/components/NavigationMenu.vue'
 import { TranslateResult } from 'vue-i18n'
 
@@ -66,16 +66,6 @@ export default Vue.extend({
           })
       }
     },
-    createSynonyms() {
-      var synonyms = new Array<SynonymGene>()
-      for (let i = 0; i < this.allGenes.length; i++) {
-        var currentGene = this.allGenes[i]
-        for (let j = 0; j < currentGene.synonyms.length; j++) {
-          synonyms.push(new SynonymGene(currentGene.synonyms[j], currentGene))
-        }
-      }
-      this.$store.commit('updateSynonyms', synonyms)
-    },
     getBackgroundStyle(lighten: boolean) {
       var background: any = this.$vuetify.theme.themes[this.theme].background
       var backgroundString = ''
@@ -105,7 +95,6 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.createSynonyms()
     this.importExistingPanels(
       require.context('../public/source_panels/', false, /\.json$/)
     )

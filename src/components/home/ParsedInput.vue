@@ -4,14 +4,39 @@
       {{ $t('parseInput.title.text') }}
     </v-card-title>
     <v-card-text>
-      <v-chip
-        v-for="gene in formattedGenes"
-        :key="gene.gene.name"
-        class="ma-1"
-        :color="formatState(gene.state)"
-      >
-        {{ gene.gene.name }}
-      </v-chip>
+      <div>
+        <div>Not Found:</div>
+        <v-chip
+          v-for="gene in formattedGenes.notFoundGenes"
+          :key="gene.gene.name"
+          class="ma-1"
+          :color="formatState(gene.state)"
+        >
+          {{ gene.gene.name }}
+        </v-chip>
+      </div>
+      <div>
+        <div>Synonyms:</div>
+        <v-chip
+          v-for="gene in formattedGenes.synonymFoundGenes"
+          :key="gene.gene.name"
+          class="ma-1"
+          :color="formatState(gene.state)"
+        >
+          {{ gene.gene.name }}
+        </v-chip>
+      </div>
+      <div>
+        <div>Symbols:</div>
+        <v-chip
+          v-for="gene in formattedGenes.symbolFoundGenes"
+          :key="gene.gene.name"
+          class="ma-1"
+          :color="formatState(gene.state)"
+        >
+          {{ gene.gene.name }}
+        </v-chip>
+      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -19,12 +44,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
-import { ParsedGene } from '@/types/panel-types'
+import { ParsedGenes } from '@/types/panel-types'
 
 export default Vue.extend({
   name: 'ParsedInput',
   data: () => ({
-    formattedGenes: new Array<ParsedGene>(),
+    formattedGenes: new ParsedGenes(),
     findGenesWorker: {} as Worker,
   }),
   computed: {
@@ -61,6 +86,7 @@ export default Vue.extend({
           type: 'module',
         }
       )
+      console.log(this.synonymMap)
       this.findGenesWorker.postMessage({
         init: true,
         allGeneMap: this.allGeneMap,

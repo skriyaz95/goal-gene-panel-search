@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { FullGene } from '@/types/panel-types'
+import { FullGene, SynonymGene } from '@/types/panel-types'
 import Vue from 'vue'
 // import axios from 'axios'
 import { mapGetters } from 'vuex'
@@ -90,6 +90,7 @@ export default Vue.extend({
     invalidSymbolCharacters: /[^A-Z0-9]+/,
     allGenes: new Array<FullGene>(),
     loading: false,
+    synonyms: new Array<SynonymGene>(),
   }),
   methods: {
     handleFileUpload() {
@@ -151,14 +152,36 @@ export default Vue.extend({
         }
       }
       this.allGenes = genes
+      this.createSynonyms()
       this.loading = false
+    },
+    createSynonyms() {
+      const synonyms = new Array<SynonymGene>()
+      for (let i = 0; i < this.allGenes.length; i++) {
+        var currentGene = this.allGenes[i]
+        for (let j = 0; j < currentGene.synonyms.length; j++) {
+          synonyms.push(new SynonymGene(currentGene.synonyms[j], currentGene))
+        }
+      }
+      this.synonyms = synonyms
     },
     downloadGenes() {
       if (!this.allGenes) {
         return
       }
-      const filename = 'all_genes.json'
-      download(filename, formatObjetToJson(this.allGenes, false), 'text/json')
+      const filename_genes = 'all_genes.json'
+      download(
+        filename_genes,
+        formatObjetToJson(this.allGenes, false),
+        'text/json'
+      )
+
+      const filename_synonyms = 'synonyms.json'
+      download(
+        filename_synonyms,
+        formatObjetToJson(this.synonyms, false),
+        'text/json'
+      )
     },
   },
   computed: {
