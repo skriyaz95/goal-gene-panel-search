@@ -75,6 +75,14 @@
               </v-toolbar-title>
             </v-toolbar>
           </template>
+          <template v-slot:[`item.institution`]="{ item }">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <span>{{ item.name }}</span>
+              </template>
+              <span>{{ item.name }}</span>
+            </v-tooltip>
+          </template>
           <template v-slot:[`item.countGenesInPanel`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
@@ -128,14 +136,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {
-  Gene,
-  PanelResultFormattedRow,
-  PanelSearchResult,
-} from '@/types/panel-types'
-import { mapGetters } from 'vuex'
-import download from '@/utils/download'
-import { formatObjetToJson } from '@/utils/download'
+import {Gene, PanelResultFormattedRow, PanelSearchResult,} from '@/types/panel-types'
+import {mapGetters} from 'vuex'
+import download, {formatObjetToJson} from '@/utils/download'
 
 export default Vue.extend({
   name: 'PanelResult',
@@ -149,8 +152,12 @@ export default Vue.extend({
       singleExpand: false,
       tableHeaders: [
         {
-          text: this.$t('panel-result.table.headers.panel-name'),
+          text: this.$t('panel-result.table.headers.institution-name'),
           align: 'start',
+          value: 'institution',
+        },
+        {
+          text: this.$t('panel-result.table.headers.panel-name'),
           value: 'name',
         },
         {
@@ -176,6 +183,7 @@ export default Vue.extend({
   },
   methods: {
     getPanelResult() {
+      const allInstitutions = this.$store.getters.getInstitutionsMap;
       return this.$store.getters.getUserGenesInPanels.map(
         (panel: PanelSearchResult) => {
           const genesInPanel = panel.genesInPanel.map((gene: Gene) =>
@@ -184,12 +192,14 @@ export default Vue.extend({
           const genesNotInPanel = panel.genesNotInPanel.map((gene: Gene) =>
             gene.name.toUpperCase()
           )
+          const institution = allInstitutions.get(panel.name)
           return new PanelResultFormattedRow(
             panel.name,
             genesInPanel.length,
             genesNotInPanel.length,
             genesInPanel,
-            genesNotInPanel
+            genesNotInPanel,
+            institution
           )
         }
       )

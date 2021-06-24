@@ -1,0 +1,49 @@
+[
+  {
+    "name": "University of Florida",
+    "phone": "123456789",
+    "email": "abc@pathology.ufl.edu",
+    "website": "https://pathology.ufl.edu/",
+    "panels": [
+      "GOAL_2640",
+      "GOAL_497_Core_Set",
+      "GS700_V2"
+    ]
+  },
+  {
+    "name": "UT SouthWestern",
+    "phone": "214-648-3111",
+    "email": "abc@utsouthwestern.edu",
+    "website": "https://www.utsouthwestern.edu/departments/bioinformatics/",
+    "panels": [
+      "UTSW_1425"
+    ]
+  },
+  {
+    "name": "Foundation One",
+    "phone": "617-418-2290",
+    "email": "bmailbox@foundationmedicine.com",
+    "website": "https://www.foundationmedicine.com/test/foundationone-cdx",
+    "panels": [
+      "foundation_one"
+    ]
+  },
+  {
+    "name": "ACMG",
+    "phone": "856-966-7377",
+    "email": "customerservice@coriell.org",
+    "website": "https://www.coriell.org/1/NIGMS/Collections/ACMG-59-Genes",
+    "panels": [
+      "ACMG_SF_V2.0"
+    ]
+  },
+  {
+    "name": "NCBI",
+    "phone": "214-648-3111",
+    "email": "gb-admin@ncbi.nlm.nih.gov",
+    "website": "https://www.ncbi.nlm.nih.gov/gene/",
+    "panels": [
+      "all_human_genes_uncurated"
+    ]
+  }
+]

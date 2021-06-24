@@ -98,6 +98,7 @@
     },
     "table": {
       "headers": {
+        "institution-name": "Institution Name",
         "panel-name": "Gene Panel Name",
         "genes-found": "Genes Found",
         "genes-not-found": "Genes Not Found",

@@ -1,10 +1,4 @@
-import {
-  Gene,
-  GenePanel,
-  PanelSearchResult,
-  FullGene,
-  SynonymGene,
-} from "@/types/panel-types"
+import {FullGene, Gene, GenePanel, Institution, PanelSearchResult, SynonymGene,} from "@/types/panel-types"
 
 export default {
   getTempPanels: (state: any) => {
@@ -33,11 +27,11 @@ export default {
       const genes = getters.getUserGenesInSelectedPanel(panel)
       if (genes.genesInPanel.length > 0 || genes.genesNotInPanel.length > 0) {
         result.push(
-          new PanelSearchResult(
-            panel.name.toUpperCase(),
-            genes.genesInPanel,
-            genes.genesNotInPanel,
-          ),
+            new PanelSearchResult(
+                panel.name.toUpperCase(),
+                genes.genesInPanel,
+                genes.genesNotInPanel,
+            ),
         )
       }
     })
@@ -47,7 +41,7 @@ export default {
     const genesInPanel = new Array<Gene>()
     const genesNotInPanel = new Array<Gene>()
     const panelGenesSet = new Set(
-      panel.genes.map((gene: Gene) => gene.name.toUpperCase()),
+        panel.genes.map((gene: Gene) => gene.name.toUpperCase()),
     )
     state.userGenes.forEach((userGene: Gene) => {
       if (panelGenesSet.has(userGene.name)) {
@@ -81,4 +75,13 @@ export default {
     })
     return allSynonymMap
   },
+  getInstitutionsMap: (state: any) => {
+    const allInstitutions = new Map<String, Institution>()
+    state.institutions.forEach((institution: Institution) => {
+      institution.panels.forEach((panel: string) => {
+        allInstitutions.set(panel, institution)
+      })
+    })
+    return allInstitutions
+  }
 }
