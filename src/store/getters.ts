@@ -81,4 +81,7 @@ export default {
     })
     return allSynonymMap
   },
+  getLastSearch: (state: any) => {
+    return state.lastSearch
+  },
 }

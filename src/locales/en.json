@@ -155,7 +155,7 @@
       "text": "Nothing yet. Type some genes above first."
     },
     "tooMany": {
-      "text": "Too many too display (> 1000)"
+      "text": "Too many to display (> 500)"
     }
   }
 }

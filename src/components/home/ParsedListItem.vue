@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div>{{ title }}:</div>
+  <div class="text-left">
+    <span class="body-1 font-weight-bold">{{ title }}:</span>
     <div v-if="showChips()">
       <v-chip
         v-for="gene in items"
@@ -11,9 +11,9 @@
         {{ gene.gene.name }}
       </v-chip>
     </div>
-    <div v-else>
+    <span v-else>
       {{ $t('parseInput.tooMany.text') }}
-    </div>
+    </span>
   </div>
 </template>
 
@@ -34,7 +34,7 @@ export default Vue.extend({
   destroyed() {},
   methods: {
     showChips() {
-      return this.items.length < 1000
+      return this.items.length < 500
     },
   },
 })

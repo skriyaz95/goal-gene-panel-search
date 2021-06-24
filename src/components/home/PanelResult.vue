@@ -1,33 +1,19 @@
 <template>
   <div>
-    <v-dialog
-      v-model="showDialog"
-      persistent
-      max-width="800px"
-    >
+    <v-dialog v-model="showDialog" persistent max-width="800px">
       <v-card>
         <v-card-title>
-          <span
-            v-if="geneType === 'genesInPanel'"
-            class="text-h5"
-          >
+          <span v-if="geneType === 'genesInPanel'" class="text-h5">
             {{ $t('panel-result.dialog.title-genes-in-panel') }}:
             {{ panelName }}
           </span>
-          <span
-            v-else
-            class="text-h5"
-          >
+          <span v-else class="text-h5">
             {{ $t('panel-result.dialog.title-genes-not-in-panel') }}:
             {{ panelName }}
           </span>
         </v-card-title>
         <v-card-text>
-          <v-virtual-scroll
-            :items="genes"
-            height="400"
-            item-height="64"
-          >
+          <v-virtual-scroll :items="genes" height="400" item-height="64">
             <template v-slot:default="{ item }">
               <v-list-item :key="item">
                 <v-list-item-content>
@@ -40,18 +26,10 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn
-            color="green darken-1"
-            text
-            @click="showDialog = false"
-          >
+          <v-btn color="green darken-1" text @click="showDialog = false">
             {{ $t('panel-result.dialog.button.close') }}
           </v-btn>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="downloadGenes(genes)"
-          >
+          <v-btn color="green darken-1" text @click="downloadGenes(genes)">
             {{ $t('panel-result.dialog.button.save') }}
           </v-btn>
         </v-card-actions>
@@ -109,11 +87,7 @@
           <template v-slot:[`item.actions`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  v-on="on"
-                  @click.stop="downloadResult(item)"
-                >
+                <v-btn icon v-on="on" @click.stop="downloadResult(item)">
                   <v-icon>mdi-content-save</v-icon>
                 </v-btn>
               </template>
@@ -172,27 +146,26 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       userGenes: 'getUserGenes',
+      userGenesInPanels: 'getUserGenesInPanels',
     }),
   },
   methods: {
     getPanelResult() {
-      return this.$store.getters.getUserGenesInPanels.map(
-        (panel: PanelSearchResult) => {
-          const genesInPanel = panel.genesInPanel.map((gene: Gene) =>
-            gene.name.toUpperCase()
-          )
-          const genesNotInPanel = panel.genesNotInPanel.map((gene: Gene) =>
-            gene.name.toUpperCase()
-          )
-          return new PanelResultFormattedRow(
-            panel.name,
-            genesInPanel.length,
-            genesNotInPanel.length,
-            genesInPanel,
-            genesNotInPanel
-          )
-        }
-      )
+      return this.userGenesInPanels.map((panel: PanelSearchResult) => {
+        const genesInPanel = panel.genesInPanel.map((gene: Gene) =>
+          gene.name.toUpperCase()
+        )
+        const genesNotInPanel = panel.genesNotInPanel.map((gene: Gene) =>
+          gene.name.toUpperCase()
+        )
+        return new PanelResultFormattedRow(
+          panel.name,
+          genesInPanel.length,
+          genesNotInPanel.length,
+          genesInPanel,
+          genesNotInPanel
+        )
+      })
     },
     openDialog(panel: PanelResultFormattedRow, geneType: string) {
       this.panelName = panel.name
