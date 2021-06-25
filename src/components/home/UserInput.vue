@@ -6,30 +6,30 @@
     <v-card-text>
       <v-form ref="form" v-model="isFormValid">
         <v-textarea
+          v-model="geneList"
           name="gene-list"
           :label="$t('userInput.label')"
-          v-model="geneList"
           :rules="geneListRules"
           clearable
           outlined
           clear-icon="mdi-close-circle"
-          @click:clear="clear()"
           rows="13"
+          @click:clear="clear()"
           @blur="clearIfEmpty"
-        ></v-textarea>
+        />
         <v-btn
           class="ma-2"
           large
           depressed
           color="primary"
-          @click="saveUserInput()"
-          :disabled="!isFormValid"
+          :disabled="!geneList || !isFormValid"
+          @click="submitUserInput(geneList, true)"
         >
           {{ $t('userInput.button.submit') }}
         </v-btn>
-        <v-btn class="ma-2" large depressed @click="clear()">{{
-          $t('userInput.button.clear')
-        }}</v-btn>
+        <v-btn class="ma-2" large depressed @click="clear()">
+          {{ $t('userInput.button.clear') }}
+        </v-btn>
       </v-form>
     </v-card-text>
   </v-card>
@@ -37,6 +37,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
 import { Gene } from '@/types/panel-types'
 import debounce from '@/utils/debounce'
 
@@ -49,50 +50,34 @@ export default Vue.extend({
     validCharacters: /^[-,;~\w\s]+$/,
   }),
   computed: {
+    ...mapGetters({
+      lastSearch: 'getLastSearch',
+    }),
     geneListRules(): any {
       // const x = this.$t('userInput.validation.list-empty')
-      const y = this.$t('userInput.validation.list-min-characters')
+      // const y = this.$t('userInput.validation.list-min-characters')
       const z = this.$t('userInput.validation.list-regex')
       // const emptyRule = (v:string) => (v != null && v.trim().length > 0) || x;
-      const lengthRule = (v: string) => (v != null && v.trim().length >= 2) || y
+      // const lengthRule = (v: string) => (v != null && v.trim().length >= 2) || y
       const symbolRule = (v: string) => this.validCharacters.test(v) || z
       // return [lengthRule, symbolRule]
-      console.log(y, lengthRule)
-      return [lengthRule, symbolRule]
+      return [symbolRule]
     },
   },
   watch: {
     geneList: debounce(function (this: any, value: string) {
-      this.submitUserInput(value)
+      this.submitUserInput(value, false)
     }, 500),
   },
   methods: {
-    saveUserInput() {
-      let validate: boolean = (
-        this.$refs.form as Vue & { validate: () => boolean }
-      ).validate()
-      if (!validate) {
-        alert('Form is not valid')
-      } else {
-        let genes = this.geneList.split(this.validSeparators)
-        let uniqGenes = Array.from(new Set(genes)) //remove duplicates
-        let userGenes: Gene[] = []
-        for (let symbol of uniqGenes) {
-          if (symbol && symbol != '') {
-            userGenes.push(new Gene(symbol))
-          }
+    submitUserInput(userinput: string, withAlert: boolean) {
+      if (!this.geneList || !this.isFormValid) {
+        if (withAlert) {
+          alert('Form is not valid')
         }
-        this.$store.commit('setUserGenes', userGenes)
-      }
-    },
-    submitUserInput(userinput: string) {
-      let validate: boolean = (
-        this.$refs.form as Vue & { validate: () => boolean }
-      ).validate()
-      if (!validate) {
         return
       } else {
-        let genes = userinput.split(this.validSeparators)
+        let genes = userinput.toUpperCase().split(this.validSeparators)
         let uniqGenes = Array.from(new Set(genes)) //remove duplicates
         let userGenes: Gene[] = []
         for (let symbol of uniqGenes) {
@@ -101,12 +86,14 @@ export default Vue.extend({
           }
         }
         this.$store.commit('setUserGenes', userGenes)
+        this.saveLastInput()
       }
     },
     clear() {
       let form: any = this.$refs.form
+      this.geneList = String()
+      this.$store.commit('setUserGenes', [])
       form.reset()
-      this.geneList = ''
     },
     /** Clear the input if it doesn't contain any genes
      * This avoids error messages on blur
@@ -120,6 +107,17 @@ export default Vue.extend({
         this.clear()
       }
     },
+    loadLastInput() {
+      if (this.lastSearch) {
+        this.geneList = this.lastSearch
+      }
+    },
+    saveLastInput() {
+      this.$store.commit('updateLastSearch', this.geneList)
+    },
+  },
+  mounted() {
+    this.loadLastInput()
   },
 })
 </script>

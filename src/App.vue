@@ -3,17 +3,17 @@
     <navigation-menu />
     <v-app-bar app color="primary" dark flat clipped-left>
       <div class="d-flex align-center">
-        <span class="title" v-text="toolbarTitle"></span>
+        <span class="title" v-text="toolbarTitle" />
       </div>
 
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
           <v-btn
-            v-on="on"
             href="https://github.com/skriyaz95/goal-gene-panel-search"
             target="_blank"
             text
+            v-on="on"
           >
             <span class="mr-2">{{ $t('button.link.repo.text') }}</span>
             <v-icon>mdi-open-in-new</v-icon>
@@ -88,9 +88,13 @@ export default Vue.extend({
     },
     ...mapGetters({
       panels: 'getPanels',
+      allGenes: 'getAllGenes',
     }),
     toolbarTitle(): TranslateResult {
-      return this.$t(this.$route.meta.i18n + '.toolbar.text')
+      if (this.$route.meta && this.$route.meta.i18n) {
+        return this.$t(this.$route.meta.i18n + '.toolbar.text')
+      }
+      return 'GTI'
     },
   },
   mounted() {
@@ -104,5 +108,8 @@ export default Vue.extend({
 <style>
 .v-input.v-text-field.v-textarea .v-text-field__slot {
   padding: 5px 10px 5px 5px; /*fix scrollbar overlapping with textarea outlined */
+}
+tr:nth-child(even) {
+  background-color: #fafafa;
 }
 </style>

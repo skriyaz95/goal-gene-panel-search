@@ -1,5 +1,10 @@
 <template>
-  <v-navigation-drawer bottom clipped app :mini-variant.sync="mini">
+  <v-navigation-drawer
+    bottom
+    clipped
+    app
+    :mini-variant.sync="mini"
+  >
     <v-card
       v-show="mini && !$vuetify.breakpoint.mobile"
       flat
@@ -12,47 +17,71 @@
         width="80%"
         class="mt-2"
         style="margin: auto"
-      ></v-img>
+      />
       <v-img
         src="../assets/gti/gti_acronym_orig.png"
         alt="GTI Logo"
         class="mt-10"
         style="margin: auto"
         width="35px"
-      ></v-img>
+      />
     </v-card>
-    <v-card v-show="!mini && !$vuetify.breakpoint.mobile" flat min-height="256">
+    <v-card
+      v-show="!mini && !$vuetify.breakpoint.mobile"
+      flat
+      min-height="256"
+    >
       <v-img
         src="../assets/gti/gti_logo_256.png"
         alt="GTI Logo"
         width="70%"
         class="mt-2 mb-4"
         style="margin: auto"
-      ></v-img>
+      />
       <v-img
         src="../assets/gti/gti_label_512.png"
         alt="GTI Title"
         width="225px"
         style="margin: auto"
-      ></v-img>
+      />
     </v-card>
-    <v-card v-show="$vuetify.breakpoint.mobile" flat>
+    <v-card
+      v-show="$vuetify.breakpoint.mobile"
+      flat
+    >
       <v-row align="center">
         <v-col cols="3">
-          <v-img src="../assets/gti/gti_logo_64.png" alt="GTI Logo"></v-img>
+          <v-img
+            src="../assets/gti/gti_logo_64.png"
+            alt="GTI Logo"
+          />
         </v-col>
         <v-col cols="8">
-          <v-img src="../assets/gti/gti_label_256.png" alt="GTI Title"></v-img>
+          <v-img
+            src="../assets/gti/gti_label_256.png"
+            alt="GTI Title"
+          />
         </v-col>
       </v-row>
     </v-card>
-    <v-divider></v-divider>
-    <v-list nav dense>
-      <v-list-item @click="mini = !mini" v-show="!$vuetify.breakpoint.mobile">
+    <v-divider />
+    <v-list
+      nav
+      dense
+    >
+      <v-list-item
+        v-show="!$vuetify.breakpoint.mobile"
+        @click="mini = !mini"
+      >
         <v-list-item-icon>
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <v-icon v-on="on" :style="iconRotation">mdi-eject</v-icon>
+              <v-icon
+                :style="iconRotation"
+                v-on="on"
+              >
+                mdi-eject
+              </v-icon>
             </template>
             <span>{{ $t('navigation.mini.tooltip') }}</span>
           </v-tooltip>
@@ -96,7 +125,6 @@ export default Vue.extend({
   data: () => ({
     mini: false,
   }),
-  methods: {},
   computed: {
     iconRotation() {
       if (this.mini) {
@@ -106,5 +134,6 @@ export default Vue.extend({
     },
   },
   mounted() {},
+  methods: {},
 })
 </script>

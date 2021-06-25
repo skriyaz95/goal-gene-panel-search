@@ -6,31 +6,54 @@
         <v-card outlined>
           <v-card-text>
             <v-row>
-              <v-col cols="6" lg="2">
-                <v-radio-group v-model="themeSelected"   @change="changeTheme">
+              <v-col
+                cols="6"
+                lg="2"
+              >
+                <v-radio-group
+                  v-model="themeSelected"
+                  @change="changeTheme"
+                >
                   <v-radio
                     v-for="n in themes.length"
                     :key="n"
                     :label="getThemeLabel(n)"
                     :value="n"
-                  ></v-radio>
+                  />
                 </v-radio-group>
               </v-col>
-              <v-col cols="6" lg="3">
-                <color-picker :title="$t('themePicker.primary.text')"
-                              :defaultColor="getPrimary()" @update-color="updatePrimary"/>
-
+              <v-col
+                cols="6"
+                lg="3"
+              >
+                <color-picker
+                  :title="$t('themePicker.primary.text')"
+                  :default-color="getPrimary()"
+                  @update-color="updatePrimary"
+                />
               </v-col>
-              <v-col cols="6" lg="3">
-                <color-picker :title="$t('themePicker.secondary.text')"
-                              :defaultColor="getSecondary()" @update-color="updateSecondary"/>
-
+              <v-col
+                cols="6"
+                lg="3"
+              >
+                <color-picker
+                  :title="$t('themePicker.secondary.text')"
+                  :default-color="getSecondary()"
+                  @update-color="updateSecondary"
+                />
               </v-col>
-              <v-col cols="12" lg="4">
-                <a href="https://vuetifyjs.com/en/styles/colors/#material-colors"
-                   target="_blank" >Vuetify Material Colors</a><br/><br/>
-                <div class="mb-2" >{{$t('themePicker.result.text')}}:</div>
-                <pre v-html="formatThemeResult()"></pre>
+              <v-col
+                cols="12"
+                lg="4"
+              >
+                <a
+                  href="https://vuetifyjs.com/en/styles/colors/#material-colors"
+                  target="_blank"
+                >Vuetify Material Colors</a><br><br>
+                <div class="mb-2">
+                  {{ $t('themePicker.result.text') }}:
+                </div>
+                <pre v-html="formatThemeResult()" />
               </v-col>
             </v-row>
           </v-card-text>
@@ -53,6 +76,19 @@ components: { ColorPicker
    themeSelected: -1,
    themes: lightThemes
   }),
+  computed: {
+     theme() {
+       if (this.$vuetify.theme.dark) {
+         return "dark";
+       }
+       else {
+         return "light";
+       }
+     },
+  },
+  mounted() {
+    this.changeTheme();
+  },
   methods: {
      getPrimary() {
        return this.$vuetify.theme.themes[this.theme].primary;
@@ -89,19 +125,6 @@ components: { ColorPicker
     getThemeLabel(n: number) {
       return this.$t("themePicker.button.theme.text") + " #" + n;
     }
-  },
-  computed: {
-     theme() {
-       if (this.$vuetify.theme.dark) {
-         return "dark";
-       }
-       else {
-         return "light";
-       }
-     },
-  },
-  mounted() {
-    this.changeTheme();
   },
 });
 </script>

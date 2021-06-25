@@ -30,6 +30,9 @@
     },
     "saveOnePanel": {
       "tooltip": "Save this Panel"
+    },
+    "saveAllGenes": {
+      "tootip": "Save all Genes"
     }
   },
   "count": {
@@ -88,14 +91,14 @@
       "list-regex": "Remove special characters ($%^&<> etc.)"
     }
   },
-  "panel-result" : {
+  "panel-result": {
     "result": {
       "name": "Results",
       "title": "Total Genes Evaluated"
     },
     "table": {
       "headers": {
-        "panel-name" : "Gene Panel Name",
+        "panel-name": "Gene Panel Name",
         "genes-found": "Genes Found",
         "genes-not-found": "Genes Not Found",
         "actions": "Actions"
@@ -114,6 +117,45 @@
         "close": "Close",
         "save": "Save"
       }
+    }
+  },
+  "build-database": {
+    "title": {
+      "text": "Update Gene Reference Database"
+    },
+    "step": {
+      "text": "Step"
+    },
+    "download": {
+      "title": { "text": "Download and unzip this file" }
+    },
+    "replace": {
+      "title": {
+        "text": "Replace files assets/all_genes.json & assets/synonyms.json"
+      }
+    }
+  },
+  "parseInput": {
+    "title": {
+      "text": "Parsed List"
+    },
+    "symbols": {
+      "text": "Symbols",
+      "tooltip": "It's an exact match to a gene symbol."
+    },
+    "synonyms": {
+      "text": "Synonyms",
+      "tooltip": "You submitted a synonym. Make sure to use symbols only"
+    },
+    "notFound": {
+      "text": "Not Found",
+      "tooltip": "It could be a typo or a non-standard gene."
+    },
+    "empty": {
+      "text": "Nothing yet. Type some genes above first."
+    },
+    "tooMany": {
+      "text": "Too many to display (> 500)"
     }
   }
 }
