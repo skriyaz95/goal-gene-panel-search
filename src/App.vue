@@ -1,6 +1,9 @@
 <template>
   <v-app :style="getBackgroundStyle()">
-    <navigation-menu />
+    <navigation-menu
+      :hue-rotation="hueRotationFilter()"
+      :saturation="saturationFilter()"
+    />
     <v-app-bar app color="primary" dark flat clipped-left>
       <div class="d-flex align-center">
         <span class="title" v-text="toolbarTitle" />
@@ -76,6 +79,14 @@ export default Vue.extend({
         backgroundString = background
       }
       return { background: backgroundString }
+    },
+    hueRotationFilter() {
+      var hueRotation: any = this.$vuetify.theme.themes[this.theme].hueRotation
+      return hueRotation
+    },
+    saturationFilter() {
+      var saturation: any = this.$vuetify.theme.themes[this.theme].saturation
+      return saturation
     },
   },
   computed: {

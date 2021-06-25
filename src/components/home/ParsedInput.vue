@@ -1,7 +1,7 @@
 <template>
   <v-card outlined>
     <v-card-title>
-      {{ $t('parseInput.title.text') }}:
+      {{ $t('parseInput.title.text') }}
       <v-fade-transition>
         <span v-if="userGenes.length > 0" class="ml-3">
           <v-tooltip bottom v-if="showNotFound">
