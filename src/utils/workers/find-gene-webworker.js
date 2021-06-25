@@ -1,10 +1,4 @@
-import {
-  // FullGene,
-  // Gene,
-  ParsedGene,
-  // SynonymGene,
-  ParsedGenes,
-} from "@/types/panel-types"
+import { ParsedGene, ParsedGenes } from "@/types/panel-types"
 
 const ctx = self
 let allGeneMap = new Map()
@@ -50,12 +44,32 @@ function applyState(userGene) {
   return parsedGene
 }
 
+//dispatch other listeners base on some properties like init
+/**
+ * eg. ParseInput.vue listens for the workder with this:
+ * $getFindGenesWorker().onmessage = (event: any) => {
+      if (event.data.todo == 'findAllGenes') {
+        this.formattedGenes = event.data.parsedGenes
+      }
+    }
+    and posts a message to the workder with this
+     $getFindGenesWorker().postMessage({
+        init: false,
+        todo: 'findAllGenes',
+        userGenes: this.userGenes,
+      })
+    'findAllGenes' is a way to only process messages that the component
+    cares about. 
+    ctx.postMessage needs to return a todo parameters with the same string
+    that was sent in the todo argument from the component: 'findAllGenes'
+    in this case
+ */
 addEventListener("message", (event) => {
   if (event.data.init) {
     allGeneMap = event.data.allGeneMap
     synonymMap = event.data.synonymMap
-  } else {
+  } else if (event.data.todo == "findAllGenes") {
     const parsedGenes = findAllGenes(event.data.userGenes)
-    ctx.postMessage({ parsedGenes })
+    ctx.postMessage({ parsedGenes, todo: "findAllGenes" })
   }
 })

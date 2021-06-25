@@ -2,10 +2,7 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col
-        cols="12"
-        lg="4"
-      >
+      <v-col cols="12" lg="4">
         <v-card outlined>
           <v-card-text>
             <div class="mb-1 mt-1">
@@ -33,14 +30,8 @@
           <v-card-actions>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn
-                  class="primary"
-                  v-on="on"
-                  @click="buildPanels"
-                >
-                  {{
-                    $t('button.buildPanels.text')
-                  }}
+                <v-btn class="primary" v-on="on" @click="buildPanels">
+                  {{ $t('button.buildPanels.text') }}
                 </v-btn>
               </template>
               <span>{{ $t('button.buildPanels.tooltip') }}</span>
@@ -61,36 +52,18 @@
           </v-card-actions>
         </v-card>
       </v-col>
-      <v-col
-        cols="12"
-        lg="8"
-      >
-        <v-card
-          outlined
-          class="mb-2"
-        >
+      <v-col cols="12" lg="8">
+        <v-card outlined class="mb-2">
           <v-card-text>
             <span v-html="$t('buildPanels.help.text')" />
           </v-card-text>
         </v-card>
-        <v-card
-          v-if="tempPanels.length > 0"
-          outlined
-        >
-          <v-expansion-panels
-            flat
-            focusable
-          >
-            <v-expansion-panel
-              v-for="panel in tempPanels"
-              :key="panel.name"
-            >
+        <v-card v-if="tempPanels.length > 0" outlined>
+          <v-expansion-panels flat focusable>
+            <v-expansion-panel v-for="panel in tempPanels" :key="panel.name">
               <v-expansion-panel-header disable-icon-rotate>
                 <v-row align="center">
-                  <v-col
-                    cols="6"
-                    lg="3"
-                  >
+                  <v-col cols="6" lg="3">
                     <v-text-field
                       v-model="panel.name"
                       :label="$t('buildPanels.panelName.text')"
@@ -99,23 +72,17 @@
                       @click.stop=""
                     />
                   </v-col>
-                  <v-col
-                    cols="6"
-                    lg="9"
-                  >
+                  <v-col cols="6" lg="9">
                     <span>
-                      ({{ $tc('count.gene', $n(panel.genes.length)) }})</span>
+                      ({{ $tc('count.gene', $n(panel.genes.length)) }})</span
+                    >
                   </v-col>
                 </v-row>
 
                 <template v-slot:actions>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
-                      <v-btn
-                        icon
-                        v-on="on"
-                        @click.stop="downloadPanel(panel)"
-                      >
+                      <v-btn icon v-on="on" @click.stop="downloadPanel(panel)">
                         <v-icon>mdi-content-save</v-icon>
                       </v-btn>
                     </template>
@@ -125,10 +92,7 @@
                 </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <div
-                  class="pa-2"
-                  v-text="formatPanel(panel, true)"
-                />
+                <div class="pa-2" v-text="formatPanel(panel, true)" />
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -165,25 +129,20 @@ export default Vue.extend({
             params: {},
           })
           .then((response) => {
-            var reponseURLItems = response.request.responseURL.split('/')
-            var panelName =
-              reponseURLItems[reponseURLItems.length - 1].split('.csv')[0]
-            var allRows = response.data.split(/\r?\n|\r/)
+            const responseURLItems = response.request.responseURL.split('/')
+            const panelFileName = responseURLItems[responseURLItems.length - 1]
+            const extension = /\.csv$/.test(panelFileName) ? '.csv' : '.bed'
+            const panelName = panelFileName.replace(extension, '')
+            const allRows = response.data.split(/\r?\n|\r/)
             //remove dups
-            var uniqueRows = new Set<string>()
-            for (let j = 1; j < allRows.length; j++) {
-              //skip header row
-              var row = allRows[j]
-              if (!row || row.length == 0) {
-                continue
-              }
-              var rowItems = row.split(',')
-              uniqueRows.add(rowItems[0].trim())
-            }
-            var uniqueRowsArray = Array.from(uniqueRows)
-            var panelGenes: Gene[] = []
+            const uniqueRows =
+              extension == '.csv'
+                ? this.parseCSV(allRows)
+                : this.parseBED(allRows)
+            const uniqueRowsArray = Array.from(uniqueRows)
+            const panelGenes: Gene[] = []
             for (let j = 0; j < uniqueRowsArray.length; j++) {
-              var geneSymbol = uniqueRowsArray[j]
+              const geneSymbol = uniqueRowsArray[j]
               if (!geneSymbol || geneSymbol.length == 0) {
                 continue
               }
@@ -191,13 +150,45 @@ export default Vue.extend({
                 name: geneSymbol,
               })
             }
-            var panel = new GenePanel(panelName, panelGenes)
+            const panel = new GenePanel(panelName, panelGenes)
             this.$store.commit('addTempPanel', new PanelPayload(panel))
           })
           .catch((error) => {
             alert(error)
           })
       }
+    },
+    parseCSV(allRows: String[]) {
+      console.log('parsing csv')
+      const uniqueRows = new Set<string>()
+      for (let j = 1; j < allRows.length; j++) {
+        //skip header row
+        const row = allRows[j]
+        if (!row || row.length == 0) {
+          continue
+        }
+        const rowItems = row.split(',')
+        if (rowItems && rowItems[0]) {
+          uniqueRows.add(rowItems[0].trim())
+        }
+        uniqueRows.add(rowItems[0].trim())
+      }
+      return uniqueRows
+    },
+    parseBED(allRows: String[]) {
+      console.log('parsing bed')
+      const uniqueRows = new Set<string>()
+      for (let j = 0; j < allRows.length; j++) {
+        const row = allRows[j]
+        if (!row || row.length == 0) {
+          continue
+        }
+        const rowItems = row.split('\t')
+        if (rowItems && rowItems[3]) {
+          uniqueRows.add(rowItems[3].trim())
+        }
+      }
+      return uniqueRows
     },
     formatPanel(panel: GenePanel, pretty: boolean) {
       return formatObjetToJson(panel, pretty)
@@ -215,7 +206,7 @@ export default Vue.extend({
     isEmptyPanels() {
       return !this.tempPanels || this.tempPanels.length == 0
     },
-    listCSVFiles(r: any) {
+    listPanelFiles(r: any) {
       this.panelFileNames = []
       r.keys().forEach((key: any) => this.panelFileNames.push(key))
     },
@@ -227,8 +218,8 @@ export default Vue.extend({
     }),
   },
   mounted() {
-    this.listCSVFiles(
-      require.context('../../public/raw_panels/', false, /\.csv$/)
+    this.listPanelFiles(
+      require.context('../../public/raw_panels/', false, /\.csv$|\.bed$/)
     )
   },
 })

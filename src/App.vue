@@ -39,6 +39,7 @@ import { mapGetters } from 'vuex'
 import { PanelPayload } from '@/types/panel-types'
 import NavigationMenu from '@/components/NavigationMenu.vue'
 import { TranslateResult } from 'vue-i18n'
+import $getFindGenesWorker from '@/utils/workers/worker-instance'
 
 export default Vue.extend({
   name: 'App',
@@ -88,6 +89,14 @@ export default Vue.extend({
       var saturation: any = this.$vuetify.theme.themes[this.theme].saturation
       return saturation
     },
+    initWorkers() {
+      console.log('here')
+      $getFindGenesWorker().postMessage({
+        init: true,
+        allGeneMap: this.allGeneMap,
+        synonymMap: this.synonymMap,
+      })
+    },
   },
   computed: {
     theme() {
@@ -100,6 +109,8 @@ export default Vue.extend({
     ...mapGetters({
       panels: 'getPanels',
       allGenes: 'getAllGenes',
+      allGeneMap: 'getAllGeneMap',
+      synonymMap: 'getSynonymMap',
     }),
     toolbarTitle(): TranslateResult {
       if (this.$route.meta && this.$route.meta.i18n) {
@@ -109,9 +120,14 @@ export default Vue.extend({
     },
   },
   mounted() {
+    this.initWorkers()
     this.importExistingPanels(
       require.context('../public/source_panels/', false, /\.json$/)
     )
+    console.log()
+  },
+  destroyed() {
+    $getFindGenesWorker().terminate()
   },
 })
 </script>

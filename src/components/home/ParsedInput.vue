@@ -77,21 +77,19 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { ParsedGenes } from '@/types/panel-types'
 import ParsedListItem from './ParsedListItem.vue'
+import $getFindGenesWorker from '@/utils/workers/worker-instance'
 
 export default Vue.extend({
   components: { ParsedListItem },
   name: 'ParsedInput',
   data: () => ({
     formattedGenes: new ParsedGenes(),
-    findGenesWorker: {} as Worker,
     loading: false,
   }),
   computed: {
     ...mapGetters({
       userGenes: 'getUserGenesSorted',
       allGenes: 'getAllGenes',
-      allGeneMap: 'getAllGeneMap',
-      synonymMap: 'getSynonymMap',
     }),
     showNotFound(): boolean {
       return this.formattedGenes.notFoundGenes.length > 0
@@ -107,11 +105,13 @@ export default Vue.extend({
     userGenes: 'formatGenes',
   },
   mounted() {
-    this.initWorkers()
+    $getFindGenesWorker().onmessage = (event: any) => {
+      if (event.data.todo == 'findAllGenes') {
+        this.formattedGenes = event.data.parsedGenes
+      }
+    }
   },
-  destroyed() {
-    this.findGenesWorker.terminate()
-  },
+  destroyed() {},
   methods: {
     formatState(state: string) {
       if (state == 'symbol') {
@@ -123,29 +123,14 @@ export default Vue.extend({
       return 'error'
     },
     formatGenes() {
-      this.findGenesWorker.postMessage({
+      $getFindGenesWorker().postMessage({
         init: false,
+        todo: 'findAllGenes',
         userGenes: this.userGenes,
       })
     },
-    initWorkers() {
-      this.findGenesWorker = new Worker(
-        '@/utils/workers/find-gene-webworker.js',
-        {
-          type: 'module',
-        }
-      )
-      this.findGenesWorker.postMessage({
-        init: true,
-        allGeneMap: this.allGeneMap,
-        synonymMap: this.synonymMap,
-      })
-      this.findGenesWorker.onmessage = (event: any) => {
-        this.formattedGenes = event.data.parsedGenes
-      }
-    },
     showChips(length: number) {
-      return length < 1000
+      return length < 500
     },
   },
 })

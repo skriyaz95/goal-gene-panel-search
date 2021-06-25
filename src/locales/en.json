@@ -82,6 +82,9 @@
         "title": {
           "text": "Logo Color"
         }
+      },
+      "explain": {
+        "text": "For deeper changes to the default logo and app title, modify images in /src/assets/gti/ and /public/favicon.ico"
       }
     }
   },
