@@ -99,6 +99,7 @@
     }
   },
   "panel-result": {
+    "show-institution-details": "Show Institution Details",
     "result": {
       "name": "Results",
       "title": "Total Genes Evaluated"
@@ -120,6 +121,7 @@
     },
     "dialog": {
       "title-institution-details": "Institution Details",
+      "institution-website-link": "Go to Website",
       "title-genes-in-panel": "Genes in Panel",
       "title-genes-not-in-panel": "Genes Not in Panel",
       "button": {

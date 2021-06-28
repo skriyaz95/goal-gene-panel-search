@@ -39,7 +39,7 @@
               <v-icon>mdi-earth</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title><a :href="institution.website" target="_blank">Go to Website</a></v-list-item-title>
+              <v-list-item-title><a :href="institution.website" target="_blank"> {{ $t('panel-result.dialog.institution-website-link')}} </a></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-card-text>
@@ -133,12 +133,12 @@
           <template v-slot:[`item.institution`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <span class="pointer" v-if="Object.keys(item.institution).length > 0" @click.stop="openInstitutionDetails(item.institution)">
+                <span v-on="on" class="pointer" v-if="!isInstitutionEmpty(item.institution)" @click.stop="openInstitutionDetails(item.institution)">
                   {{ item.institution.name }}
                   <v-icon>mdi-arrow-top-right-thick</v-icon>
                 </span>
               </template>
-              <span>{{ $t('panel-result.chip.show-genes') }}</span>
+              <span>{{ $t('panel-result.show-institution-details') }}</span>
             </v-tooltip>
           </template>
           <template v-slot:[`item.countGenesInPanel`]="{ item }">
@@ -251,7 +251,7 @@ export default Vue.extend({
     ...mapGetters({
       userGenes: 'getUserGenes',
       userGenesInPanels: 'getUserGenesInPanels',
-      institutionsMap: 'getInstitutionsMap'
+      institutionMap: 'getInstitutionMap'
     }),
   },
   methods: {
@@ -264,7 +264,7 @@ export default Vue.extend({
           gene.name.toUpperCase()
         )
 
-        let institution = this.institutionsMap.get(panel.name.toUpperCase())
+        let institution = this.institutionMap.get(panel.name.toUpperCase())
         if(!institution) {
           institution  = {};
         }
@@ -309,6 +309,9 @@ export default Vue.extend({
     linkTo(link: string, linkType: string) {
       const linkPrefix = linkType == 'phone' ?  "tel:" : "mailto:"
       return linkPrefix + link
+    },
+    isInstitutionEmpty(institution: Institution) {
+      return Object.keys(institution).length < 0;
     }
   },
 })
