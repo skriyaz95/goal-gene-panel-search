@@ -79,7 +79,7 @@ export default {
     const allInstitutions = new Map<String, Institution>()
     state.institutions.forEach((institution: Institution) => {
       institution.panels.forEach((panel: string) => {
-        allInstitutions.set(panel, institution)
+        allInstitutions.set(panel.toUpperCase(), institution)
       })
     })
     return allInstitutions

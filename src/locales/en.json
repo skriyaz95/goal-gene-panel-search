@@ -112,6 +112,7 @@
       "save-result": "Save this Result"
     },
     "dialog": {
+      "title-institution-details": "Institution Details",
       "title-genes-in-panel": "Genes in Panel",
       "title-genes-not-in-panel": "Genes Not in Panel",
       "button": {

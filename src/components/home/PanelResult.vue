@@ -1,6 +1,61 @@
 <template>
   <div>
     <v-dialog
+      v-model="institutionDialog"
+      persistent
+      max-width="800px"
+    >
+      <v-card>
+        <v-card-title>
+          {{ $t('panel-result.dialog.title-institution-details') }}
+        </v-card-title>
+        <v-card-text>
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-bank</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>{{ institution.name }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-phone-in-talk</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title><a :href="linkTo(institution.phone, 'phone')">{{ institution.phone }}</a></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-email</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title><a :href="linkTo(institution.email, 'email')">{{ institution.email }}</a></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-earth</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title><a :href="institution.website" target="_blank">Go to Website</a></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="green darken-1"
+            text
+            @click="institutionDialog = false"
+          >
+            {{ $t('panel-result.dialog.button.close') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog
       v-model="showDialog"
       persistent
       max-width="800px"
@@ -78,9 +133,12 @@
           <template v-slot:[`item.institution`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <span>{{ item.name }}</span>
+                <span class="pointer" v-if="Object.keys(item.institution).length > 0" @click.stop="openInstitutionDetails(item.institution)">
+                  {{ item.institution.name }}
+                  <v-icon>mdi-arrow-top-right-thick</v-icon>
+                </span>
               </template>
-              <span>{{ item.name }}</span>
+              <span>{{ $t('panel-result.chip.show-genes') }}</span>
             </v-tooltip>
           </template>
           <template v-slot:[`item.countGenesInPanel`]="{ item }">
@@ -134,9 +192,20 @@
   </div>
 </template>
 
+<style lang="css" scoped>
+.pointer:hover {
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.10);
+  border-radius: 25px;
+}
+.pointer{
+  padding: 0.5em;
+}
+</style>
+
 <script lang="ts">
 import Vue from 'vue'
-import {Gene, PanelResultFormattedRow, PanelSearchResult,} from '@/types/panel-types'
+import {Gene, Institution, PanelResultFormattedRow, PanelSearchResult,} from '@/types/panel-types'
 import {mapGetters} from 'vuex'
 import download, {formatObjetToJson} from '@/utils/download'
 
@@ -144,7 +213,9 @@ export default Vue.extend({
   name: 'PanelResult',
   data() {
     return {
+      institutionDialog: false,
       showDialog: false,
+      institution: {},
       geneType: new String(),
       panelName: new String(),
       genes: new Array<string>(),
@@ -192,7 +263,11 @@ export default Vue.extend({
           const genesNotInPanel = panel.genesNotInPanel.map((gene: Gene) =>
             gene.name.toUpperCase()
           )
-          const institution = allInstitutions.get(panel.name)
+          let institution = allInstitutions.get(panel.name.toUpperCase())
+          if(!institution) {
+            institution  = {};
+          }
+
           return new PanelResultFormattedRow(
             panel.name,
             genesInPanel.length,
@@ -211,6 +286,10 @@ export default Vue.extend({
         geneType === 'genesInPanel' ? panel.genesInPanel : panel.genesNotInPanel
       this.showDialog = true
     },
+    openInstitutionDetails(institution: Institution) {
+      this.institution = institution
+      this.institutionDialog = true
+    },
     downloadGenes(genes: string) {
       const result = {
         name: this.panelName,
@@ -227,6 +306,10 @@ export default Vue.extend({
     formatResult(panel: any, pretty: boolean) {
       return formatObjetToJson(panel, pretty)
     },
+    linkTo(link: string, linkType: string) {
+      const linkPrefix = linkType == 'phone' ?  "tel:" : "mailto:"
+      return linkPrefix + link
+    }
   },
 })
 </script>
