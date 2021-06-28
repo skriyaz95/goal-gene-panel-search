@@ -36,8 +36,9 @@ function applyState(userGene) {
     // }
   } else if (synonymMap.has(userGene.name)) {
     //synonym
-    // var fullGene: FullGene = this.synonymMap.get(gene.name).gene
+    var fullGene = synonymMap.get(userGene.name).gene
     parsedGene.state = stateSynonym
+    parsedGene.realGene = fullGene
     return parsedGene
   }
   parsedGene.state = stateNotFound
@@ -71,5 +72,12 @@ addEventListener("message", (event) => {
   } else if (event.data.todo == "findAllGenes") {
     const parsedGenes = findAllGenes(event.data.userGenes)
     ctx.postMessage({ parsedGenes, todo: "findAllGenes" })
+  } else if (event.data.todo == "findPanelGenes") {
+    const parsedGenes = findAllGenes(event.data.userGenes)
+    ctx.postMessage({
+      parsedGenes,
+      todo: "findPanelGenes",
+      panelName: event.data.panelName,
+    })
   }
 })

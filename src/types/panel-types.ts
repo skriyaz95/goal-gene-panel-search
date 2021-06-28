@@ -28,9 +28,17 @@ export class Gene {
   }
 }
 
+/**
+ * Class returned by a worker that identifies the genes found and
+ * categorises it in 3 states (notFound, synonyms and symbols) (see ParsedGenes)
+ * For now, we don't need a FullGene (except for synonyms to link back to the symbol )
+ * but if we need ids or location information, we might want to return a realGene for
+ * all states
+ */
 export class ParsedGene {
   gene: Gene
   state!: string
+  realGene!: FullGene //only synonyms would have a realGene value
 
   constructor(gene: Gene) {
     this.gene = gene

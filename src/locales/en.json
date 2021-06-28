@@ -25,14 +25,17 @@
       }
     },
     "saveAllPanels": {
-      "text": "Save All",
-      "tooltip": "Download all JSON Gene Panels"
+      "text": "Save All Valid",
+      "tooltip": "Download all valid JSON Gene Panels"
     },
     "saveOnePanel": {
       "tooltip": "Save this Panel"
     },
     "saveAllGenes": {
       "tootip": "Save all Genes"
+    },
+    "cannotSaveOnePanel": {
+      "tooltip": "Cannot Save if Contains Not Found or Synonyms"
     }
   },
   "count": {
@@ -137,7 +140,9 @@
       "text": "Step"
     },
     "download": {
-      "title": { "text": "Download and unzip this file" }
+      "title": {
+        "text": "Download and unzip this file"
+      }
     },
     "replace": {
       "title": {
@@ -151,15 +156,18 @@
     },
     "symbols": {
       "text": "Symbols",
-      "tooltip": "It's an exact match to a gene symbol."
+      "tooltip": "Symbols: It's an exact match to a gene symbol."
     },
     "synonyms": {
       "text": "Synonyms",
-      "tooltip": "You submitted a synonym. Make sure to use symbols only"
+      "tooltip": "Synonyms: You submitted a synonym. Make sure to use symbols only",
+      "details": "GTI will use the corresponding symbol instead of the synonym.<br/>Use a valid symbol if the default replacement does not match.",
+      "examplePart1": "Eg. Synonym",
+      "examplePart2": " is replaced by Symbol"
     },
     "notFound": {
       "text": "Not Found",
-      "tooltip": "It could be a typo or a non-standard gene."
+      "tooltip": "Not Found: It could be a typo or a non-standard gene."
     },
     "empty": {
       "text": "Nothing yet. Type some genes above first."

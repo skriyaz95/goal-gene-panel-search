@@ -59,6 +59,7 @@
             color="warning"
             :items="formattedGenes.synonymFoundGenes"
             :title="$t('parseInput.synonyms.text')"
+            :synonym="true"
           />
           <parsed-list-item
             v-if="showSymbol"
@@ -76,7 +77,7 @@
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { ParsedGenes } from '@/types/panel-types'
-import ParsedListItem from './ParsedListItem.vue'
+import ParsedListItem from '@/components/home/ParsedListItem.vue'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
 
 export default Vue.extend({
