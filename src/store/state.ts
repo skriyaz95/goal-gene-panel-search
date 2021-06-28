@@ -3,7 +3,6 @@ import allGenesData from "@/assets/all_genes.json"
 import synonymData from "@/assets/synonyms.json"
 
 export default {
-  tempPanels: new Array<GenePanel>(),
   panels: new Array<GenePanel>(),
   userGenes: new Array<Gene>(),
   allGenes: allGenesData,

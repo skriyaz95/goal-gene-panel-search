@@ -7,9 +7,6 @@ import {
 } from "@/types/panel-types"
 
 export default {
-  getTempPanels: (state: any) => {
-    return state.tempPanels
-  },
   getPanels: (state: any) => {
     return state.panels
   },
