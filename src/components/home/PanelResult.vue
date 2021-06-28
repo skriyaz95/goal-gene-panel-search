@@ -250,34 +250,34 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       userGenes: 'getUserGenes',
+      userGenesInPanels: 'getUserGenesInPanels',
+      institutionsMap: 'getInstitutionsMap'
     }),
   },
   methods: {
     getPanelResult() {
-      const allInstitutions = this.$store.getters.getInstitutionsMap;
-      return this.$store.getters.getUserGenesInPanels.map(
-        (panel: PanelSearchResult) => {
-          const genesInPanel = panel.genesInPanel.map((gene: Gene) =>
-            gene.name.toUpperCase()
-          )
-          const genesNotInPanel = panel.genesNotInPanel.map((gene: Gene) =>
-            gene.name.toUpperCase()
-          )
-          let institution = allInstitutions.get(panel.name.toUpperCase())
-          if(!institution) {
-            institution  = {};
-          }
+      return this.userGenesInPanels.map((panel: PanelSearchResult) => {
+        const genesInPanel = panel.genesInPanel.map((gene: Gene) =>
+          gene.name.toUpperCase()
+        )
+        const genesNotInPanel = panel.genesNotInPanel.map((gene: Gene) =>
+          gene.name.toUpperCase()
+        )
 
-          return new PanelResultFormattedRow(
-            panel.name,
-            genesInPanel.length,
-            genesNotInPanel.length,
-            genesInPanel,
-            genesNotInPanel,
-            institution
-          )
+        let institution = this.institutionsMap.get(panel.name.toUpperCase())
+        if(!institution) {
+          institution  = {};
         }
-      )
+
+        return new PanelResultFormattedRow(
+          panel.name,
+          genesInPanel.length,
+          genesNotInPanel.length,
+          genesInPanel,
+          genesNotInPanel,
+          institution
+        )
+      })
     },
     openDialog(panel: PanelResultFormattedRow, geneType: string) {
       this.panelName = panel.name

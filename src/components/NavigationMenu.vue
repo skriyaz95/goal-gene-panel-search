@@ -1,28 +1,24 @@
 <template>
-  <v-navigation-drawer
-    bottom
-    clipped
-    app
-    :mini-variant.sync="mini"
-  >
+  <v-navigation-drawer bottom clipped app :mini-variant.sync="mini">
     <v-card
       v-show="mini && !$vuetify.breakpoint.mobile"
       flat
       min-height="256"
       max-height="256"
+      :style="hueRotationFilter"
     >
       <v-img
         src="../assets/gti/gti_logo_nolabel_128.png"
         alt="GTI Logo"
         width="80%"
         class="mt-2"
-        style="margin: auto"
+        :style="imageStyle"
       />
       <v-img
         src="../assets/gti/gti_acronym_orig.png"
         alt="GTI Logo"
         class="mt-10"
-        style="margin: auto"
+        :style="imageStyle"
         width="35px"
       />
     </v-card>
@@ -30,58 +26,47 @@
       v-show="!mini && !$vuetify.breakpoint.mobile"
       flat
       min-height="256"
+      :style="hueRotationFilter"
     >
       <v-img
         src="../assets/gti/gti_logo_256.png"
         alt="GTI Logo"
         width="70%"
         class="mt-2 mb-4"
-        style="margin: auto"
+        :style="imageStyle"
       />
       <v-img
         src="../assets/gti/gti_label_512.png"
         alt="GTI Title"
         width="225px"
-        style="margin: auto"
+        :style="imageStyle"
       />
     </v-card>
-    <v-card
-      v-show="$vuetify.breakpoint.mobile"
-      flat
-    >
+    <v-card v-show="$vuetify.breakpoint.mobile" flat :style="hueRotationFilter">
       <v-row align="center">
         <v-col cols="3">
           <v-img
             src="../assets/gti/gti_logo_64.png"
             alt="GTI Logo"
+            :style="imageStyle"
           />
         </v-col>
         <v-col cols="8">
           <v-img
             src="../assets/gti/gti_label_256.png"
             alt="GTI Title"
+            :content-class="imageStyle"
           />
         </v-col>
       </v-row>
     </v-card>
     <v-divider />
-    <v-list
-      nav
-      dense
-    >
-      <v-list-item
-        v-show="!$vuetify.breakpoint.mobile"
-        @click="mini = !mini"
-      >
+    <v-list nav dense>
+      <v-list-item v-show="!$vuetify.breakpoint.mobile" @click="mini = !mini">
         <v-list-item-icon>
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <v-icon
-                :style="iconRotation"
-                v-on="on"
-              >
-                mdi-eject
-              </v-icon>
+              <v-icon :style="iconRotation" v-on="on"> mdi-eject </v-icon>
             </template>
             <span>{{ $t('navigation.mini.tooltip') }}</span>
           </v-tooltip>
@@ -121,7 +106,16 @@ import Vue from 'vue'
 
 export default Vue.extend({
   name: 'NavigationMenu',
-  props: {},
+  props: {
+    hueRotation: {
+      type: Number,
+      default: 0,
+    },
+    saturation: {
+      type: Number,
+      default: 1,
+    },
+  },
   data: () => ({
     mini: false,
   }),
@@ -131,6 +125,13 @@ export default Vue.extend({
         return 'transform: rotate(90deg)'
       }
       return 'transform: rotate(270deg)'
+    },
+    hueRotationFilter() {
+      return 'filter: hue-rotate(' + this.hueRotation + 'deg)'
+    },
+    imageStyle() {
+      console.log('saturation', this.saturation)
+      return 'margin: auto; filter: saturate(' + this.saturation + ')'
     },
   },
   mounted() {},

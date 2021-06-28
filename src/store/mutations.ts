@@ -22,4 +22,7 @@ export default {
   updateSynonyms(state: any, payload: SynonymGene[]) {
     state.synonyms = payload
   },
+  updateLastSearch(state: any, payload: String) {
+    state.lastSearch = payload
+  },
 }

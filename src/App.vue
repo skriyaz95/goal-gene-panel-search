@@ -1,18 +1,12 @@
 <template>
   <v-app :style="getBackgroundStyle()">
-    <navigation-menu />
-    <v-app-bar
-      app
-      color="primary"
-      dark
-      flat
-      clipped-left
-    >
+    <navigation-menu
+      :hue-rotation="hueRotationFilter()"
+      :saturation="saturationFilter()"
+    />
+    <v-app-bar app color="primary" dark flat clipped-left>
       <div class="d-flex align-center">
-        <span
-          class="title"
-          v-text="toolbarTitle"
-        />
+        <span class="title" v-text="toolbarTitle" />
       </div>
 
       <v-spacer />
@@ -86,6 +80,14 @@ export default Vue.extend({
       }
       return { background: backgroundString }
     },
+    hueRotationFilter() {
+      var hueRotation: any = this.$vuetify.theme.themes[this.theme].hueRotation
+      return hueRotation
+    },
+    saturationFilter() {
+      var saturation: any = this.$vuetify.theme.themes[this.theme].saturation
+      return saturation
+    },
   },
   computed: {
     theme() {
@@ -100,7 +102,10 @@ export default Vue.extend({
       allGenes: 'getAllGenes',
     }),
     toolbarTitle(): TranslateResult {
-      return this.$t(this.$route.meta.i18n + '.toolbar.text')
+      if (this.$route.meta && this.$route.meta.i18n) {
+        return this.$t(this.$route.meta.i18n + '.toolbar.text')
+      }
+      return 'GTI'
     },
   },
   mounted() {
@@ -114,5 +119,8 @@ export default Vue.extend({
 <style>
 .v-input.v-text-field.v-textarea .v-text-field__slot {
   padding: 5px 10px 5px 5px; /*fix scrollbar overlapping with textarea outlined */
+}
+tr:nth-child(even) {
+  background-color: #fafafa;
 }
 </style>

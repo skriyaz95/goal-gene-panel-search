@@ -27,11 +27,11 @@ export default {
       const genes = getters.getUserGenesInSelectedPanel(panel)
       if (genes.genesInPanel.length > 0 || genes.genesNotInPanel.length > 0) {
         result.push(
-            new PanelSearchResult(
-                panel.name.toUpperCase(),
-                genes.genesInPanel,
-                genes.genesNotInPanel,
-            ),
+          new PanelSearchResult(
+            panel.name.toUpperCase(),
+            genes.genesInPanel,
+            genes.genesNotInPanel,
+          ),
         )
       }
     })
@@ -41,7 +41,7 @@ export default {
     const genesInPanel = new Array<Gene>()
     const genesNotInPanel = new Array<Gene>()
     const panelGenesSet = new Set(
-        panel.genes.map((gene: Gene) => gene.name.toUpperCase()),
+      panel.genes.map((gene: Gene) => gene.name.toUpperCase()),
     )
     state.userGenes.forEach((userGene: Gene) => {
       if (panelGenesSet.has(userGene.name)) {
@@ -83,5 +83,8 @@ export default {
       })
     })
     return allInstitutions
-  }
+  },
+  getLastSearch: (state: any) => {
+    return state.lastSearch
+  },
 }

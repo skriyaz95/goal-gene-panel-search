@@ -76,6 +76,13 @@
     },
     "secondary": {
       "text": "Secondary (alternate color)"
+    },
+    "logo": {
+      "color": {
+        "title": {
+          "text": "Logo Color"
+        }
+      }
     }
   },
   "userInput": {
@@ -83,8 +90,8 @@
       "clear": "Clear",
       "submit": "Submit"
     },
-    "gene-list": "Gene List",
-    "label": "Paste Gene List",
+    "gene-list": "Gene Search",
+    "label": "Paste or Type Genes Here",
     "validation": {
       "list-empty": "Gene List must not be empty",
       "list-min-characters": "Gene List must be at least 2 characters",
@@ -157,7 +164,7 @@
       "text": "Nothing yet. Type some genes above first."
     },
     "tooMany": {
-      "text": "Too many too display (> 1000)"
+      "text": "Too many to display (> 500)"
     }
   }
 }

@@ -9,5 +9,6 @@ export default {
   userGenes: new Array<Gene>(),
   allGenes: allGenesData,
   synonyms: synonymData,
+  lastSearch: String(),
   institutions: institutionData,
 }

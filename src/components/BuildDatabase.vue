@@ -2,10 +2,7 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col
-        cols="12"
-        lg="4"
-      >
+      <v-col cols="12" lg="4">
         <v-card>
           <v-card-title>{{ $t('build-database.title.text') }}:</v-card-title>
           <v-card-text>
@@ -22,9 +19,7 @@
               </v-btn>
             </div>
             <v-row align="center">
-              <v-col md="auto">
-                {{ $t('build-database.step.text') }} 2:
-              </v-col>
+              <v-col md="auto"> {{ $t('build-database.step.text') }} 2: </v-col>
               <v-col>
                 <v-file-input
                   v-model="geneFile"
@@ -92,7 +87,8 @@ export default Vue.extend({
     headerLoci: 'map_location',
     hgncRegex: /[.]*HGNC:HGNC:([0-9]+)/,
     ensemblRegex: /[.]*Ensembl:([A-Z0-9]+)/,
-    invalidSymbolCharacters: /[^A-Z0-9]+/,
+    invalidSymbolCharacters: /[^A-Z0-9]+[-]*/,
+    emptyFieldPattern: '-',
     allGenes: new Array<FullGene>(),
     loading: false,
     synonyms: new Array<SynonymGene>(),
@@ -130,7 +126,7 @@ export default Vue.extend({
         var synonymString =
           items[headerByRowNb.get(this.headerSynonyms) as number]
         var synonyms = new Array<string>()
-        if (synonymString) {
+        if (synonymString && synonymString != this.emptyFieldPattern) {
           synonyms = items[headerByRowNb.get(this.headerSynonyms) as number]
             .split('|')
             .map((s) => s.toUpperCase())
@@ -144,7 +140,7 @@ export default Vue.extend({
         if (hgncFound) {
           hgncId = hgncFound[1]
         }
-        if (symbol && hgncId) {
+        if (symbol && hgncId && hgncId != this.emptyFieldPattern) {
           //only valid genes
           var ensemblFound = dbIds.match(this.ensemblRegex)
           let ensemblId = ''
@@ -163,8 +159,11 @@ export default Vue.extend({
     createSynonyms() {
       const synonyms = new Array<SynonymGene>()
       for (let i = 0; i < this.allGenes.length; i++) {
-        var currentGene = this.allGenes[i]
-        for (let j = 0; j < currentGene.synonyms.length; j++) {
+        const fullGene = this.allGenes[i]
+        //make a copy of fullGene
+        const currentGene = JSON.parse(JSON.stringify(fullGene))
+        currentGene.synonyms = [] //remove synonyms to keep object small
+        for (let j = 0; j < fullGene.synonyms.length; j++) {
           synonyms.push(new SynonymGene(currentGene.synonyms[j], currentGene))
         }
       }
