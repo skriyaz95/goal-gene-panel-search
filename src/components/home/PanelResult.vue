@@ -133,10 +133,10 @@
           <template v-slot:[`item.institution`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <span v-on="on" class="pointer" v-if="!isInstitutionEmpty(item.institution)" @click.stop="openInstitutionDetails(item.institution)">
+                <v-btn text v-on="on" v-if="!isInstitutionEmpty(item.institution)" @click.stop="openInstitutionDetails(item.institution)">
                   {{ item.institution.name }}
                   <v-icon>mdi-arrow-top-right-thick</v-icon>
-                </span>
+                </v-btn>
               </template>
               <span>{{ $t('panel-result.show-institution-details') }}</span>
             </v-tooltip>
@@ -191,17 +191,6 @@
     </v-card>
   </div>
 </template>
-
-<style lang="css" scoped>
-.pointer:hover {
-  cursor: pointer;
-  background: rgba(0, 0, 0, 0.10);
-  border-radius: 25px;
-}
-.pointer{
-  padding: 0.5em;
-}
-</style>
 
 <script lang="ts">
 import Vue from 'vue'
