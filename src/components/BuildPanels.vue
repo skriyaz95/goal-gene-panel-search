@@ -90,13 +90,13 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-fade-transition>
-                  <build-panel-content
+                  <gene-parsed-content
                     :showGenes="[
                       showGenes(panel[1].notFoundGenes),
                       showGenes(panel[1].synonymFoundGenes),
                       showGenes(panel[1].symbolFoundGenes),
                     ]"
-                    :panel="panel"
+                    :parsedGenes="panel[1]"
                   />
                 </v-fade-transition>
               </v-expansion-panel-content>
@@ -117,10 +117,10 @@ import download from '@/utils/download'
 import { formatObjetToJson } from '@/utils/download'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import BuildPanelHeader from '@/components/BuildPanelHeader.vue'
-import BuildPanelContent from '@/components/BuildPanelContent.vue'
+import GeneParsedContent from '@/components/GeneParsedContent.vue'
 
 export default Vue.extend({
-  components: { BuildPanelHeader, BuildPanelContent },
+  components: { BuildPanelHeader, GeneParsedContent },
   name: 'BuildPanel',
 
   data: () => ({
