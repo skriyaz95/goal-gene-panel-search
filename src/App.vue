@@ -89,8 +89,11 @@ export default Vue.extend({
       var saturation: any = this.$vuetify.theme.themes[this.theme].saturation
       return saturation
     },
+    /**
+     * Workers shared accross components can be initialized here
+     *
+     */
     initWorkers() {
-      console.log('here')
       $getFindGenesWorker().postMessage({
         init: true,
         allGeneMap: this.allGeneMap,
