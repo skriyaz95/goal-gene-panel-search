@@ -1,9 +1,22 @@
 <template>
-  <div>
-    <theme-picker />
-    <build-panels />
-    <build-database />
-  </div>
+  <v-container>
+    <v-tabs centered v-model="tab">
+      <v-tab>Panels</v-tab>
+      <v-tab>Database</v-tab>
+      <v-tab>Theme</v-tab>
+    </v-tabs>
+    <v-tabs-items v-model="tab">
+      <v-tab-item>
+        <build-panels />
+      </v-tab-item>
+      <v-tab-item>
+        <build-database />
+      </v-tab-item>
+      <v-tab-item>
+        <theme-picker />
+      </v-tab-item>
+    </v-tabs-items>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -19,6 +32,11 @@ export default Vue.extend({
     BuildPanels,
     ThemePicker,
     BuildDatabase,
+  },
+  data() {
+    return {
+      tab: null,
+    }
   },
 })
 </script>

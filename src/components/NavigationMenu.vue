@@ -130,7 +130,6 @@ export default Vue.extend({
       return 'filter: hue-rotate(' + this.hueRotation + 'deg)'
     },
     imageStyle() {
-      console.log('saturation', this.saturation)
       return 'margin: auto; filter: saturate(' + this.saturation + ')'
     },
   },

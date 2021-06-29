@@ -53,12 +53,15 @@
             color="error"
             :items="formattedGenes.notFoundGenes"
             :title="$t('parseInput.notFound.text')"
+            class="pb-2"
           />
           <parsed-list-item
             v-if="showSynonym"
             color="warning"
             :items="formattedGenes.synonymFoundGenes"
             :title="$t('parseInput.synonyms.text')"
+            :synonym="true"
+            class="pb-2"
           />
           <parsed-list-item
             v-if="showSymbol"
@@ -76,22 +79,20 @@
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { ParsedGenes } from '@/types/panel-types'
-import ParsedListItem from './ParsedListItem.vue'
+import ParsedListItem from '@/components/home/ParsedListItem.vue'
+import $getFindGenesWorker from '@/utils/workers/worker-instance'
 
 export default Vue.extend({
   components: { ParsedListItem },
   name: 'ParsedInput',
   data: () => ({
     formattedGenes: new ParsedGenes(),
-    findGenesWorker: {} as Worker,
-    loading: false,
+    loading: false, //processing seems too fast to need a loading state ATM
   }),
   computed: {
     ...mapGetters({
       userGenes: 'getUserGenesSorted',
       allGenes: 'getAllGenes',
-      allGeneMap: 'getAllGeneMap',
-      synonymMap: 'getSynonymMap',
     }),
     showNotFound(): boolean {
       return this.formattedGenes.notFoundGenes.length > 0
@@ -107,11 +108,14 @@ export default Vue.extend({
     userGenes: 'formatGenes',
   },
   mounted() {
-    this.initWorkers()
+    $getFindGenesWorker().onmessage = (event: any) => {
+      if (event.data.todo == 'findAllGenes') {
+        this.formattedGenes = event.data.parsedGenes
+        // this.loading = false
+      }
+    }
   },
-  destroyed() {
-    this.findGenesWorker.terminate()
-  },
+  destroyed() {},
   methods: {
     formatState(state: string) {
       if (state == 'symbol') {
@@ -123,29 +127,12 @@ export default Vue.extend({
       return 'error'
     },
     formatGenes() {
-      this.findGenesWorker.postMessage({
+      // this.loading = true
+      $getFindGenesWorker().postMessage({
         init: false,
+        todo: 'findAllGenes',
         userGenes: this.userGenes,
       })
-    },
-    initWorkers() {
-      this.findGenesWorker = new Worker(
-        '@/utils/workers/find-gene-webworker.js',
-        {
-          type: 'module',
-        }
-      )
-      this.findGenesWorker.postMessage({
-        init: true,
-        allGeneMap: this.allGeneMap,
-        synonymMap: this.synonymMap,
-      })
-      this.findGenesWorker.onmessage = (event: any) => {
-        this.formattedGenes = event.data.parsedGenes
-      }
-    },
-    showChips(length: number) {
-      return length < 1000
     },
   },
 })
