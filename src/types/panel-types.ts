@@ -1,3 +1,25 @@
+export class Institution {
+  name: string
+  phone: string
+  email: string
+  website: string
+  panels: string[]
+
+  constructor(
+    name: string,
+    phone: string,
+    email: string,
+    website: string,
+    panels: string[],
+  ) {
+    this.name = name
+    this.phone = phone
+    this.email = email
+    this.website = website
+    this.panels = panels
+  }
+}
+
 export class GenePanel {
   name: string
   genes: Gene[]
@@ -103,6 +125,7 @@ export class PanelResultFormattedRow {
   countGenesNotInPanel: number
   genesInPanel: string[]
   genesNotInPanel: string[]
+  institution: Institution
 
   constructor(
     name: string,
@@ -110,12 +133,14 @@ export class PanelResultFormattedRow {
     countGenesNotInPanel: number,
     genesInPanel: string[],
     genesNotInPanel: string[],
+    institution: Institution,
   ) {
     this.name = name
     this.countGenesInPanel = countGenesInPanel
     this.countGenesNotInPanel = countGenesNotInPanel
     this.genesInPanel = genesInPanel
     this.genesNotInPanel = genesNotInPanel
+    this.institution = institution
   }
 }
 
