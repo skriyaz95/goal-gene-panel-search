@@ -87,7 +87,8 @@ export default Vue.extend({
     headerLoci: 'map_location',
     hgncRegex: /[.]*HGNC:HGNC:([0-9]+)/,
     ensemblRegex: /[.]*Ensembl:([A-Z0-9]+)/,
-    invalidSymbolCharacters: /[^A-Z0-9]+[-]*/,
+    // invalidSymbolCharacters: /[^A-Z0-9-]+/,
+    validSymbolCharacters: /[A-Z0-9-]{2,}/,
     emptyFieldPattern: '-',
     allGenes: new Array<FullGene>(),
     loading: false,
@@ -120,7 +121,7 @@ export default Vue.extend({
         if (symbolItem) {
           symbol = symbolItem.toUpperCase()
         }
-        if (!symbol || this.invalidSymbolCharacters.test(symbol)) {
+        if (!symbol || !this.validSymbolCharacters.test(symbol)) {
           continue //skip symbols with non alphanumeric characters
         }
         var synonymString =
@@ -157,6 +158,7 @@ export default Vue.extend({
       this.loading = false
     },
     createSynonyms() {
+      const alreadySeenNames = new Set<String>()
       const synonyms = new Array<SynonymGene>()
       for (let i = 0; i < this.allGenes.length; i++) {
         const fullGene = this.allGenes[i]
@@ -164,7 +166,11 @@ export default Vue.extend({
         const currentGene = JSON.parse(JSON.stringify(fullGene))
         currentGene.synonyms = [] //remove synonyms to keep object small
         for (let j = 0; j < fullGene.synonyms.length; j++) {
-          synonyms.push(new SynonymGene(currentGene.synonyms[j], currentGene))
+          const synonym = fullGene.synonyms[j]
+          if (!alreadySeenNames.has(synonym)) {
+            alreadySeenNames.add(synonym)
+            synonyms.push(new SynonymGene(synonym, currentGene))
+          }
         }
       }
       this.synonyms = synonyms
@@ -190,7 +196,6 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
-      tempPanels: 'getTempPanels',
       panels: 'getPanels',
     }),
   },

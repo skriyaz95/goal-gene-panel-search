@@ -4,7 +4,6 @@ import synonymData from "@/assets/synonyms.json"
 import institutionData from "@/assets/institutions.json"
 
 export default {
-  tempPanels: new Array<GenePanel>(),
   panels: new Array<GenePanel>(),
   userGenes: new Array<Gene>(),
   allGenes: allGenesData,

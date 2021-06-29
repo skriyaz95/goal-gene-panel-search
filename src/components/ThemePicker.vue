@@ -53,6 +53,7 @@
                       step="0.1"
                       label="sat"
                     />
+                    <div>{{ $t('themePicker.logo.explain.text') }}</div>
                   </v-col>
                 </v-row>
               </v-col>
