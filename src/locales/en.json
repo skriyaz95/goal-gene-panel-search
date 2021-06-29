@@ -25,8 +25,8 @@
       }
     },
     "saveAllPanels": {
-      "text": "Save All Valid",
-      "tooltip": "Download all valid JSON Gene Panels"
+      "text": "Save All",
+      "tooltip": "Download all JSON Gene Panels"
     },
     "saveOnePanel": {
       "tooltip": "Save this Panel"
@@ -36,6 +36,12 @@
     },
     "cannotSaveOnePanel": {
       "tooltip": "Cannot Save if Contains Not Found or Synonyms"
+    },
+    "saveWarning": {
+      "tooltip": "GTI will skip 'Not Found' and replace Synonyms"
+    },
+    "showHide": {
+      "tooltip": "Show/Hide"
     }
   },
   "count": {

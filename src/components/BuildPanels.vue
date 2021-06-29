@@ -62,84 +62,20 @@
           <v-expansion-panels flat focusable>
             <v-expansion-panel v-for="panel in tempParsedGenes" :key="panel[0]">
               <v-expansion-panel-header disable-icon-rotate>
-                <v-row align="center">
-                  <v-col cols="6" lg="3">
-                    <v-text-field
-                      v-model="panel[0]"
-                      :label="$t('buildPanels.panelName.text')"
-                      hide-details
-                      dense
-                      @click.stop=""
-                    />
-                  </v-col>
-                  <v-col cols="6" lg="9">
-                    <v-fade-transition>
-                      <span class="ml-3">
-                        <v-tooltip
-                          bottom
-                          v-if="showGenes(panel[1].notFoundGenes)"
-                        >
-                          <template v-slot:activator="{ on }">
-                            <v-chip color="error" class="ml-1 mr-1" v-on="on">
-                              <v-icon left> mdi-alert-circle-outline </v-icon>
-                              ({{
-                                $tc(
-                                  'count.gene',
-                                  $n(panel[1].notFoundGenes.length)
-                                )
-                              }})
-                            </v-chip>
-                          </template>
-                          <span>{{ $t('parseInput.notFound.tooltip') }}</span>
-                        </v-tooltip>
-                        <v-tooltip
-                          bottom
-                          v-if="showGenes(panel[1].synonymFoundGenes)"
-                        >
-                          <template v-slot:activator="{ on }">
-                            <v-chip color="warning" class="ml-1 mr-1" v-on="on">
-                              <v-icon left> mdi-approximately-equal </v-icon>
-                              ({{
-                                $tc(
-                                  'count.gene',
-                                  $n(panel[1].synonymFoundGenes.length)
-                                )
-                              }})
-                            </v-chip>
-                          </template>
-                          <span>{{ $t('parseInput.synonyms.tooltip') }}</span>
-                        </v-tooltip>
-                        <v-tooltip
-                          bottom
-                          v-if="showGenes(panel[1].symbolFoundGenes)"
-                        >
-                          <template v-slot:activator="{ on }">
-                            <v-chip color="success" class="ml-1 mr-1" v-on="on">
-                              <v-icon left> mdi-check </v-icon>
-                              ({{
-                                $tc(
-                                  'count.gene',
-                                  $n(panel[1].symbolFoundGenes.length)
-                                )
-                              }})
-                            </v-chip>
-                          </template>
-                          <span>{{ $t('parseInput.symbols.tooltip') }}</span>
-                        </v-tooltip>
-                      </span>
-                    </v-fade-transition>
-                  </v-col>
-                </v-row>
+                <build-panel-header
+                  :panel="panel"
+                  :showGenes="[
+                    showGenes(panel[1].notFoundGenes),
+                    showGenes(panel[1].synonymFoundGenes),
+                    showGenes(panel[1].symbolFoundGenes),
+                  ]"
+                />
 
                 <template v-slot:actions>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
                       <span v-on="on">
-                        <v-btn
-                          icon
-                          @click.stop="downloadPanel(panel)"
-                          :disabled="!onlySymbolsOrSynonyms(panel[1])"
-                        >
+                        <v-btn icon @click.stop="downloadPanel(panel)">
                           <v-icon>mdi-content-save</v-icon>
                         </v-btn>
                       </span>
@@ -147,36 +83,21 @@
                     <span v-if="onlySymbolsOrSynonyms(panel[1])">{{
                       $t('button.saveOnePanel.tooltip')
                     }}</span>
-                    <span v-else>{{
-                      $t('button.cannotSaveOnePanel.tooltip')
-                    }}</span>
+                    <span v-else>{{ $t('button.saveWarning.tooltip') }}</span>
                   </v-tooltip>
                   <v-icon> mdi-chevron-down </v-icon>
                 </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-fade-transition>
-                  <div>
-                    <parsed-list-item
-                      v-if="showGenes(panel[1].notFoundGenes)"
-                      color="error"
-                      :items="panel[1].notFoundGenes"
-                      :title="$t('parseInput.notFound.text')"
-                    />
-                    <parsed-list-item
-                      v-if="showGenes(panel[1].synonymFoundGenes)"
-                      color="warning"
-                      :items="panel[1].synonymFoundGenes"
-                      :title="$t('parseInput.synonyms.text')"
-                      :synonym="true"
-                    />
-                    <parsed-list-item
-                      v-if="showGenes(panel[1].symbolFoundGenes)"
-                      color="success"
-                      :items="panel[1].symbolFoundGenes"
-                      :title="$t('parseInput.symbols.text')"
-                    />
-                  </div>
+                  <build-panel-content
+                    :showGenes="[
+                      showGenes(panel[1].notFoundGenes),
+                      showGenes(panel[1].synonymFoundGenes),
+                      showGenes(panel[1].symbolFoundGenes),
+                    ]"
+                    :panel="panel"
+                  />
                 </v-fade-transition>
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -195,10 +116,11 @@ import { Gene, GenePanel, ParsedGene, ParsedGenes } from '@/types/panel-types'
 import download from '@/utils/download'
 import { formatObjetToJson } from '@/utils/download'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
-import ParsedListItem from '@/components/home/ParsedListItem.vue'
+import BuildPanelHeader from '@/components/BuildPanelHeader.vue'
+import BuildPanelContent from '@/components/BuildPanelContent.vue'
 
 export default Vue.extend({
-  components: { ParsedListItem },
+  components: { BuildPanelHeader, BuildPanelContent },
   name: 'BuildPanel',
 
   data: () => ({
@@ -207,11 +129,10 @@ export default Vue.extend({
     panelFileNames: new Array<string>(),
     publicPath: process.env.BASE_URL,
     tempParsedGenes: new Array<[string, ParsedGenes]>(),
-    tempPanels: new Array<GenePanel>(),
   }),
   methods: {
     buildPanels() {
-      this.tempPanels = new Array<GenePanel>()
+      this.tempParsedGenes = Array<[string, ParsedGenes]>()
       for (var i = 0; i < this.panelFileNames.length; i++) {
         var path = this.publicPath + this.rawDir + this.panelFileNames[i]
         axios
@@ -233,7 +154,11 @@ export default Vue.extend({
             const panelGenes: Gene[] = []
             for (let j = 0; j < uniqueRowsArray.length; j++) {
               const geneSymbol = uniqueRowsArray[j]
-              if (!geneSymbol || geneSymbol.length == 0) {
+              if (
+                !geneSymbol ||
+                geneSymbol.length == 0 ||
+                geneSymbol == 'SNP'
+              ) {
                 continue
               }
               panelGenes.push({
@@ -272,7 +197,11 @@ export default Vue.extend({
         }
         const rowItems = row.split('\t')
         if (rowItems && rowItems[3]) {
-          uniqueRows.add(rowItems[3].trim())
+          //GNB1:GNB1_chr1:1718769-1718876:275744_14961302_GNB1_chr1:1718769-1718876_1
+          const gene = rowItems[3].split(':')[0]
+          if (gene) {
+            uniqueRows.add(gene.trim())
+          }
         }
       }
       return uniqueRows
@@ -289,10 +218,16 @@ export default Vue.extend({
       return formatObjetToJson(panel, pretty)
     },
     downloadPanel(panel: [string, ParsedGenes]) {
-      const genes = panel[1].symbolFoundGenes.map((pg) => pg.gene)
-      genes.push(
-        ...panel[1].synonymFoundGenes.map((pg) => new Gene(pg.realGene.symbol))
+      //make sure there are no dups after adding synonyms
+      const uniqGenes = new Set<string>(
+        panel[1].symbolFoundGenes.map((pg) => pg.gene.name)
       )
+      const synonymsConverted = panel[1].synonymFoundGenes.map(
+        (pg) => pg.realGene.symbol
+      )
+      synonymsConverted.forEach((s) => uniqGenes.add(s))
+
+      const genes = Array.from(uniqGenes).map((s) => new Gene(s))
       const content = this.formatPanel(new GenePanel(panel[0], genes), false)
       const filename = panel[0].replaceAll(/[ ]+/g, '_') + '.json'
       download(filename, content, 'text/json')
@@ -329,6 +264,7 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       panels: 'getPanels',
+      institutionMap: 'getInstitutionMap',
     }),
   },
   mounted() {

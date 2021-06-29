@@ -53,6 +53,7 @@
             color="error"
             :items="formattedGenes.notFoundGenes"
             :title="$t('parseInput.notFound.text')"
+            class="pb-2"
           />
           <parsed-list-item
             v-if="showSynonym"
@@ -60,6 +61,7 @@
             :items="formattedGenes.synonymFoundGenes"
             :title="$t('parseInput.synonyms.text')"
             :synonym="true"
+            class="pb-2"
           />
           <parsed-list-item
             v-if="showSymbol"
@@ -85,7 +87,7 @@ export default Vue.extend({
   name: 'ParsedInput',
   data: () => ({
     formattedGenes: new ParsedGenes(),
-    loading: false,
+    loading: false, //processing seems too fast to need a loading state ATM
   }),
   computed: {
     ...mapGetters({
@@ -109,6 +111,7 @@ export default Vue.extend({
     $getFindGenesWorker().onmessage = (event: any) => {
       if (event.data.todo == 'findAllGenes') {
         this.formattedGenes = event.data.parsedGenes
+        // this.loading = false
       }
     }
   },
@@ -124,14 +127,12 @@ export default Vue.extend({
       return 'error'
     },
     formatGenes() {
+      // this.loading = true
       $getFindGenesWorker().postMessage({
         init: false,
         todo: 'findAllGenes',
         userGenes: this.userGenes,
       })
-    },
-    showChips(length: number) {
-      return length < 500
     },
   },
 })

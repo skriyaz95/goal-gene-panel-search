@@ -127,7 +127,6 @@ export default Vue.extend({
     this.importExistingPanels(
       require.context('../public/source_panels/', false, /\.json$/)
     )
-    console.log()
   },
   destroyed() {
     $getFindGenesWorker().terminate()

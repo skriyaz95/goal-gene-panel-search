@@ -196,7 +196,6 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
-      tempPanels: 'getTempPanels',
       panels: 'getPanels',
     }),
   },

@@ -1,32 +1,46 @@
 <template>
   <div class="text-left">
-    <span class="body-1 font-weight-bold">{{ title }}:</span>
-    <div v-if="showChips()">
-      <div class="pl-2" v-if="synonym">
-        <div v-html="$t('parseInput.synonyms.details')"></div>
-        {{ $t('parseInput.synonyms.examplePart1') }}
-        {{ items[0].gene.name }}
-        {{ $t('parseInput.synonyms.examplePart2') }}
-        {{ items[0].realGene.symbol }}
-      </div>
-      <v-chip
-        v-for="gene in items"
-        :key="gene.gene.name"
-        class="ma-1"
-        :color="color"
-      >
-        <div class="d-flex align-center">
-          {{ gene.gene.name }}
-          <span v-if="synonym">
-            <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
-            {{ gene.realGene.symbol }}
-          </span>
-        </div>
-      </v-chip>
-    </div>
-    <span v-else>
-      {{ $t('parseInput.tooMany.text') }}
+    <span class="body-1 font-weight-bold">
+      {{ title }}:
+      <v-tooltip bottom v-if="!hidable">
+        <template v-slot:activator="{ on }">
+          <v-btn @click="visible = !visible" icon v-on="on">
+            <v-icon>mdi-eye</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('button.showHide.tooltip') }}</span>
+      </v-tooltip>
     </span>
+    <v-fade-transition>
+      <div v-if="showChips()">
+        <div class="pl-2" v-if="synonym">
+          <div v-html="$t('parseInput.synonyms.details')"></div>
+          {{ $t('parseInput.synonyms.examplePart1') }}
+          {{ items[0].gene.name }}
+          {{ $t('parseInput.synonyms.examplePart2') }}
+          {{ items[0].realGene.symbol }}
+        </div>
+        <v-chip
+          v-for="gene in items"
+          :key="gene.gene.name"
+          class="ma-1"
+          :color="color"
+        >
+          <div class="d-flex align-center">
+            {{ gene.gene.name }}
+            <span v-if="synonym">
+              <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
+              {{ gene.realGene.symbol }}
+            </span>
+          </div>
+        </v-chip>
+      </div>
+      <span v-else>
+        <span v-if="visible">
+          {{ $t('parseInput.tooMany.text') }}
+        </span>
+      </span>
+    </v-fade-transition>
   </div>
 </template>
 
@@ -40,15 +54,18 @@ export default Vue.extend({
     items: Array,
     title: String,
     synonym: Boolean,
+    hidable: Boolean,
   },
-  data: () => ({}),
+  data: () => ({
+    visible: true,
+  }),
   computed: {},
   watch: {},
   mounted() {},
   destroyed() {},
   methods: {
     showChips() {
-      return this.items.length < 500
+      return this.items.length < 500 && this.visible
     },
   },
 })
