@@ -1,10 +1,4 @@
-import {
-  Gene,
-  GenePanel,
-  PanelSearchResult,
-  FullGene,
-  SynonymGene,
-} from "@/types/panel-types"
+import {FullGene, Gene, GenePanel, Institution, PanelSearchResult, SynonymGene,} from "@/types/panel-types"
 
 export default {
   getTempPanels: (state: any) => {
@@ -80,6 +74,15 @@ export default {
       allSynonymMap.set(synonym.synonym, synonym)
     })
     return allSynonymMap
+  },
+  getInstitutionMap: (state: any) => {
+    const allInstitutions = new Map<String, Institution>()
+    state.institutions.forEach((institution: Institution) => {
+      institution.panels.forEach((panel: string) => {
+        allInstitutions.set(panel.toUpperCase(), institution)
+      })
+    })
+    return allInstitutions
   },
   getLastSearch: (state: any) => {
     return state.lastSearch

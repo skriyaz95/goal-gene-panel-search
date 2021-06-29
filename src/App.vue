@@ -54,7 +54,7 @@ export default Vue.extend({
       this.$store.commit('resetPanels')
       var jsonPanels = new Array<any>()
       r.keys().forEach((key: any) => jsonPanels.push(key))
-      for (var i = 0; i < jsonPanels.length; i++) {
+      for (let i = 0; i < jsonPanels.length; i++) {
         var path = this.publicPath + this.sourceDir + jsonPanels[i]
         axios
           .get(path, {

@@ -99,12 +99,14 @@
     }
   },
   "panel-result": {
+    "show-institution-details": "Show Institution Details",
     "result": {
       "name": "Results",
       "title": "Total Genes Evaluated"
     },
     "table": {
       "headers": {
+        "institution-name": "Institution Name",
         "panel-name": "Gene Panel Name",
         "genes-found": "Genes Found",
         "genes-not-found": "Genes Not Found",
@@ -118,6 +120,8 @@
       "save-result": "Save this Result"
     },
     "dialog": {
+      "title-institution-details": "Institution Details",
+      "institution-website-link": "Go to Website",
       "title-genes-in-panel": "Genes in Panel",
       "title-genes-not-in-panel": "Genes Not in Panel",
       "button": {
