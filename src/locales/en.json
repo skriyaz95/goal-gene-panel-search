@@ -42,6 +42,9 @@
     },
     "showHide": {
       "tooltip": "Show/Hide"
+    },
+    "demo": {
+      "text": "Demo"
     }
   },
   "count": {
@@ -196,16 +199,17 @@
       "part3c": "items."
     },
     "geneSearch": {
-      "part1a": " validates your list of genes",
-      "part1b": " and finds which panels contain those genes.",
+      "part1a": " uses your gene list",
+      "part1b": " to find which panels contain those genes.",
       "part2a": "If some genes submitted are not valid genes, ",
       "part2b": "look in ",
       "part2c": " to get more details.",
       "part3": "Special characters are not allowed."
     },
     "panelResults": {
-      "part1a": " shows the panels containing your genes.",
-      "part2a": "Click on an cell to get more information about each value"
+      "part1a": " shows the panels containing genes",
+      "part1b": " from the items in ",
+      "part2a": "Click on a cell to get more information about each value"
     }
   }
 }

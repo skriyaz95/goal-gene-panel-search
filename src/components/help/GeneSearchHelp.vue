@@ -13,7 +13,7 @@ or a help card or other tutorial content
     <div>{{ $t('help.geneSearch.part2a') }}</div>
     <div>
       {{ $t('help.geneSearch.part2b') }}
-      <b>{{ $t('userInput.gene-list') }}</b>
+      <b>{{ $t('parsedInput.title.text') }}</b>
       {{ $t('help.geneSearch.part2c') }}
     </div>
     <div class="pt-2">{{ $t('help.geneSearch.part3') }}</div>

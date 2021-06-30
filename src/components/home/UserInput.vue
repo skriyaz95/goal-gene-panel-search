@@ -13,6 +13,14 @@
       <info-alert :active="help">
         <template v-slot:content>
           <gene-search-help />
+          <v-btn
+            class="mt-2 primary"
+            @click="startDemo()"
+            :loading="demoRunning"
+          >
+            {{ $t('button.demo.text') }}
+            <v-icon>mdi-play</v-icon>
+          </v-btn>
         </template>
       </info-alert>
       <v-form ref="form" v-model="isFormValid">
@@ -69,6 +77,7 @@ export default Vue.extend({
     geneList: String(),
     validSeparators: /[ ,;\s]+/,
     validCharacters: /^[-,;~\w\s]+$/,
+    demoRunning: false,
   }),
   computed: {
     ...mapGetters({
@@ -111,10 +120,14 @@ export default Vue.extend({
       }
     },
     clear() {
-      let form: any = this.$refs.form
-      this.geneList = String()
-      this.$store.commit('setUserGenes', [])
-      form.reset()
+      return new Promise((resolve) => {
+        let form: any = this.$refs.form
+        this.geneList = String()
+        this.$store.commit('setUserGenes', [])
+        form.reset()
+        this.demoRunning = false
+        resolve('success')
+      })
     },
     /** Clear the input if it doesn't contain any genes
      * This avoids error messages on blur
@@ -138,6 +151,31 @@ export default Vue.extend({
     },
     handleHelp() {
       this.$emit('help')
+    },
+    startDemo() {
+      if (this.demoRunning) {
+        return
+      }
+
+      //just a few entries in geneList to show how the parsing works
+      this.clear().then(() => {
+        this.demoRunning = true
+        const text = 'TP53\nBRCA1,BRCA2\nNOT_A_GENE, ALK_FUSION\nBRAF1'.split(
+          ''
+        )
+        this.geneList = ''
+        const interval = 75
+        for (let i = 0; i < text.length; i++) {
+          setTimeout(() => {
+            //crude simulation of typing
+            this.geneList += text[i]
+          }, interval * i)
+          setTimeout(() => {
+            this.demoRunning = false
+          }, interval * (text.length + 1))
+        }
+      })
+      // this.geneList = 'TP53\nBRCA1,BRCA2\nNOT_A_GENE, ALK_FUSION\nBRAF1'
     },
   },
   mounted() {
