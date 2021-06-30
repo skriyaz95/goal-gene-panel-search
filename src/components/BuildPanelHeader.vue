@@ -21,7 +21,7 @@
                 ({{ $tc('count.gene', $n(parsedGenes.notFoundGenes.length)) }})
               </v-chip>
             </template>
-            <span>{{ $t('parseInput.notFound.tooltip') }}</span>
+            <span>{{ $t('parsedInput.notFound.tooltip') }}</span>
           </v-tooltip>
           <v-tooltip bottom v-if="showSynonym">
             <template v-slot:activator="{ on }">
@@ -32,7 +32,7 @@
                 }})
               </v-chip>
             </template>
-            <span>{{ $t('parseInput.synonyms.tooltip') }}</span>
+            <span>{{ $t('parsedInput.synonyms.tooltip') }}</span>
           </v-tooltip>
           <v-tooltip bottom v-if="showSymbol">
             <template v-slot:activator="{ on }">
@@ -43,7 +43,7 @@
                 }})
               </v-chip>
             </template>
-            <span>{{ $t('parseInput.symbols.tooltip') }}</span>
+            <span>{{ $t('parsedInput.symbols.tooltip') }}</span>
           </v-tooltip>
         </span>
       </v-fade-transition>

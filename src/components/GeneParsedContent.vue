@@ -5,14 +5,14 @@
       v-if="showGenes[0]"
       color="error"
       :items="parsedGenes.notFoundGenes"
-      :title="$t('parseInput.notFound.text')"
+      :title="$t('parsedInput.notFound.text')"
       class="pb-2"
     />
     <parsed-list-item
       v-if="showGenes[1]"
       color="warning"
       :items="parsedGenes.synonymFoundGenes"
-      :title="$t('parseInput.synonyms.text')"
+      :title="$t('parsedInput.synonyms.text')"
       :synonym="true"
       class="pb-2"
     />
@@ -20,7 +20,7 @@
       v-if="showGenes[2]"
       color="success"
       :items="parsedGenes.symbolFoundGenes"
-      :title="$t('parseInput.symbols.text')"
+      :title="$t('parsedInput.symbols.text')"
     />
   </div>
 </template>
