@@ -4,14 +4,14 @@
     <parsed-list-item
       v-if="showGenes[0]"
       color="error"
-      :items="panel[1].notFoundGenes"
+      :items="parsedGenes.notFoundGenes"
       :title="$t('parseInput.notFound.text')"
       class="pb-2"
     />
     <parsed-list-item
       v-if="showGenes[1]"
       color="warning"
-      :items="panel[1].synonymFoundGenes"
+      :items="parsedGenes.synonymFoundGenes"
       :title="$t('parseInput.synonyms.text')"
       :synonym="true"
       class="pb-2"
@@ -19,7 +19,7 @@
     <parsed-list-item
       v-if="showGenes[2]"
       color="success"
-      :items="panel[1].symbolFoundGenes"
+      :items="parsedGenes.symbolFoundGenes"
       :title="$t('parseInput.symbols.text')"
     />
   </div>
@@ -31,11 +31,11 @@ import Vue from 'vue'
 import ParsedListItem from '@/components/home/ParsedListItem.vue'
 
 export default Vue.extend({
-  name: 'BuildPanelContent',
+  name: 'GeneParseContent',
   components: { ParsedListItem },
   props: {
-    showGenes: () => [Boolean, Boolean, Boolean],
-    panel: () => [String, ParsedGenes],
+    showGenes: Array,
+    parsedGenes: ParsedGenes,
   },
   data: () => ({}),
   methods: {},

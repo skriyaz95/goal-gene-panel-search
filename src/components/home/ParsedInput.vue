@@ -48,26 +48,9 @@
       </div>
       <v-fade-transition>
         <div v-if="userGenes.length != 0">
-          <parsed-list-item
-            v-if="showNotFound"
-            color="error"
-            :items="formattedGenes.notFoundGenes"
-            :title="$t('parseInput.notFound.text')"
-            class="pb-2"
-          />
-          <parsed-list-item
-            v-if="showSynonym"
-            color="warning"
-            :items="formattedGenes.synonymFoundGenes"
-            :title="$t('parseInput.synonyms.text')"
-            :synonym="true"
-            class="pb-2"
-          />
-          <parsed-list-item
-            v-if="showSymbol"
-            color="success"
-            :items="formattedGenes.symbolFoundGenes"
-            :title="$t('parseInput.symbols.text')"
+          <gene-parsed-content
+            :show-genes="[showNotFound, showSynonym, showSymbol]"
+            :parsed-genes="formattedGenes"
           />
         </div>
       </v-fade-transition>
@@ -79,11 +62,11 @@
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { ParsedGenes } from '@/types/panel-types'
-import ParsedListItem from '@/components/home/ParsedListItem.vue'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
+import GeneParsedContent from '@/components/GeneParsedContent.vue'
 
 export default Vue.extend({
-  components: { ParsedListItem },
+  components: { GeneParsedContent },
   name: 'ParsedInput',
   data: () => ({
     formattedGenes: new ParsedGenes(),
@@ -110,7 +93,12 @@ export default Vue.extend({
   mounted() {
     $getFindGenesWorker().onmessage = (event: any) => {
       if (event.data.todo == 'findAllGenes') {
-        this.formattedGenes = event.data.parsedGenes
+        this.formattedGenes = new ParsedGenes()
+        this.formattedGenes.notFoundGenes = event.data.parsedGenes.notFoundGenes
+        this.formattedGenes.synonymFoundGenes =
+          event.data.parsedGenes.synonymFoundGenes
+        this.formattedGenes.symbolFoundGenes =
+          event.data.parsedGenes.symbolFoundGenes
         // this.loading = false
       }
     }

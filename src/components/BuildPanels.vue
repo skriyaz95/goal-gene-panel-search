@@ -63,12 +63,12 @@
             <v-expansion-panel v-for="panel in tempParsedGenes" :key="panel[0]">
               <v-expansion-panel-header disable-icon-rotate>
                 <build-panel-header
-                  :panel="panel"
-                  :showGenes="[
-                    showGenes(panel[1].notFoundGenes),
-                    showGenes(panel[1].synonymFoundGenes),
-                    showGenes(panel[1].symbolFoundGenes),
-                  ]"
+                  :parsed-genes="panel[1]"
+                  :panel-name="panel[0]"
+                  :show-not-found="showGenes(panel[1].notFoundGenes)"
+                  :show-synonym="showGenes(panel[1].synonymFoundGenes)"
+                  :show-symbol="showGenes(panel[1].symbolFoundGenes)"
+                  @update-panel-name="updatePanelName($event, panel)"
                 />
 
                 <template v-slot:actions>
@@ -90,13 +90,13 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-fade-transition>
-                  <build-panel-content
-                    :showGenes="[
+                  <gene-parsed-content
+                    :show-genes="[
                       showGenes(panel[1].notFoundGenes),
                       showGenes(panel[1].synonymFoundGenes),
                       showGenes(panel[1].symbolFoundGenes),
                     ]"
-                    :panel="panel"
+                    :parsed-genes="panel[1]"
                   />
                 </v-fade-transition>
               </v-expansion-panel-content>
@@ -117,10 +117,10 @@ import download from '@/utils/download'
 import { formatObjetToJson } from '@/utils/download'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import BuildPanelHeader from '@/components/BuildPanelHeader.vue'
-import BuildPanelContent from '@/components/BuildPanelContent.vue'
+import GeneParsedContent from '@/components/GeneParsedContent.vue'
 
 export default Vue.extend({
-  components: { BuildPanelHeader, BuildPanelContent },
+  components: { BuildPanelHeader, GeneParsedContent },
   name: 'BuildPanel',
 
   data: () => ({
@@ -234,9 +234,7 @@ export default Vue.extend({
     },
     downloadAllPanels() {
       for (var i = 0; i < this.tempParsedGenes.length; i++) {
-        if (this.onlySymbolsOrSynonyms(this.tempParsedGenes[i][1])) {
-          this.downloadPanel(this.tempParsedGenes[i])
-        }
+        this.downloadPanel(this.tempParsedGenes[i])
       }
     },
     isEmptyPanels() {
@@ -260,6 +258,9 @@ export default Vue.extend({
     onlySymbolsOrSynonyms(parsedGenes: ParsedGenes) {
       return parsedGenes.notFoundGenes.length == 0
     },
+    updatePanelName(newValue: string, panel: [string, ParsedGenes]) {
+      panel[0] = newValue
+    },
   },
   computed: {
     ...mapGetters({
@@ -273,10 +274,11 @@ export default Vue.extend({
     )
     $getFindGenesWorker().onmessage = (event: any) => {
       if (event.data.todo == 'findPanelGenes') {
-        this.tempParsedGenes.push([
-          event.data.panelName,
-          event.data.parsedGenes,
-        ])
+        const parsedGenes = new ParsedGenes()
+        parsedGenes.notFoundGenes = event.data.parsedGenes.notFoundGenes
+        parsedGenes.synonymFoundGenes = event.data.parsedGenes.synonymFoundGenes
+        parsedGenes.symbolFoundGenes = event.data.parsedGenes.symbolFoundGenes
+        this.tempParsedGenes.push([event.data.panelName, parsedGenes])
       }
     }
   },
