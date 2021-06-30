@@ -2,12 +2,16 @@
   <v-container>
     <v-tabs centered v-model="tab">
       <v-tab>Panels</v-tab>
+      <v-tab>Institutions</v-tab>
       <v-tab>Database</v-tab>
       <v-tab>Theme</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item>
         <build-panels />
+      </v-tab-item>
+      <v-tab-item>
+        <build-institutions />
       </v-tab-item>
       <v-tab-item>
         <build-database />
@@ -24,6 +28,7 @@ import Vue from 'vue'
 import BuildPanels from '../components/BuildPanels.vue'
 import ThemePicker from '../components/ThemePicker.vue'
 import BuildDatabase from '../components/BuildDatabase.vue'
+import BuildInstitutions from '../components/BuildInstitutions.vue'
 
 export default Vue.extend({
   name: 'Utils',
@@ -32,6 +37,7 @@ export default Vue.extend({
     BuildPanels,
     ThemePicker,
     BuildDatabase,
+    BuildInstitutions,
   },
   data() {
     return {
