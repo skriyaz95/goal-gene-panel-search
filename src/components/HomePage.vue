@@ -1,29 +1,14 @@
 <template>
-  <v-container
-    fluid
-    class="mt-2"
-  >
-    <v-row
-      class="text-center"
-      dense
-    >
-      <v-col
-        cols="12"
-        lg="3"
-      >
-        <user-input />
+  <v-container fluid class="mt-2">
+    <v-row class="text-center" dense>
+      <v-col cols="12" lg="3">
+        <user-input :help="showHelp" @help="showHelp = !showHelp" />
       </v-col>
-      <v-col
-        cols="12"
-        lg="9"
-      >
-        <panel-result />
+      <v-col cols="12" lg="9">
+        <panel-result :help="showHelp" @help="showHelp = !showHelp" />
       </v-col>
-      <v-col
-        cols="12"
-        lg="6"
-      >
-        <parsed-input />
+      <v-col cols="12" lg="6">
+        <parsed-input :help="showHelp" @help="showHelp = !showHelp" />
       </v-col>
     </v-row>
   </v-container>
@@ -41,6 +26,11 @@ export default Vue.extend({
     UserInput,
     ParsedInput,
     PanelResult,
+  },
+  data() {
+    return {
+      showHelp: false,
+    }
   },
 })
 </script>

@@ -2,8 +2,19 @@
   <v-card outlined>
     <v-card-title>
       {{ $t('userInput.gene-list') }}
+      <v-spacer></v-spacer>
+      <help-button @action="handleHelp()" :active="help">
+        <template v-slot:content>
+          <gene-search-help />
+        </template>
+      </help-button>
     </v-card-title>
     <v-card-text>
+      <info-alert :active="help">
+        <template v-slot:content>
+          <gene-search-help />
+        </template>
+      </info-alert>
       <v-form ref="form" v-model="isFormValid">
         <v-textarea
           v-model="geneList"
@@ -40,9 +51,19 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { Gene } from '@/types/panel-types'
 import debounce from '@/utils/debounce'
+import GeneSearchHelp from '@/components/help/GeneSearchHelp.vue'
+import HelpButton from '../help/HelpButton.vue'
+import InfoAlert from '@/components/help/InfoAlert.vue'
 
 export default Vue.extend({
+  components: { GeneSearchHelp, HelpButton, InfoAlert },
   name: 'UserInput',
+  props: {
+    help: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data: () => ({
     isFormValid: true,
     geneList: String(),
@@ -114,6 +135,9 @@ export default Vue.extend({
     },
     saveLastInput() {
       this.$store.commit('updateLastSearch', this.geneList)
+    },
+    handleHelp() {
+      this.$emit('help')
     },
   },
   mounted() {
