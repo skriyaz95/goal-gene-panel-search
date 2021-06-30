@@ -1,23 +1,23 @@
 <template>
   <v-card outlined>
     <v-card-title>
-      {{ $t('parseInput.title.text') }}
+      {{ $t('parsedInput.title.text') }}
       <v-fade-transition>
         <span v-if="userGenes.length > 0" class="ml-3">
           <v-tooltip bottom v-if="showNotFound">
             <template v-slot:activator="{ on }">
               <v-chip color="error" class="ml-1 mr-1" v-on="on">
-                {{ $t('parseInput.notFound.text') }} ({{
+                {{ $t('parsedInput.notFound.text') }} ({{
                   $tc('count.gene', $n(formattedGenes.notFoundGenes.length))
                 }})
               </v-chip>
             </template>
-            <span>{{ $t('parseInput.notFound.tooltip') }}</span>
+            <span>{{ $t('parsedInput.notFound.tooltip') }}</span>
           </v-tooltip>
           <v-tooltip bottom v-if="showSynonym">
             <template v-slot:activator="{ on }">
               <v-chip color="warning" class="ml-1 mr-1" v-on="on">
-                {{ $t('parseInput.synonyms.text') }} ({{
+                {{ $t('parsedInput.synonyms.text') }} ({{
                   $tc(
                     'count.gene',
                     $n(formattedGenes.synonymFoundGenes.length)
@@ -25,26 +25,36 @@
                 }})
               </v-chip>
             </template>
-            <span>{{ $t('parseInput.synonyms.tooltip') }}</span>
+            <span>{{ $t('parsedInput.synonyms.tooltip') }}</span>
           </v-tooltip>
           <v-tooltip bottom v-if="showSymbol">
             <template v-slot:activator="{ on }">
               <v-chip color="success" class="ml-1 mr-1" v-on="on">
-                {{ $t('parseInput.symbols.text') }} ({{
+                {{ $t('parsedInput.symbols.text') }} ({{
                   $tc('count.gene', $n(formattedGenes.symbolFoundGenes.length))
                 }})
               </v-chip>
             </template>
-            <span>{{ $t('parseInput.symbols.tooltip') }}</span>
+            <span>{{ $t('parsedInput.symbols.tooltip') }}</span>
           </v-tooltip>
         </span>
       </v-fade-transition>
       <v-spacer></v-spacer>
       <v-progress-circular v-if="loading" indeterminate></v-progress-circular>
+      <help-button @action="handleHelp()" :active="help">
+        <template v-slot:content>
+          <parsed-search-help />
+        </template>
+      </help-button>
     </v-card-title>
-    <v-card-text>
+    <v-card-text class="text-left">
+      <info-alert :active="help">
+        <template v-slot:content>
+          <parsed-search-help />
+        </template>
+      </info-alert>
       <div v-if="userGenes.length == 0">
-        {{ $t('parseInput.empty.text') }}
+        {{ $t('parsedInput.empty.text') }}
       </div>
       <v-fade-transition>
         <div v-if="userGenes.length != 0">
@@ -64,10 +74,19 @@ import { mapGetters } from 'vuex'
 import { ParsedGenes } from '@/types/panel-types'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import GeneParsedContent from '@/components/GeneParsedContent.vue'
+import ParsedSearchHelp from '@/components/help/ParsedSearchHelp.vue'
+import HelpButton from '@/components/help/HelpButton.vue'
+import InfoAlert from '@/components/help/InfoAlert.vue'
 
 export default Vue.extend({
-  components: { GeneParsedContent },
+  components: { GeneParsedContent, ParsedSearchHelp, HelpButton, InfoAlert },
   name: 'ParsedInput',
+  props: {
+    help: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data: () => ({
     formattedGenes: new ParsedGenes(),
     loading: false, //processing seems too fast to need a loading state ATM
@@ -121,6 +140,9 @@ export default Vue.extend({
         todo: 'findAllGenes',
         userGenes: this.userGenes,
       })
+    },
+    handleHelp() {
+      this.$emit('help')
     },
   },
 })

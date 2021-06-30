@@ -14,10 +14,10 @@
     <v-fade-transition>
       <div v-if="showChips()">
         <div class="pl-2" v-if="synonym">
-          <div v-html="$t('parseInput.synonyms.details')"></div>
-          {{ $t('parseInput.synonyms.examplePart1') }}
+          <div v-html="$t('parsedInput.synonyms.details')"></div>
+          {{ $t('parsedInput.synonyms.examplePart1') }}
           {{ items[0].gene.name }}
-          {{ $t('parseInput.synonyms.examplePart2') }}
+          {{ $t('parsedInput.synonyms.examplePart2') }}
           {{ items[0].realGene.symbol }}
         </div>
         <v-chip
@@ -37,7 +37,7 @@
       </div>
       <span v-else>
         <span v-if="visible">
-          {{ $t('parseInput.tooMany.text') }}
+          {{ $t('parsedInput.tooMany.text') }}
         </span>
       </span>
     </v-fade-transition>

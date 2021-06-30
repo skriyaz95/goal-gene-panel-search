@@ -1,10 +1,6 @@
 <template>
   <div>
-    <v-dialog
-      v-model="institutionDialog"
-      persistent
-      max-width="800px"
-    >
+    <v-dialog v-model="institutionDialog" persistent max-width="800px">
       <v-card>
         <v-card-title>
           {{ $t('panel-result.dialog.title-institution-details') }}
@@ -23,7 +19,11 @@
               <v-icon>mdi-phone-in-talk</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title><a :href="linkTo(institution.phone, 'phone')">{{ institution.phone }}</a></v-list-item-title>
+              <v-list-item-title>
+                <a :href="linkTo(institution.phone, 'phone')">
+                  {{ institution.phone }}
+                </a>
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item>
@@ -31,7 +31,11 @@
               <v-icon>mdi-email</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title><a :href="linkTo(institution.email, 'email')">{{ institution.email }}</a></v-list-item-title>
+              <v-list-item-title>
+                <a :href="linkTo(institution.email, 'email')">
+                  {{ institution.email }}
+                </a>
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item>
@@ -39,50 +43,36 @@
               <v-icon>mdi-earth</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title><a :href="institution.website" target="_blank"> {{ $t('panel-result.dialog.institution-website-link')}} </a></v-list-item-title>
+              <v-list-item-title>
+                <a :href="institution.website" target="_blank">
+                  {{ $t('panel-result.dialog.institution-website-link') }}
+                </a>
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn
-            color="green darken-1"
-            text
-            @click="institutionDialog = false"
-          >
+          <v-btn color="green darken-1" text @click="institutionDialog = false">
             {{ $t('panel-result.dialog.button.close') }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog
-      v-model="showDialog"
-      persistent
-      max-width="800px"
-    >
+    <v-dialog v-model="showDialog" persistent max-width="800px">
       <v-card>
         <v-card-title>
-          <span
-            v-if="geneType === 'genesInPanel'"
-            class="text-h5"
-          >
+          <span v-if="geneType === 'genesInPanel'">
             {{ $t('panel-result.dialog.title-genes-in-panel') }}:
             {{ panelName }}
           </span>
-          <span
-            v-else
-            class="text-h5"
-          >
+          <span v-else>
             {{ $t('panel-result.dialog.title-genes-not-in-panel') }}:
             {{ panelName }}
           </span>
         </v-card-title>
         <v-card-text>
-          <v-virtual-scroll
-            :items="genes"
-            height="400"
-            item-height="64"
-          >
+          <v-virtual-scroll :items="genes" height="400" item-height="64">
             <template v-slot:default="{ item }">
               <v-list-item :key="item">
                 <v-list-item-content>
@@ -95,45 +85,48 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn
-            color="green darken-1"
-            text
-            @click="showDialog = false"
-          >
+          <v-btn color="green darken-1" text @click="showDialog = false">
             {{ $t('panel-result.dialog.button.close') }}
           </v-btn>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="downloadGenes(genes)"
-          >
+          <v-btn color="green darken-1" text @click="downloadGenes(genes)">
             {{ $t('panel-result.dialog.button.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-card outlined>
-      <v-card-text>
+      <v-card-title>
+        {{ $t('panel-result.result.name') }}
+        <v-spacer></v-spacer>
+        <help-button @action="handleHelp()" :active="help">
+          <template v-slot:content>
+            <panel-results-help />
+          </template>
+        </help-button>
+      </v-card-title>
+      <v-card-text class="body-1">
+        <info-alert :active="help">
+          <template v-slot:content>
+            <panel-results-help />
+          </template>
+        </info-alert>
+        <span v-if="userGenes.length > 0">
+          {{ $t('panel-result.result.title') }}: {{ userGenes.length }}
+        </span>
         <v-data-table
           :headers="tableHeaders"
           :items="getPanelResult()"
           item-key="name"
         >
-          <template v-slot:top>
-            <v-toolbar flat>
-              <v-toolbar-title>
-                {{ $t('panel-result.result.name') }}
-                <span v-if="userGenes.length > 0">
-                  ({{ $t('panel-result.result.title') }}:
-                  {{ userGenes.length }})
-                </span>
-              </v-toolbar-title>
-            </v-toolbar>
-          </template>
           <template v-slot:[`item.institution`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn text v-on="on" v-if="!isInstitutionEmpty(item.institution)" @click.stop="openInstitutionDetails(item.institution)">
+                <v-btn
+                  text
+                  v-on="on"
+                  v-if="!isInstitutionEmpty(item.institution)"
+                  @click.stop="openInstitutionDetails(item.institution)"
+                >
                   {{ item.institution.name }}
                   <v-icon>mdi-arrow-top-right-thick</v-icon>
                 </v-btn>
@@ -175,11 +168,7 @@
           <template v-slot:[`item.actions`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  v-on="on"
-                  @click.stop="downloadResult(item)"
-                >
+                <v-btn icon v-on="on" @click.stop="downloadResult(item)">
                   <v-icon>mdi-content-save</v-icon>
                 </v-btn>
               </template>
@@ -194,12 +183,27 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {Gene, Institution, PanelResultFormattedRow, PanelSearchResult,} from '@/types/panel-types'
-import {mapGetters} from 'vuex'
-import download, {formatObjetToJson} from '@/utils/download'
+import {
+  Gene,
+  Institution,
+  PanelResultFormattedRow,
+  PanelSearchResult,
+} from '@/types/panel-types'
+import { mapGetters } from 'vuex'
+import download, { formatObjetToJson } from '@/utils/download'
+import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
+import HelpButton from '@/components/help/HelpButton.vue'
+import InfoAlert from '@/components/help/InfoAlert.vue'
 
 export default Vue.extend({
+  components: { PanelResultsHelp, HelpButton, InfoAlert },
   name: 'PanelResult',
+  props: {
+    help: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       institutionDialog: false,
@@ -240,7 +244,7 @@ export default Vue.extend({
     ...mapGetters({
       userGenes: 'getUserGenes',
       userGenesInPanels: 'getUserGenesInPanels',
-      institutionMap: 'getInstitutionMap'
+      institutionMap: 'getInstitutionMap',
     }),
   },
   methods: {
@@ -254,8 +258,8 @@ export default Vue.extend({
         )
 
         let institution = this.institutionMap.get(panel.name.toUpperCase())
-        if(!institution) {
-          institution  = {};
+        if (!institution) {
+          institution = {}
         }
 
         return new PanelResultFormattedRow(
@@ -296,12 +300,15 @@ export default Vue.extend({
       return formatObjetToJson(panel, pretty)
     },
     linkTo(link: string, linkType: string) {
-      const linkPrefix = linkType == 'phone' ?  "tel:" : "mailto:"
+      const linkPrefix = linkType == 'phone' ? 'tel:' : 'mailto:'
       return linkPrefix + link
     },
     isInstitutionEmpty(institution: Institution) {
-      return Object.keys(institution).length < 0;
-    }
+      return Object.keys(institution).length < 0
+    },
+    handleHelp() {
+      this.$emit('help')
+    },
   },
 })
 </script>
