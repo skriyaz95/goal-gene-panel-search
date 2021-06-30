@@ -11,6 +11,9 @@
     },
     "panelName": {
       "text": "Panel Name"
+    },
+    "selectInstitution": {
+      "text": "Select an institution"
     }
   },
   "button": {

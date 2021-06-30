@@ -1,4 +1,11 @@
-import {FullGene, Gene, GenePanel, Institution, PanelSearchResult, SynonymGene,} from "@/types/panel-types"
+import {
+  FullGene,
+  Gene,
+  GenePanel,
+  Institution,
+  PanelSearchResult,
+  SynonymGene,
+} from "@/types/panel-types"
 
 export default {
   getPanels: (state: any) => {
@@ -81,7 +88,21 @@ export default {
     })
     return allInstitutions
   },
+  getInstitutionsByName: (state: any) => {
+    const allInstitutions = new Map<String, Institution>()
+    state.institutions.forEach((institution: Institution) => {
+      allInstitutions.set(institution.name, institution)
+    })
+    return allInstitutions
+  },
   getLastSearch: (state: any) => {
     return state.lastSearch
+  },
+  getInstitutionDropDownItems: (state: any) => {
+    const institutionDropDownItems = new Array<{}>()
+    state.institutions.forEach((institution: Institution) => {
+      institutionDropDownItems.push(institution.name)
+    })
+    return institutionDropDownItems.sort()
   },
 }
