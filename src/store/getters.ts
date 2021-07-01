@@ -15,7 +15,7 @@ export default {
     return state.userGenes
   },
   getUserGenesSorted: (state: any) => {
-    return state.userGenes.sort((a: Gene, b: Gene) => {
+    return [...state.userGenes].sort((a: Gene, b: Gene) => {
       if (a.name < b.name) {
         return -1
       }
@@ -88,21 +88,37 @@ export default {
     })
     return allInstitutions
   },
-  getInstitutionsByName: (state: any) => {
-    const allInstitutions = new Map<String, Institution>()
-    state.institutions.forEach((institution: Institution) => {
-      allInstitutions.set(institution.name, institution)
-    })
-    return allInstitutions
-  },
+  //not use for now
+  // getInstitutionsByName: (state: any) => {
+  //   const allInstitutions = new Map<String, Institution>()
+  //   state.institutions.forEach((institution: Institution) => {
+  //     allInstitutions.set(institution.name, institution)
+  //   })
+  //   return allInstitutions
+  // },
   getLastSearch: (state: any) => {
     return state.lastSearch
   },
-  getInstitutionDropDownItems: (state: any) => {
-    const institutionDropDownItems = new Array<{}>()
-    state.institutions.forEach((institution: Institution) => {
-      institutionDropDownItems.push(institution.name)
+  //not use for now
+  // getInstitutionDropDownItems: (state: any) => {
+  //   const institutionDropDownItems = new Array<{}>()
+  //   state.institutions.forEach((institution: Institution) => {
+  //     institutionDropDownItems.push(institution.name)
+  //   })
+  //   return institutionDropDownItems.sort()
+  // },
+  getInstitutionsSorted: (state: any) => {
+    return [...state.institutions].sort((a: Institution, b: Institution) => {
+      if (a.name < b.name) {
+        return -1
+      }
+      if (a.name > b.name) {
+        return 1
+      }
+      return 0
     })
-    return institutionDropDownItems.sort()
+  },
+  getInstitutions: (state: any) => {
+    return state.institutions
   },
 }

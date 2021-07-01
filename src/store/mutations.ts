@@ -1,4 +1,4 @@
-import { Gene, PanelPayload, SynonymGene } from "@/types/panel-types"
+import { Gene, GenePanel, PanelPayload, SynonymGene } from "@/types/panel-types"
 
 export default {
   addPanel(state: any, payload: PanelPayload) {
@@ -9,6 +9,9 @@ export default {
   },
   resetPanels(state: any) {
     state.panels = []
+  },
+  updatePanels(state: any, payload: Array<GenePanel>) {
+    state.panels = payload
   },
   clearUserGenes(state: any) {
     state.userGenes = []

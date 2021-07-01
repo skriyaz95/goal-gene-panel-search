@@ -6,50 +6,7 @@
           {{ $t('panel-result.dialog.title-institution-details') }}
         </v-card-title>
         <v-card-text>
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-bank</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>{{ institution.name }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-phone-in-talk</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>
-                <a :href="linkTo(institution.phone, 'phone')">
-                  {{ institution.phone }}
-                </a>
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-email</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>
-                <a :href="linkTo(institution.email, 'email')">
-                  {{ institution.email }}
-                </a>
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-earth</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>
-                <a :href="institution.website" target="_blank">
-                  {{ $t('panel-result.dialog.institution-website-link') }}
-                </a>
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+          <institution-details :institution="currentInstitution" />
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -194,9 +151,10 @@ import download, { formatObjetToJson } from '@/utils/download'
 import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
+import InstitutionDetails from './InstitutionDetails.vue'
 
 export default Vue.extend({
-  components: { PanelResultsHelp, HelpButton, InfoAlert },
+  components: { PanelResultsHelp, HelpButton, InfoAlert, InstitutionDetails },
   name: 'PanelResult',
   props: {
     help: {
@@ -208,7 +166,7 @@ export default Vue.extend({
     return {
       institutionDialog: false,
       showDialog: false,
-      institution: {},
+      currentInstitution: new Institution('', '', '', '', []),
       geneType: new String(),
       panelName: new String(),
       genes: new Array<string>(),
@@ -280,7 +238,8 @@ export default Vue.extend({
       this.showDialog = true
     },
     openInstitutionDetails(institution: Institution) {
-      this.institution = institution
+      console.log(institution)
+      this.currentInstitution = institution
       this.institutionDialog = true
     },
     downloadGenes(genes: string) {
@@ -298,10 +257,6 @@ export default Vue.extend({
     },
     formatResult(panel: any, pretty: boolean) {
       return formatObjetToJson(panel, pretty)
-    },
-    linkTo(link: string, linkType: string) {
-      const linkPrefix = linkType == 'phone' ? 'tel:' : 'mailto:'
-      return linkPrefix + link
     },
     isInstitutionEmpty(institution: Institution) {
       return Object.keys(institution).length < 0

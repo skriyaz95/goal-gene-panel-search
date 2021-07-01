@@ -5,9 +5,25 @@
       <v-col cols="12" lg="4">
         <v-card outlined>
           <v-card-text>
-            <div class="mb-1 mt-1">
-              {{ $t('buidInstitutions.list.text') }}
-            </div>
+            <div class="mb-1 mt-1">{{ $t('buidInstitutions.list.text') }}:</div>
+            <v-list-item-group
+              v-model="institutionIndex"
+              active-class="primary lighten-2"
+            >
+              <v-list>
+                <v-list-item
+                  v-for="(institution, index) in tempInstitutionSorted"
+                  :key="index"
+                >
+                  <v-list-item-icon>
+                    <v-icon>mdi-bank</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    {{ institution.name }}
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-list-item-group>
           </v-card-text>
           <v-card-actions>
             <v-tooltip bottom>
@@ -36,7 +52,15 @@
       </v-col>
       <v-col cols="12" lg="8">
         <v-card outlined class="mb-2">
-          <v-card-text> </v-card-text>
+          <v-card-text>
+            <institution-details
+              :institution="getCurrentInstitution()"
+              editable
+              :panels="panelNames"
+              :institution-map="tempInstitutionMap"
+              @name-changed="updateTempInstitutions"
+            />
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -44,34 +68,88 @@
 </template>
 
 <script lang="ts">
+import { GenePanel, Institution } from '@/types/panel-types'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
-// import download from '@/utils/download'
-// import { formatObjetToJson } from '@/utils/download'
+import InstitutionDetails from './home/InstitutionDetails.vue'
+import download from '@/utils/download'
+import { formatObjetToJson } from '@/utils/download'
 
 export default Vue.extend({
-  components: {},
+  components: { InstitutionDetails },
   name: 'BuildInstitutions',
 
   data: () => ({
     publicPath: process.env.BASE_URL,
+    institutionIndex: 0,
+    previousIndex: 0, //to prevent undefined error when clicking on the same institution twice
+    tempInstitutionSorted: new Array<Institution>(),
+    tempInstitutionMap: new Map<string, Institution>(),
   }),
   methods: {
-    addInstitution() {},
+    addInstitution() {
+      const newInstitution = new Institution('New', '', '', '', [])
+      this.tempInstitutionSorted.push(newInstitution)
+      this.tempInstitutionSorted.sort(this.sortInstitutionsByName)
+      this.updateTempInstitutionMap()
+    },
+    validInstitutions() {
+      //TODO validate form
+      return true
+    },
     downloadInstitutions() {
-      // const newInstitutions = Array.from(institutionMapCopy.values())
-      // download(
-      //   'institutions.json',
-      //   formatObjetToJson(newInstitutions, false),
-      //   'text/json'
-      // )
+      download(
+        'institutions.json',
+        formatObjetToJson(this.tempInstitutionSorted, false),
+        'text/json'
+      )
+    },
+    getCurrentInstitution(): Institution | null {
+      if (this.institutionIndex != undefined) {
+        this.previousIndex = this.institutionIndex
+      }
+      return this.tempInstitutionSorted[this.previousIndex]
+    },
+    updateTempInstitutionsFromStore() {
+      this.tempInstitutionSorted = JSON.parse(JSON.stringify(this.institutions))
+    },
+    updateTempInstitutions(name: string) {
+      this.tempInstitutionSorted.sort(this.sortInstitutionsByName)
+      for (let i = 0; i < this.tempInstitutionSorted.length; i++) {
+        if (this.tempInstitutionSorted[i].name === name) {
+          this.institutionIndex = i
+          break
+        }
+      }
+    },
+    updateTempInstitutionMap() {
+      this.tempInstitutionMap = new Map<string, Institution>()
+      this.tempInstitutionSorted.forEach((i: Institution) =>
+        this.tempInstitutionMap.set(i.name, i)
+      )
+    },
+    sortInstitutionsByName(a: Institution, b: Institution) {
+      if (a.name < b.name) {
+        return -1
+      }
+      if (a.name > b.name) {
+        return 1
+      }
+      return 0
     },
   },
   computed: {
     ...mapGetters({
-      institutionsByName: 'getInstitutionsByName',
+      institutions: 'getInstitutionsSorted',
+      panels: 'getPanels',
     }),
+    panelNames(): string[] {
+      return this.panels.map((p: GenePanel) => p.name.toUpperCase())
+    },
   },
-  mounted() {},
+  mounted() {
+    this.updateTempInstitutionsFromStore()
+    this.updateTempInstitutionMap()
+  },
 })
 </script>

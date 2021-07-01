@@ -81,6 +81,7 @@
                 />
 
                 <template v-slot:actions>
+                  <!-- //removed from now
                   <v-row align="center" justify="end">
                     <v-col class="flex-grow-1 flex-shrink-0">
                       <v-autocomplete
@@ -116,7 +117,23 @@
                     <v-col class="flex-grow-0 flex-shrink-1">
                       <v-icon> mdi-chevron-down </v-icon>
                     </v-col>
-                  </v-row>
+                  </v-row> -->
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                      <span v-on="on">
+                        <v-btn icon @click.stop="downloadPanel(panel)">
+                          <v-icon>mdi-content-save</v-icon>
+                        </v-btn>
+                      </span>
+                    </template>
+                    <span
+                      v-if="onlySymbolsOrSynonyms(panelBuilder.parsedGenes)"
+                    >
+                      {{ $t('button.saveOnePanel.tooltip') }}
+                    </span>
+                    <span v-else>{{ $t('button.saveWarning.tooltip') }}</span>
+                  </v-tooltip>
+                  <v-icon> mdi-chevron-down </v-icon>
                 </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -146,7 +163,7 @@ import { mapGetters } from 'vuex'
 import {
   Gene,
   GenePanel,
-  Institution,
+  // Institution,
   PanelBuilder,
   ParsedGene,
   ParsedGenes,
@@ -255,7 +272,12 @@ export default Vue.extend({
     formatPanel(panel: GenePanel, pretty: boolean) {
       return formatObjetToJson(panel, pretty)
     },
-    downloadPanel(panelBuilder: PanelBuilder) {
+    downloadPanel(genePanel: GenePanel) {
+      const content = this.formatPanel(genePanel, false)
+      const filename = genePanel.name.replaceAll(/[ ]+/g, '_') + '.json'
+      download(filename, content, 'text/json')
+    },
+    buildGenePanelObject(panelBuilder: PanelBuilder): GenePanel {
       //make sure there are no dups after adding synonyms
       const uniqGenes = new Set<string>(
         panelBuilder.parsedGenes.symbolFoundGenes.map((pg) => pg.gene.name)
@@ -266,46 +288,48 @@ export default Vue.extend({
       synonymsConverted.forEach((s) => uniqGenes.add(s))
 
       const genes = Array.from(uniqGenes).map((s) => new Gene(s))
-      const content = this.formatPanel(
-        new GenePanel(panelBuilder.panelName, genes),
-        false
-      )
-      const filename = panelBuilder.panelName.replaceAll(/[ ]+/g, '_') + '.json'
-      download(filename, content, 'text/json')
+      const genePanel = new GenePanel(panelBuilder.panelName, genes)
+      return genePanel
     },
     downloadAllPanels() {
+      const genePanelsToSave = new Array<GenePanel>()
       for (var i = 0; i < this.tempParsedGenes.length; i++) {
-        this.downloadPanel(this.tempParsedGenes[i])
+        const genePanel = this.buildGenePanelObject(this.tempParsedGenes[i])
+        genePanelsToSave.push(genePanel)
+        this.downloadPanel(genePanel)
       }
-      this.downloadInstitutions()
+      this.$store.commit('updatePanels', genePanelsToSave)
+      //removed from now
+      // this.downloadInstitutions()
     },
-    downloadInstitutions() {
-      const institutionMapCopy = new Map<string, Institution>()
-      this.institutionsByName.forEach((value: Institution, key: string) => {
-        const newInstitution = new Institution(
-          value.name,
-          value.phone,
-          value.email,
-          value.website,
-          []
-        )
-        institutionMapCopy.set(key, newInstitution)
-      })
-      for (var i = 0; i < this.tempParsedGenes.length; i++) {
-        const name = this.tempParsedGenes[i].institutionName
-        const institution: Institution | undefined =
-          institutionMapCopy.get(name)
-        if (institution) {
-          institution.panels.push(this.tempParsedGenes[i].panelName)
-        }
-      }
-      const newInstitutions = Array.from(institutionMapCopy.values())
-      download(
-        'institutions.json',
-        formatObjetToJson(newInstitutions, false),
-        'text/json'
-      )
-    },
+    //removed from now
+    // downloadInstitutions() {
+    //   const institutionMapCopy = new Map<string, Institution>()
+    //   this.institutionsByName.forEach((value: Institution, key: string) => {
+    //     const newInstitution = new Institution(
+    //       value.name,
+    //       value.phone,
+    //       value.email,
+    //       value.website,
+    //       []
+    //     )
+    //     institutionMapCopy.set(key, newInstitution)
+    //   })
+    //   for (var i = 0; i < this.tempParsedGenes.length; i++) {
+    //     const name = this.tempParsedGenes[i].institutionName
+    //     const institution: Institution | undefined =
+    //       institutionMapCopy.get(name)
+    //     if (institution) {
+    //       institution.panels.push(this.tempParsedGenes[i].panelName)
+    //     }
+    //   }
+    //   const newInstitutions = Array.from(institutionMapCopy.values())
+    //   download(
+    //     'institutions.json',
+    //     formatObjetToJson(newInstitutions, false),
+    //     'text/json'
+    //   )
+    // },
     isEmptyPanels() {
       return !this.tempParsedGenes || this.tempParsedGenes.length == 0
     },
@@ -334,9 +358,10 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       panels: 'getPanels',
-      institutionMap: 'getInstitutionMap',
-      institutionItems: 'getInstitutionDropDownItems',
-      institutionsByName: 'getInstitutionsByName',
+      //removed from now
+      // institutionMap: 'getInstitutionMap',
+      // institutionItems: 'getInstitutionDropDownItems',
+      // institutionsByName: 'getInstitutionsByName',
     }),
   },
   mounted() {

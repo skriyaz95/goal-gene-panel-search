@@ -87,9 +87,9 @@
       </v-list-item>
       <v-list-item
         link
-        :to="{ name: 'Utils' }"
+        :to="{ name: 'Utils', query: { tab: 'panels' } }"
         active-class="primary lighten-2"
-        exact
+        exact-path
         @click.stop=""
       >
         <v-list-item-icon>

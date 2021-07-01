@@ -11,7 +11,7 @@
     "phone": "(214)-648-3111",
     "email": "abc@utsouthwestern.edu",
     "website": "https://www.utsouthwestern.edu/departments/bioinformatics/",
-    "panels": ["UTSW_V4_HEME", "UTSW_V4_PANCANCER", "UTSW_V4_RNASEQ"]
+    "panels": ["UTSW_V4_HEME", "UTSW_V4_PANCANCER"]
   },
   {
     "name": "Foundation One",
