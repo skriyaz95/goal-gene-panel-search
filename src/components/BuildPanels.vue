@@ -30,7 +30,12 @@
           <v-card-actions>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn class="primary" v-on="on" @click="buildPanels">
+                <v-btn
+                  class="primary"
+                  v-on="on"
+                  @click="buildPanels"
+                  :disabled="loading"
+                >
                   {{ $t('button.buildPanels.text') }}
                 </v-btn>
               </template>
@@ -40,7 +45,7 @@
               <template v-slot:activator="{ on }">
                 <v-btn
                   class="primary ml-2"
-                  :disabled="isEmptyPanels()"
+                  :disabled="isEmptyPanels() || loading"
                   v-on="on"
                   @click="downloadAllPanels"
                 >
@@ -49,6 +54,12 @@
               </template>
               <span>{{ $t('button.saveAllPanels.tooltip') }}</span>
             </v-tooltip>
+            <v-progress-linear
+              class="ml-2"
+              v-model="progress"
+              :active="loading"
+            >
+            </v-progress-linear>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -184,9 +195,13 @@ export default Vue.extend({
     panelFileNames: new Array<string>(),
     publicPath: process.env.BASE_URL,
     tempParsedGenes: new Array<PanelBuilder>(),
+    started: false,
+    progress: 0,
   }),
   methods: {
     buildPanels() {
+      this.started = true
+      this.progress = 0
       this.tempParsedGenes = new Array<PanelBuilder>()
       for (var i = 0; i < this.panelFileNames.length; i++) {
         var path = this.publicPath + this.rawDir + this.panelFileNames[i]
@@ -195,6 +210,8 @@ export default Vue.extend({
             params: {},
           })
           .then((response) => {
+            this.started = false
+            this.progress += 100 / this.panelFileNames.length
             const responseURLItems = response.request.responseURL.split('/')
             const panelFileName = responseURLItems[responseURLItems.length - 1]
             const extension = /\.csv$/.test(panelFileName) ? '.csv' : '.bed'
@@ -363,6 +380,13 @@ export default Vue.extend({
       // institutionItems: 'getInstitutionDropDownItems',
       // institutionsByName: 'getInstitutionsByName',
     }),
+    loading(): boolean {
+      return (
+        this.started ||
+        (this.tempParsedGenes.length > 0 &&
+          this.tempParsedGenes.length != this.panelFileNames.length)
+      )
+    },
   },
   mounted() {
     this.listPanelFiles(
