@@ -87,6 +87,20 @@
       </v-list-item>
       <v-list-item
         link
+        :to="{ name: 'Explore', query: { tab: 'panels' } }"
+        active-class="primary lighten-2"
+        exact-path
+        @click.stop=""
+      >
+        <v-list-item-icon>
+          <v-icon>mdi-database-search</v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>
+          {{ $t('navigation.explore.text') }}
+        </v-list-item-title>
+      </v-list-item>
+      <v-list-item
+        link
         :to="{ name: 'Utils', query: { tab: 'panels' } }"
         active-class="primary lighten-2"
         exact-path

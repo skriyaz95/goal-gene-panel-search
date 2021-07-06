@@ -32,7 +32,7 @@ export default {
       if (genes.genesInPanel.length > 0 || genes.genesNotInPanel.length > 0) {
         result.push(
           new PanelSearchResult(
-            panel.name.toUpperCase(),
+            panel.name,
             genes.genesInPanel,
             genes.genesNotInPanel,
           ),
@@ -83,7 +83,7 @@ export default {
     const allInstitutions = new Map<String, Institution>()
     state.institutions.forEach((institution: Institution) => {
       institution.panels.forEach((panel: string) => {
-        allInstitutions.set(panel.toUpperCase(), institution)
+        allInstitutions.set(panel, institution)
       })
     })
     return allInstitutions
@@ -121,4 +121,22 @@ export default {
   getInstitutions: (state: any) => {
     return state.institutions
   },
+  getPanelsSorted: (state: any) => {
+    return [...state.panels].sort((a: GenePanel, b: GenePanel) => {
+      if (a.name < b.name) {
+        return -1
+      }
+      if (a.name > b.name) {
+        return 1
+      }
+      return 0
+    })
+  },
+  // getPanelsByName: (state: any) => {
+  //   const allPanels = new Map<String, GenePanel>()
+  //   state.panels.forEach((panel: GenePanel) => {
+  //     allPanels.set(panel.name, panel)
+  //   })
+  //   return allPanels
+  // },
 }

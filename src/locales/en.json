@@ -76,6 +76,15 @@
       "title": {
         "text": "Utils"
       }
+    },
+    "explore": {
+      "text": "Explore",
+      "toolbar": {
+        "text": "Browse Data"
+      },
+      "title": {
+        "text": "Explore"
+      }
     }
   },
   "themePicker": {
@@ -249,6 +258,29 @@
     "panels": {
       "text": "Panels",
       "tooltip": "Institution Gene Panels"
+    }
+  },
+  "explore": {
+    "panels": {
+      "list": {
+        "text": "Existing Panels"
+      }
+    },
+    "genome": {
+      "title": {
+        "text": "Known Genes"
+      },
+      "search": {
+        "text": "Lookup Symbols, Synonyms, Ids, etc."
+      },
+      "genelink": {
+        "text": "NCBI Gene",
+        "tooltip": "Open Link to NCBI Gene Database"
+      },
+      "geneinfoSource": {
+        "text": "Gene Info File",
+        "tooltip": "Download gene_info file from NCBI Gene Database"
+      }
     }
   }
 }

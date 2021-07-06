@@ -25,7 +25,7 @@
               </v-list>
             </v-list-item-group>
           </v-card-text>
-          <v-card-actions>
+          <v-card-actions v-if="editable">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
                 <v-btn class="primary" v-on="on" @click="addInstitution()">
@@ -55,10 +55,10 @@
           <v-card-text>
             <institution-details
               :institution="getCurrentInstitution()"
-              editable
+              :editable="editable"
               :panels="panelNames"
-              :institution-map="tempInstitutionMap"
               @name-changed="updateTempInstitutions"
+              :show-read-only-panels="showReadOnlyPanels"
             />
           </v-card-text>
         </v-card>
@@ -78,20 +78,22 @@ import { formatObjetToJson } from '@/utils/download'
 export default Vue.extend({
   components: { InstitutionDetails },
   name: 'BuildInstitutions',
-
+  props: {
+    editable: Boolean,
+    showReadOnlyPanels: Boolean,
+  },
   data: () => ({
     publicPath: process.env.BASE_URL,
     institutionIndex: 0,
     previousIndex: 0, //to prevent undefined error when clicking on the same institution twice
     tempInstitutionSorted: new Array<Institution>(),
-    tempInstitutionMap: new Map<string, Institution>(),
   }),
   methods: {
     addInstitution() {
       const newInstitution = new Institution('New', '', '', '', [])
       this.tempInstitutionSorted.push(newInstitution)
       this.tempInstitutionSorted.sort(this.sortInstitutionsByName)
-      this.updateTempInstitutionMap()
+      this.updateTempInstitutions('New')
     },
     validInstitutions() {
       //TODO validate form
@@ -112,6 +114,17 @@ export default Vue.extend({
     },
     updateTempInstitutionsFromStore() {
       this.tempInstitutionSorted = JSON.parse(JSON.stringify(this.institutions))
+      for (let i = 0; i < this.tempInstitutionSorted.length; i++) {
+        for (let j = 0; j < this.tempInstitutionSorted[i].panels.length; j++) {
+          if (
+            this.panelNames.indexOf(this.tempInstitutionSorted[i].panels[j]) ==
+            -1
+          ) {
+            this.tempInstitutionSorted[i].panels = []
+            break
+          }
+        }
+      }
     },
     updateTempInstitutions(name: string) {
       this.tempInstitutionSorted.sort(this.sortInstitutionsByName)
@@ -121,12 +134,6 @@ export default Vue.extend({
           break
         }
       }
-    },
-    updateTempInstitutionMap() {
-      this.tempInstitutionMap = new Map<string, Institution>()
-      this.tempInstitutionSorted.forEach((i: Institution) =>
-        this.tempInstitutionMap.set(i.name, i)
-      )
     },
     sortInstitutionsByName(a: Institution, b: Institution) {
       if (a.name < b.name) {
@@ -144,12 +151,11 @@ export default Vue.extend({
       panels: 'getPanels',
     }),
     panelNames(): string[] {
-      return this.panels.map((p: GenePanel) => p.name.toUpperCase())
+      return this.panels.map((p: GenePanel) => p.name)
     },
   },
   mounted() {
     this.updateTempInstitutionsFromStore()
-    this.updateTempInstitutionMap()
   },
 })
 </script>

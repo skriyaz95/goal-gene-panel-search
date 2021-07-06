@@ -106,6 +106,22 @@
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+      <v-list-item v-if="showReadOnlyPanels">
+        <v-list-item-icon>
+          <v-icon>mdi-dna</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            <v-chip
+              class="mr-2"
+              v-for="(panel, index) in institution.panels"
+              :key="index"
+            >
+              {{ panel }}
+            </v-chip>
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
   </div>
 </template>
@@ -129,6 +145,10 @@ export default Vue.extend({
     panels: {
       type: Array,
       default: () => [],
+    },
+    showReadOnlyPanels: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

@@ -38,7 +38,7 @@ import axios from 'axios'
 import { mapGetters } from 'vuex'
 import { PanelPayload } from '@/types/panel-types'
 import NavigationMenu from '@/components/NavigationMenu.vue'
-import { TranslateResult } from 'vue-i18n'
+// import { TranslateResult } from 'vue-i18n'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
 
 export default Vue.extend({
@@ -115,12 +115,12 @@ export default Vue.extend({
       allGeneMap: 'getAllGeneMap',
       synonymMap: 'getSynonymMap',
     }),
-    toolbarTitle(): TranslateResult {
-      if (this.$route.meta && this.$route.meta.i18n) {
-        return this.$t(this.$route.meta.i18n + '.toolbar.text')
-      }
-      return 'GTI'
-    },
+    // toolbarTitle(): TranslateResult {
+    //   if (this.$route.meta && this.$route.meta.i18n) {
+    //     return this.$t(this.$route.meta.i18n + '.toolbar.text')
+    //   }
+    //   return 'GTI'
+    // },
   },
   mounted() {
     this.initWorkers()

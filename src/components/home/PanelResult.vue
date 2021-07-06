@@ -217,7 +217,7 @@ export default Vue.extend({
           gene.name.toUpperCase()
         )
 
-        let institution = this.institutionMap.get(panel.name.toUpperCase())
+        let institution = this.institutionMap.get(panel.name)
         if (!institution) {
           institution = {}
         }
