@@ -4,7 +4,7 @@
       :hue-rotation="hueRotationFilter()"
       :saturation="saturationFilter()"
     />
-    <v-app-bar app color="primary" dark flat clipped-left>
+    <!-- <v-app-bar app color="primary" dark flat clipped-left>
       <div class="d-flex align-center">
         <span class="title" v-text="toolbarTitle" />
       </div>
@@ -24,7 +24,7 @@
         </template>
         <span>{{ $t('button.link.repo.tooltip') }}</span>
       </v-tooltip>
-    </v-app-bar>
+    </v-app-bar> -->
 
     <v-main>
       <router-view />
