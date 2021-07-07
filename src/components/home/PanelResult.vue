@@ -113,22 +113,22 @@
         <v-container v-if="userGenes.length > 0 || notFoundGenes.length > 0">
           <v-row no-gutters>
             <v-col
-                cols="12"
-                sm="6"
-                md="4"
-                offset-md="4"
+              cols="12"
+              sm="6"
+              md="4"
+              offset-md="4"
             >
               <v-simple-table class>
                 <template v-slot:default>
                   <tbody>
-                  <tr v-if="userGenes.length > 0">
-                    <td>{{ $t('panel-result.result.title') }}</td>
-                    <td>{{ userGenes.length }}</td>
-                  </tr>
-                  <tr v-if="notFoundGenes.length > 0">
-                    <td>{{ $t('panel-result.result.not-found-genes-title') }}</td>
-                    <td>{{ notFoundGenes.length }}</td>
-                  </tr>
+                    <tr v-if="userGenes.length > 0">
+                      <td>{{ $t('panel-result.result.title') }}</td>
+                      <td>{{ userGenes.length }}</td>
+                    </tr>
+                    <tr v-if="notFoundGenes.length > 0">
+                      <td>{{ $t('panel-result.result.not-found-genes-title') }}</td>
+                      <td>{{ notFoundGenes.length }}</td>
+                    </tr>
                   </tbody>
                 </template>
               </v-simple-table>
@@ -202,20 +202,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {
-  Gene,
-  Institution,
-  PanelResultFormattedRow,
-  PanelSearchResult,
-} from '@/types/panel-types'
 import { mapGetters } from 'vuex'
 import download, { formatObjetToJson } from '@/utils/download'
 import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import {Gene, Institution, PanelResultFormattedRow, PanelSearchResult, ParsedGene,} from '@/types/panel-types'
-import {mapGetters} from 'vuex'
-import download, {formatObjetToJson} from '@/utils/download'
 
 export default Vue.extend({
   components: { PanelResultsHelp, HelpButton, InfoAlert },
