@@ -1,10 +1,6 @@
 <template>
   <div>
-    <v-dialog
-      v-model="institutionDialog"
-      persistent
-      max-width="800px"
-    >
+    <v-dialog v-model="institutionDialog" persistent max-width="800px">
       <v-card>
         <v-card-title>
           {{ $t('panel-result.dialog.title-institution-details') }}
@@ -23,7 +19,10 @@
               <v-icon>mdi-phone-in-talk</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title><a :href="linkTo(institution.phone, 'phone')">{{ institution.phone }}</a>
+              <v-list-item-title>
+                <a :href="linkTo(institution.phone, 'phone')">
+                  {{ institution.phone }}
+                </a>
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -32,7 +31,10 @@
               <v-icon>mdi-email</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title><a :href="linkTo(institution.email, 'email')">{{ institution.email }}</a>
+              <v-list-item-title>
+                <a :href="linkTo(institution.email, 'email')">
+                  {{ institution.email }}
+                </a>
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -41,51 +43,36 @@
               <v-icon>mdi-earth</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title><a :href="institution.website" target="_blank">
-                {{ $t('panel-result.dialog.institution-website-link') }} </a></v-list-item-title>
+              <v-list-item-title>
+                <a :href="institution.website" target="_blank">
+                  {{ $t('panel-result.dialog.institution-website-link') }}
+                </a>
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-card-text>
         <v-card-actions>
-          <v-spacer/>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="institutionDialog = false"
-          >
+          <v-spacer />
+          <v-btn color="green darken-1" text @click="institutionDialog = false">
             {{ $t('panel-result.dialog.button.close') }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog
-      v-model="showDialog"
-      persistent
-      max-width="800px"
-    >
+    <v-dialog v-model="showDialog" persistent max-width="800px">
       <v-card>
         <v-card-title>
-          <span
-            v-if="geneType === 'genesInPanel'"
-            class="text-h5"
-          >
+          <span v-if="geneType === 'genesInPanel'">
             {{ $t('panel-result.dialog.title-genes-in-panel') }}:
             {{ panelName }}
           </span>
-          <span
-            v-else
-            class="text-h5"
-          >
+          <span v-else>
             {{ $t('panel-result.dialog.title-genes-not-in-panel') }}:
             {{ panelName }}
           </span>
         </v-card-title>
         <v-card-text>
-          <v-virtual-scroll
-            :items="genes"
-            height="400"
-            item-height="64"
-          >
+          <v-virtual-scroll :items="genes" height="400" item-height="64">
             <template v-slot:default="{ item }">
               <v-list-item :key="item">
                 <v-list-item-content>
@@ -97,19 +84,11 @@
           </v-virtual-scroll>
         </v-card-text>
         <v-card-actions>
-          <v-spacer/>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="showDialog = false"
-          >
+          <v-spacer />
+          <v-btn color="green darken-1" text @click="showDialog = false">
             {{ $t('panel-result.dialog.button.close') }}
           </v-btn>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="downloadGenes(genes)"
-          >
+          <v-btn color="green darken-1" text @click="downloadGenes(genes)">
             {{ $t('panel-result.dialog.button.save') }}
           </v-btn>
         </v-card-actions>
@@ -117,28 +96,39 @@
     </v-dialog>
     <v-card outlined>
       <v-card-title>
-        {{ $t('panel-result.result.name') }}:
+        {{ $t('panel-result.result.name') }}
+        <v-spacer></v-spacer>
+        <help-button @action="handleHelp()" :active="help">
+          <template v-slot:content>
+            <panel-results-help />
+          </template>
+        </help-button>
       </v-card-title>
       <v-card-text>
+        <info-alert :active="help">
+          <template v-slot:content>
+            <panel-results-help />
+          </template>
+        </info-alert>
         <v-container v-if="userGenes.length > 0 || notFoundGenes.length > 0">
           <v-row no-gutters>
             <v-col
-              cols="12"
-              sm="6"
-              md="4"
-              offset-md="4"
+                cols="12"
+                sm="6"
+                md="4"
+                offset-md="4"
             >
               <v-simple-table class>
                 <template v-slot:default>
                   <tbody>
-                    <tr v-if="userGenes.length > 0">
-                      <td>{{ $t('panel-result.result.title') }}</td>
-                      <td>{{ userGenes.length }}</td>
-                    </tr>
-                    <tr v-if="notFoundGenes.length > 0">
-                      <td>{{ $t('panel-result.result.not-found-genes-title') }}</td>
-                      <td>{{ notFoundGenes.length }}</td>
-                    </tr>
+                  <tr v-if="userGenes.length > 0">
+                    <td>{{ $t('panel-result.result.title') }}</td>
+                    <td>{{ userGenes.length }}</td>
+                  </tr>
+                  <tr v-if="notFoundGenes.length > 0">
+                    <td>{{ $t('panel-result.result.not-found-genes-title') }}</td>
+                    <td>{{ notFoundGenes.length }}</td>
+                  </tr>
                   </tbody>
                 </template>
               </v-simple-table>
@@ -197,11 +187,7 @@
           <template v-slot:[`item.actions`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  v-on="on"
-                  @click.stop="downloadResult(item)"
-                >
+                <v-btn icon v-on="on" @click.stop="downloadResult(item)">
                   <v-icon>mdi-content-save</v-icon>
                 </v-btn>
               </template>
@@ -216,12 +202,30 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import {
+  Gene,
+  Institution,
+  PanelResultFormattedRow,
+  PanelSearchResult,
+} from '@/types/panel-types'
+import { mapGetters } from 'vuex'
+import download, { formatObjetToJson } from '@/utils/download'
+import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
+import HelpButton from '@/components/help/HelpButton.vue'
+import InfoAlert from '@/components/help/InfoAlert.vue'
 import {Gene, Institution, PanelResultFormattedRow, PanelSearchResult, ParsedGene,} from '@/types/panel-types'
 import {mapGetters} from 'vuex'
 import download, {formatObjetToJson} from '@/utils/download'
 
 export default Vue.extend({
+  components: { PanelResultsHelp, HelpButton, InfoAlert },
   name: 'PanelResult',
+  props: {
+    help: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       institutionDialog: false,
@@ -328,8 +332,11 @@ export default Vue.extend({
       return linkPrefix + link
     },
     isInstitutionEmpty(institution: Institution) {
-      return Object.keys(institution).length < 0;
-    }
+      return Object.keys(institution).length < 0
+    },
+    handleHelp() {
+      this.$emit('help')
+    },
   },
 })
 </script>

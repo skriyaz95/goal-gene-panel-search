@@ -2,8 +2,27 @@
   <v-card outlined>
     <v-card-title>
       {{ $t('userInput.gene-list') }}
+      <v-spacer></v-spacer>
+      <help-button @action="handleHelp()" :active="help">
+        <template v-slot:content>
+          <gene-search-help />
+        </template>
+      </help-button>
     </v-card-title>
     <v-card-text>
+      <info-alert :active="help">
+        <template v-slot:content>
+          <gene-search-help />
+          <v-btn
+            class="mt-2 primary"
+            @click="startDemo()"
+            :loading="demoRunning"
+          >
+            {{ $t('button.demo.text') }}
+            <v-icon>mdi-play</v-icon>
+          </v-btn>
+        </template>
+      </info-alert>
       <v-form ref="form" v-model="isFormValid">
         <v-textarea
           v-model="geneList"
@@ -40,14 +59,25 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { Gene } from '@/types/panel-types'
 import debounce from '@/utils/debounce'
+import GeneSearchHelp from '@/components/help/GeneSearchHelp.vue'
+import HelpButton from '../help/HelpButton.vue'
+import InfoAlert from '@/components/help/InfoAlert.vue'
 
 export default Vue.extend({
+  components: { GeneSearchHelp, HelpButton, InfoAlert },
   name: 'UserInput',
+  props: {
+    help: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data: () => ({
     isFormValid: true,
     geneList: String(),
     validSeparators: /[ ,;\s]+/,
     validCharacters: /^[-,;~\w\s]+$/,
+    demoRunning: false,
   }),
   computed: {
     ...mapGetters({
@@ -93,10 +123,14 @@ export default Vue.extend({
       }
     },
     clear() {
-      let form: any = this.$refs.form
-      this.geneList = String()
-      this.$store.commit('setUserGenes', [])
-      form.reset()
+      return new Promise((resolve) => {
+        let form: any = this.$refs.form
+        this.geneList = String()
+        this.$store.commit('setUserGenes', [])
+        form.reset()
+        this.demoRunning = false
+        resolve('success')
+      })
     },
     /** Clear the input if it doesn't contain any genes
      * This avoids error messages on blur
@@ -117,6 +151,34 @@ export default Vue.extend({
     },
     saveLastInput() {
       this.$store.commit('updateLastSearch', this.geneList)
+    },
+    handleHelp() {
+      this.$emit('help')
+    },
+    startDemo() {
+      if (this.demoRunning) {
+        return
+      }
+
+      //just a few entries in geneList to show how the parsing works
+      this.clear().then(() => {
+        this.demoRunning = true
+        const text = 'TP53\nBRCA1,BRCA2\nNOT_A_GENE, ALK_FUSION\nBRAF1'.split(
+          ''
+        )
+        this.geneList = ''
+        const interval = 75
+        for (let i = 0; i < text.length; i++) {
+          setTimeout(() => {
+            //crude simulation of typing
+            this.geneList += text[i]
+          }, interval * i)
+          setTimeout(() => {
+            this.demoRunning = false
+          }, interval * (text.length + 1))
+        }
+      })
+      // this.geneList = 'TP53\nBRCA1,BRCA2\nNOT_A_GENE, ALK_FUSION\nBRAF1'
     },
   },
   mounted() {
