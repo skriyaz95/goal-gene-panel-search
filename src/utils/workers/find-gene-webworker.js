@@ -53,7 +53,7 @@ function findGenesInAllPanels(genesList, panels) {
     if (genes.genesInPanel.length > 0 || genes.genesNotInPanel.length > 0) {
       result.push(
         new PanelSearchResult(
-          panel.name.toUpperCase(),
+          panel.name,
           genes.genesInPanel,
           genes.genesNotInPanel,
         ),
@@ -123,7 +123,6 @@ addEventListener("message", (event) => {
     const parsedGenes = findAllGenes(event.data.userGenes)
     ctx.postMessage({parsedGenes, todo: "findAllGenes"})
   } else if (event.data.todo == "findGenesInAllPanels") {
-    console.log('sample')
     const allSymbols = findAllSymbols(event.data.parsedGenes)
     const genesInAllPanels = findGenesInAllPanels(allSymbols, event.data.panels);
     ctx.postMessage({

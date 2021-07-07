@@ -62,40 +62,21 @@
             <panel-results-help />
           </template>
         </info-alert>
-        <v-container v-if="userGenes.length > 0 || notFoundGenes.length > 0">
-          <v-row no-gutters>
-            <v-col
-              cols="12"
-              sm="6"
-              md="4"
-              offset-md="4"
-            >
-              <v-simple-table class>
-                <template v-slot:default>
-                  <tbody>
-                    <tr v-if="userGenes.length > 0">
-                      <td>{{ $t('panel-result.result.title') }}</td>
-                      <td>{{ userGenes.length }}</td>
-                    </tr>
-                    <tr v-if="notFoundGenes.length > 0">
-                      <td>{{ $t('panel-result.result.not-found-genes-title') }}</td>
-                      <td>{{ notFoundGenes.length }}</td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
-            </v-col>
-          </v-row>
-        </v-container>
+        <div v-if="parsedGenes.symbolFoundGenes.length > 0 || parsedGenes.synonymFoundGenes.length > 0">
+          {{ $t('panel-result.result.title') }}: {{ parsedGenes.symbolFoundGenes.length + parsedGenes.synonymFoundGenes.length }}
+        </div>
+        <div v-if="notFoundGenes.length > 0">
+          {{ $t('panel-result.result.not-found-genes-title') }}: {{ notFoundGenes.length }}
+        </div>
         <v-data-table
           :headers="tableHeaders"
           :items="panelContent"
           item-key="name"
         >
           <template v-slot:[`item.institution`]="{ item }">
-            <v-tooltip bottom>
+            <v-tooltip bottom v-if="!isInstitutionEmpty(item.institution)">
               <template v-slot:activator="{ on }">
-                <v-btn text v-on="on" v-if="!isInstitutionEmpty(item.institution)"
+                <v-btn text v-on="on"
                        @click.stop="openInstitutionDetails(item.institution)"
                 >
                   {{ item.institution.name }}
@@ -237,18 +218,18 @@ export default Vue.extend({
         const genesNotInPanel = panel.genesNotInPanel.map((gene: Gene) =>
             gene.name.toUpperCase()
         )
-        let institution = this.institutionMap.get(panel.name.toUpperCase())
+        let institution = this.institutionMap.get(panel.name)
         if (!institution) {
-          institution = {};
+          institution = {}
         }
 
         return new PanelResultFormattedRow(
-            panel.name,
-            genesInPanel.length,
-            genesNotInPanel.length,
-            genesInPanel,
-            genesNotInPanel,
-            institution
+          panel.name,
+          genesInPanel.length,
+          genesNotInPanel.length,
+          genesInPanel,
+          genesNotInPanel,
+          institution
         )
       })
     },
@@ -280,7 +261,7 @@ export default Vue.extend({
       return formatObjetToJson(panel, pretty)
     },
     isInstitutionEmpty(institution: Institution) {
-      return Object.keys(institution).length < 0
+      return Object.keys(institution).length == 0
     },
     handleHelp() {
       this.$emit('help')
