@@ -51,7 +51,9 @@ export default Vue.extend({
   }),
   computed: {
     ...mapGetters({
+      userGenes: 'getUserGenesSorted',
       lastSearch: 'getLastSearch',
+      panels: 'getPanels'
     }),
     geneListRules(): any {
       // const x = this.$t('userInput.validation.list-empty')
@@ -79,14 +81,15 @@ export default Vue.extend({
       } else {
         let genes = userinput.toUpperCase().split(this.validSeparators)
         let uniqGenes = Array.from(new Set(genes)) //remove duplicates
-        let userGenes: Gene[] = []
+        let userGenesList: Gene[] = []
         for (let symbol of uniqGenes) {
           if (symbol && symbol != '') {
-            userGenes.push(new Gene(symbol))
+            userGenesList.push(new Gene(symbol))
           }
         }
-        this.$store.commit('setUserGenes', userGenes)
+        this.$store.commit('setUserGenes', userGenesList)
         this.saveLastInput()
+        this.$emit('postFindAllGenesMessage', this.userGenes)
       }
     },
     clear() {

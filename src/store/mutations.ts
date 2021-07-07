@@ -1,4 +1,4 @@
-import { Gene, PanelPayload, SynonymGene } from "@/types/panel-types"
+import {Gene, PanelPayload, PanelSearchResult, ParsedGenes, SynonymGene} from "@/types/panel-types"
 
 export default {
   addPanel(state: any, payload: PanelPayload) {
@@ -6,6 +6,12 @@ export default {
   },
   setUserGenes(state: any, payload: Gene[]) {
     state.userGenes = payload
+  },
+  setParsedGenes(state: any, payload: ParsedGenes) {
+    state.parsedGenes = payload
+  },
+  setPanelSearchResult(state: any, panelSearchResult: PanelSearchResult) {
+    state.panelSearchResult = panelSearchResult;
   },
   resetPanels(state: any) {
     state.panels = []

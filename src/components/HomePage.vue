@@ -11,7 +11,7 @@
         cols="12"
         lg="3"
       >
-        <user-input />
+        <user-input @postFindAllGenesMessage="postFindAllGenesMessage($event)"/>
       </v-col>
       <v-col
         cols="12"
@@ -34,6 +34,9 @@ import Vue from 'vue'
 import UserInput from '@/components/home/UserInput.vue'
 import ParsedInput from '@/components/home/ParsedInput.vue'
 import PanelResult from '@/components/home/PanelResult.vue'
+import $getFindGenesWorker from "@/utils/workers/worker-instance";
+import {Gene} from "@/types/panel-types";
+import {mapGetters} from "vuex";
 
 export default Vue.extend({
   name: 'HomePage',
@@ -41,6 +44,41 @@ export default Vue.extend({
     UserInput,
     ParsedInput,
     PanelResult,
+  },
+  methods: {
+    postFindAllGenesMessage(userGenes: Gene[]) {
+      $getFindGenesWorker().postMessage({
+        init: false,
+        todo: 'findAllGenes',
+        userGenes: userGenes,
+      })
+    },
+    postFindGenesInAllPanels() {
+      $getFindGenesWorker().postMessage({
+        init: false,
+        todo: 'findGenesInAllPanels',
+        parsedGenes: this.parsedGenes,
+        panels: this.panels
+      })
+    }
+  },
+  computed: {
+    ...mapGetters({
+      panels: 'getPanels',
+      parsedGenes: 'getParsedGenes'
+    }),
+  },
+  watch: {
+    parsedGenes: 'postFindGenesInAllPanels'
+  },
+  mounted() {
+    $getFindGenesWorker().onmessage = (event: any) => {
+      if (event.data.todo == 'findAllGenes') {
+        this.$store.commit('setParsedGenes', event.data.parsedGenes)
+      }else if (event.data.todo == 'findGenesInAllPanels') {
+        this.$store.commit('setPanelSearchResult', event.data.genesInAllPanels)
+      }
+    }
   },
 })
 </script>

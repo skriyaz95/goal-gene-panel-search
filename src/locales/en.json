@@ -114,7 +114,8 @@
     "show-institution-details": "Show Institution Details",
     "result": {
       "name": "Results",
-      "title": "Total Genes Evaluated"
+      "title": "Total Genes Evaluated",
+      "not-found-genes-title": "Genes Not Found/Invalid"
     },
     "table": {
       "headers": {

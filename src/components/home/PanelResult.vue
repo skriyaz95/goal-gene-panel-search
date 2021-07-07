@@ -23,7 +23,8 @@
               <v-icon>mdi-phone-in-talk</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title><a :href="linkTo(institution.phone, 'phone')">{{ institution.phone }}</a></v-list-item-title>
+              <v-list-item-title><a :href="linkTo(institution.phone, 'phone')">{{ institution.phone }}</a>
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item>
@@ -31,7 +32,8 @@
               <v-icon>mdi-email</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title><a :href="linkTo(institution.email, 'email')">{{ institution.email }}</a></v-list-item-title>
+              <v-list-item-title><a :href="linkTo(institution.email, 'email')">{{ institution.email }}</a>
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item>
@@ -39,12 +41,13 @@
               <v-icon>mdi-earth</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title><a :href="institution.website" target="_blank"> {{ $t('panel-result.dialog.institution-website-link')}} </a></v-list-item-title>
+              <v-list-item-title><a :href="institution.website" target="_blank">
+                {{ $t('panel-result.dialog.institution-website-link') }} </a></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-card-text>
         <v-card-actions>
-          <v-spacer />
+          <v-spacer/>
           <v-btn
             color="green darken-1"
             text
@@ -86,15 +89,15 @@
             <template v-slot:default="{ item }">
               <v-list-item :key="item">
                 <v-list-item-content>
-                  <v-list-item-title> {{ item }} </v-list-item-title>
+                  <v-list-item-title> {{ item }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
-              <v-divider />
+              <v-divider/>
             </template>
           </v-virtual-scroll>
         </v-card-text>
         <v-card-actions>
-          <v-spacer />
+          <v-spacer/>
           <v-btn
             color="green darken-1"
             text
@@ -113,27 +116,46 @@
       </v-card>
     </v-dialog>
     <v-card outlined>
+      <v-card-title>
+        {{ $t('panel-result.result.name') }}:
+      </v-card-title>
       <v-card-text>
+        <v-container v-if="userGenes.length > 0 || notFoundGenes.length > 0">
+          <v-row no-gutters>
+            <v-col
+              cols="12"
+              sm="6"
+              md="4"
+              offset-md="4"
+            >
+              <v-simple-table class>
+                <template v-slot:default>
+                  <tbody>
+                    <tr v-if="userGenes.length > 0">
+                      <td>{{ $t('panel-result.result.title') }}</td>
+                      <td>{{ userGenes.length }}</td>
+                    </tr>
+                    <tr v-if="notFoundGenes.length > 0">
+                      <td>{{ $t('panel-result.result.not-found-genes-title') }}</td>
+                      <td>{{ notFoundGenes.length }}</td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
+            </v-col>
+          </v-row>
+        </v-container>
         <v-data-table
           :headers="tableHeaders"
-          :items="getPanelResult()"
+          :items="panelContent"
           item-key="name"
         >
-          <template v-slot:top>
-            <v-toolbar flat>
-              <v-toolbar-title>
-                {{ $t('panel-result.result.name') }}
-                <span v-if="userGenes.length > 0">
-                  ({{ $t('panel-result.result.title') }}:
-                  {{ userGenes.length }})
-                </span>
-              </v-toolbar-title>
-            </v-toolbar>
-          </template>
           <template v-slot:[`item.institution`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn text v-on="on" v-if="!isInstitutionEmpty(item.institution)" @click.stop="openInstitutionDetails(item.institution)">
+                <v-btn text v-on="on" v-if="!isInstitutionEmpty(item.institution)"
+                       @click.stop="openInstitutionDetails(item.institution)"
+                >
                   {{ item.institution.name }}
                   <v-icon>mdi-arrow-top-right-thick</v-icon>
                 </v-btn>
@@ -194,7 +216,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {Gene, Institution, PanelResultFormattedRow, PanelSearchResult,} from '@/types/panel-types'
+import {Gene, Institution, PanelResultFormattedRow, PanelSearchResult, ParsedGene,} from '@/types/panel-types'
 import {mapGetters} from 'vuex'
 import download, {formatObjetToJson} from '@/utils/download'
 
@@ -208,8 +230,10 @@ export default Vue.extend({
       geneType: new String(),
       panelName: new String(),
       genes: new Array<string>(),
+      notFoundGenes: new Array<ParsedGene>(),
       expanded: [],
       singleExpand: false,
+      panelContent: new Array<PanelResultFormattedRow>(),
       tableHeaders: [
         {
           text: this.$t('panel-result.table.headers.institution-name'),
@@ -239,32 +263,36 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       userGenes: 'getUserGenes',
-      userGenesInPanels: 'getUserGenesInPanels',
-      institutionMap: 'getInstitutionMap'
+      institutionMap: 'getInstitutionMap',
+      panelSearchResult: 'getPanelSearchResult',
+      parsedGenes: 'getParsedGenes'
     }),
   },
+  watch: {
+    panelSearchResult: 'showPanelResult',
+  },
   methods: {
-    getPanelResult() {
-      return this.userGenesInPanels.map((panel: PanelSearchResult) => {
+    showPanelResult() {
+      this.notFoundGenes = this.parsedGenes.notFoundGenes
+      this.panelContent = this.panelSearchResult.map((panel: PanelSearchResult) => {
         const genesInPanel = panel.genesInPanel.map((gene: Gene) =>
-          gene.name.toUpperCase()
+            gene.name.toUpperCase()
         )
         const genesNotInPanel = panel.genesNotInPanel.map((gene: Gene) =>
-          gene.name.toUpperCase()
+            gene.name.toUpperCase()
         )
-
         let institution = this.institutionMap.get(panel.name.toUpperCase())
-        if(!institution) {
-          institution  = {};
+        if (!institution) {
+          institution = {};
         }
 
         return new PanelResultFormattedRow(
-          panel.name,
-          genesInPanel.length,
-          genesNotInPanel.length,
-          genesInPanel,
-          genesNotInPanel,
-          institution
+            panel.name,
+            genesInPanel.length,
+            genesNotInPanel.length,
+            genesInPanel,
+            genesNotInPanel,
+            institution
         )
       })
     },
@@ -272,7 +300,7 @@ export default Vue.extend({
       this.panelName = panel.name
       this.geneType = geneType
       this.genes =
-        geneType === 'genesInPanel' ? panel.genesInPanel : panel.genesNotInPanel
+          geneType === 'genesInPanel' ? panel.genesInPanel : panel.genesNotInPanel
       this.showDialog = true
     },
     openInstitutionDetails(institution: Institution) {
@@ -296,7 +324,7 @@ export default Vue.extend({
       return formatObjetToJson(panel, pretty)
     },
     linkTo(link: string, linkType: string) {
-      const linkPrefix = linkType == 'phone' ?  "tel:" : "mailto:"
+      const linkPrefix = linkType == 'phone' ? "tel:" : "mailto:"
       return linkPrefix + link
     },
     isInstitutionEmpty(institution: Institution) {
