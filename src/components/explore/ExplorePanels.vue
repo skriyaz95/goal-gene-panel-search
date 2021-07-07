@@ -68,9 +68,14 @@ export default Vue.extend({
       return currentPanel
     },
     getInstitutionfromPanel(panel: GenePanel) {
-      for (let i = 0; i < this.institutions.length; i++) {
-        if (this.institutions[i].panels.indexOf(panel.name) > -1) {
-          return this.institutions[i].name
+      if (this.institutions && panel && panel.name) {
+        for (let i = 0; i < this.institutions.length; i++) {
+          if (
+            this.institutions[i].panels &&
+            this.institutions[i].panels.indexOf(panel.name) > -1
+          ) {
+            return this.institutions[i].name
+          }
         }
       }
       return ''
