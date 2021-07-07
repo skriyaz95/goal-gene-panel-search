@@ -56,28 +56,28 @@
           </template>
         </help-button>
       </v-card-title>
-      <v-card-text class="body-1">
+      <v-card-text>
         <info-alert :active="help">
           <template v-slot:content>
             <panel-results-help />
           </template>
         </info-alert>
-        <span v-if="userGenes.length > 0">
-          {{ $t('panel-result.result.title') }}: {{ userGenes.length }}
-        </span>
+        <div v-if="parsedGenes.symbolFoundGenes.length > 0 || parsedGenes.synonymFoundGenes.length > 0">
+          {{ $t('panel-result.result.title') }}: {{ parsedGenes.symbolFoundGenes.length + parsedGenes.synonymFoundGenes.length }}
+        </div>
+        <div v-if="notFoundGenes.length > 0">
+          {{ $t('panel-result.result.not-found-genes-title') }}: {{ notFoundGenes.length }}
+        </div>
         <v-data-table
           :headers="tableHeaders"
-          :items="getPanelResult()"
+          :items="panelContent"
           item-key="name"
         >
           <template v-slot:[`item.institution`]="{ item }">
-            <v-tooltip bottom>
+            <v-tooltip bottom v-if="!isInstitutionEmpty(item.institution)">
               <template v-slot:activator="{ on }">
-                <v-btn
-                  text
-                  v-on="on"
-                  v-if="!isInstitutionEmpty(item.institution)"
-                  @click.stop="openInstitutionDetails(item.institution)"
+                <v-btn text v-on="on"
+                       @click.stop="openInstitutionDetails(item.institution)"
                 >
                   {{ item.institution.name }}
                   <v-icon>mdi-arrow-top-right-thick</v-icon>
@@ -135,17 +135,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {
-  Gene,
-  Institution,
-  PanelResultFormattedRow,
-  PanelSearchResult,
-} from '@/types/panel-types'
 import { mapGetters } from 'vuex'
 import download, { formatObjetToJson } from '@/utils/download'
 import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
+import {Gene, Institution, PanelResultFormattedRow, PanelSearchResult, ParsedGene,} from '@/types/panel-types'
 import InstitutionDetails from './InstitutionDetails.vue'
 import DialogTemplate from '../DialogTemplate.vue'
 
@@ -172,8 +167,10 @@ export default Vue.extend({
       geneType: new String(),
       panelName: new String(),
       genes: new Array<string>(),
+      notFoundGenes: new Array<ParsedGene>(),
       expanded: [],
       singleExpand: false,
+      panelContent: new Array<PanelResultFormattedRow>(),
       tableHeaders: [
         {
           text: this.$t('panel-result.table.headers.institution-name'),
@@ -203,20 +200,24 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       userGenes: 'getUserGenes',
-      userGenesInPanels: 'getUserGenesInPanels',
       institutionMap: 'getInstitutionMap',
+      panelSearchResult: 'getPanelSearchResult',
+      parsedGenes: 'getParsedGenes'
     }),
   },
+  watch: {
+    panelSearchResult: 'showPanelResult',
+  },
   methods: {
-    getPanelResult() {
-      return this.userGenesInPanels.map((panel: PanelSearchResult) => {
+    showPanelResult() {
+      this.notFoundGenes = this.parsedGenes.notFoundGenes
+      this.panelContent = this.panelSearchResult.map((panel: PanelSearchResult) => {
         const genesInPanel = panel.genesInPanel.map((gene: Gene) =>
-          gene.name.toUpperCase()
+            gene.name.toUpperCase()
         )
         const genesNotInPanel = panel.genesNotInPanel.map((gene: Gene) =>
-          gene.name.toUpperCase()
+            gene.name.toUpperCase()
         )
-
         let institution = this.institutionMap.get(panel.name)
         if (!institution) {
           institution = {}
@@ -236,7 +237,7 @@ export default Vue.extend({
       this.panelName = panel.name
       this.geneType = geneType
       this.genes =
-        geneType === 'genesInPanel' ? panel.genesInPanel : panel.genesNotInPanel
+          geneType === 'genesInPanel' ? panel.genesInPanel : panel.genesNotInPanel
       this.showDialog = true
     },
     openInstitutionDetails(institution: Institution) {
@@ -260,7 +261,7 @@ export default Vue.extend({
       return formatObjetToJson(panel, pretty)
     },
     isInstitutionEmpty(institution: Institution) {
-      return Object.keys(institution).length < 0
+      return Object.keys(institution).length == 0
     },
     handleHelp() {
       this.$emit('help')

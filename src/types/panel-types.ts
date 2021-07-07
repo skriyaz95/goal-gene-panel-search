@@ -42,7 +42,7 @@ export class PanelSearchResult {
   }
 }
 
-export class Gene {
+export class  Gene {
   name: string
 
   constructor(name: string) {

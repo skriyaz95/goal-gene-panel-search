@@ -70,9 +70,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
-import { ParsedGenes } from '@/types/panel-types'
-import $getFindGenesWorker from '@/utils/workers/worker-instance'
+import {mapGetters} from 'vuex'
+import {ParsedGenes} from '@/types/panel-types'
 import GeneParsedContent from '@/components/GeneParsedContent.vue'
 import ParsedSearchHelp from '@/components/help/ParsedSearchHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
@@ -95,6 +94,7 @@ export default Vue.extend({
     ...mapGetters({
       userGenes: 'getUserGenesSorted',
       allGenes: 'getAllGenes',
+      parsedGenes: 'getParsedGenes'
     }),
     showNotFound(): boolean {
       return this.formattedGenes.notFoundGenes.length > 0
@@ -107,20 +107,7 @@ export default Vue.extend({
     },
   },
   watch: {
-    userGenes: 'formatGenes',
-  },
-  mounted() {
-    $getFindGenesWorker().onmessage = (event: any) => {
-      if (event.data.todo == 'findAllGenes') {
-        this.formattedGenes = new ParsedGenes()
-        this.formattedGenes.notFoundGenes = event.data.parsedGenes.notFoundGenes
-        this.formattedGenes.synonymFoundGenes =
-          event.data.parsedGenes.synonymFoundGenes
-        this.formattedGenes.symbolFoundGenes =
-          event.data.parsedGenes.symbolFoundGenes
-        // this.loading = false
-      }
-    }
+    parsedGenes: 'formatGenes',
   },
   destroyed() {},
   methods: {
@@ -134,12 +121,10 @@ export default Vue.extend({
       return 'error'
     },
     formatGenes() {
-      // this.loading = true
-      $getFindGenesWorker().postMessage({
-        init: false,
-        todo: 'findAllGenes',
-        userGenes: this.userGenes,
-      })
+      this.formattedGenes = new ParsedGenes()
+      this.formattedGenes.notFoundGenes = this.parsedGenes.notFoundGenes
+      this.formattedGenes.synonymFoundGenes = this.parsedGenes.synonymFoundGenes
+      this.formattedGenes.symbolFoundGenes = this.parsedGenes.symbolFoundGenes
     },
     handleHelp() {
       this.$emit('help')

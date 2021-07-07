@@ -130,7 +130,8 @@
     "show-institution-details": "Show Institution Details",
     "result": {
       "name": "Panel Results",
-      "title": "Total Genes Evaluated"
+      "title": "Genes Evaluated (Symbol & Synonyms)",
+      "not-found-genes-title": "Entries Ignored (Invalid)"
     },
     "table": {
       "headers": {

@@ -1,11 +1,4 @@
-import {
-  FullGene,
-  Gene,
-  GenePanel,
-  Institution,
-  PanelSearchResult,
-  SynonymGene,
-} from "@/types/panel-types"
+import {FullGene, Gene, GenePanel, Institution, PanelSearchResult, SynonymGene,} from "@/types/panel-types"
 
 export default {
   getPanels: (state: any) => {
@@ -13,6 +6,9 @@ export default {
   },
   getUserGenes: (state: any) => {
     return state.userGenes
+  },
+  getParsedGenes: (state: any) => {
+    return state.parsedGenes
   },
   getUserGenesSorted: (state: any) => {
     return [...state.userGenes].sort((a: Gene, b: Gene) => {
@@ -25,39 +21,8 @@ export default {
       return 0
     })
   },
-  getUserGenesInPanels: (state: any, getters: any) => {
-    const result = new Array<PanelSearchResult>()
-    state.panels.forEach((panel: GenePanel) => {
-      const genes = getters.getUserGenesInSelectedPanel(panel)
-      if (genes.genesInPanel.length > 0 || genes.genesNotInPanel.length > 0) {
-        result.push(
-          new PanelSearchResult(
-            panel.name,
-            genes.genesInPanel,
-            genes.genesNotInPanel,
-          ),
-        )
-      }
-    })
-    return result
-  },
-  getUserGenesInSelectedPanel: (state: any) => (panel: GenePanel) => {
-    const genesInPanel = new Array<Gene>()
-    const genesNotInPanel = new Array<Gene>()
-    const panelGenesSet = new Set(
-      panel.genes.map((gene: Gene) => gene.name.toUpperCase()),
-    )
-    state.userGenes.forEach((userGene: Gene) => {
-      if (panelGenesSet.has(userGene.name)) {
-        genesInPanel.push(new Gene(userGene.name))
-      } else {
-        genesNotInPanel.push(new Gene(userGene.name))
-      }
-    })
-    return {
-      genesInPanel: genesInPanel,
-      genesNotInPanel: genesNotInPanel,
-    }
+  getPanelSearchResult: (state: any) => {
+    return state.panelSearchResult
   },
   getAllGenes: (state: any) => {
     return state.allGenes
