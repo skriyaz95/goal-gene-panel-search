@@ -30,7 +30,12 @@
           <v-card-actions>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn class="primary" v-on="on" @click="buildPanels">
+                <v-btn
+                  class="primary"
+                  v-on="on"
+                  @click="buildPanels"
+                  :disabled="loading"
+                >
                   {{ $t('button.buildPanels.text') }}
                 </v-btn>
               </template>
@@ -40,7 +45,7 @@
               <template v-slot:activator="{ on }">
                 <v-btn
                   class="primary ml-2"
-                  :disabled="isEmptyPanels()"
+                  :disabled="isEmptyPanels() || loading"
                   v-on="on"
                   @click="downloadAllPanels"
                 >
@@ -49,6 +54,12 @@
               </template>
               <span>{{ $t('button.saveAllPanels.tooltip') }}</span>
             </v-tooltip>
+            <v-progress-linear
+              class="ml-2"
+              v-model="progress"
+              :active="loading"
+            >
+            </v-progress-linear>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -60,18 +71,64 @@
         </v-card>
         <v-card v-if="tempParsedGenes.length > 0" outlined>
           <v-expansion-panels flat focusable>
-            <v-expansion-panel v-for="panel in tempParsedGenes" :key="panel[0]">
+            <v-expansion-panel
+              v-for="panelBuilder in tempParsedGenes"
+              :key="panelBuilder.panelName"
+            >
               <v-expansion-panel-header disable-icon-rotate>
                 <build-panel-header
-                  :parsed-genes="panel[1]"
-                  :panel-name="panel[0]"
-                  :show-not-found="showGenes(panel[1].notFoundGenes)"
-                  :show-synonym="showGenes(panel[1].synonymFoundGenes)"
-                  :show-symbol="showGenes(panel[1].symbolFoundGenes)"
-                  @update-panel-name="updatePanelName($event, panel)"
+                  :parsed-genes="panelBuilder.parsedGenes"
+                  :panel-name="panelBuilder.panelName"
+                  :show-not-found="
+                    showGenes(panelBuilder.parsedGenes.notFoundGenes)
+                  "
+                  :show-synonym="
+                    showGenes(panelBuilder.parsedGenes.synonymFoundGenes)
+                  "
+                  :show-symbol="
+                    showGenes(panelBuilder.parsedGenes.symbolFoundGenes)
+                  "
+                  @update-panel-name="updatePanelName($event, panelBuilder)"
                 />
 
                 <template v-slot:actions>
+                  <!-- //removed from now
+                  <v-row align="center" justify="end">
+                    <v-col class="flex-grow-1 flex-shrink-0">
+                      <v-autocomplete
+                        full-width
+                        dense
+                        hide-details
+                        :items="institutionItems"
+                        v-model="panelBuilder.institutionName"
+                        :label="$t('buildPanels.selectInstitution.text')"
+                        @click.native.stop
+                      >
+                      </v-autocomplete>
+                    </v-col>
+                    <v-col class="flex-grow-0 flex-shrink-1">
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
+                          <span v-on="on">
+                            <v-btn icon @click.stop="downloadPanel(panel)">
+                              <v-icon>mdi-content-save</v-icon>
+                            </v-btn>
+                          </span>
+                        </template>
+                        <span
+                          v-if="onlySymbolsOrSynonyms(panelBuilder.parsedGenes)"
+                        >
+                          {{ $t('button.saveOnePanel.tooltip') }}
+                        </span>
+                        <span v-else>{{
+                          $t('button.saveWarning.tooltip')
+                        }}</span>
+                      </v-tooltip>
+                    </v-col>
+                    <v-col class="flex-grow-0 flex-shrink-1">
+                      <v-icon> mdi-chevron-down </v-icon>
+                    </v-col>
+                  </v-row> -->
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
                       <span v-on="on">
@@ -80,9 +137,11 @@
                         </v-btn>
                       </span>
                     </template>
-                    <span v-if="onlySymbolsOrSynonyms(panel[1])">{{
-                      $t('button.saveOnePanel.tooltip')
-                    }}</span>
+                    <span
+                      v-if="onlySymbolsOrSynonyms(panelBuilder.parsedGenes)"
+                    >
+                      {{ $t('button.saveOnePanel.tooltip') }}
+                    </span>
                     <span v-else>{{ $t('button.saveWarning.tooltip') }}</span>
                   </v-tooltip>
                   <v-icon> mdi-chevron-down </v-icon>
@@ -92,11 +151,11 @@
                 <v-fade-transition>
                   <gene-parsed-content
                     :show-genes="[
-                      showGenes(panel[1].notFoundGenes),
-                      showGenes(panel[1].synonymFoundGenes),
-                      showGenes(panel[1].symbolFoundGenes),
+                      showGenes(panelBuilder.parsedGenes.notFoundGenes),
+                      showGenes(panelBuilder.parsedGenes.synonymFoundGenes),
+                      showGenes(panelBuilder.parsedGenes.symbolFoundGenes),
                     ]"
-                    :parsed-genes="panel[1]"
+                    :parsed-genes="panelBuilder.parsedGenes"
                   />
                 </v-fade-transition>
               </v-expansion-panel-content>
@@ -112,7 +171,14 @@
 import Vue from 'vue'
 import axios from 'axios'
 import { mapGetters } from 'vuex'
-import { Gene, GenePanel, ParsedGene, ParsedGenes } from '@/types/panel-types'
+import {
+  Gene,
+  GenePanel,
+  // Institution,
+  PanelBuilder,
+  ParsedGene,
+  ParsedGenes,
+} from '@/types/panel-types'
 import download from '@/utils/download'
 import { formatObjetToJson } from '@/utils/download'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
@@ -128,11 +194,15 @@ export default Vue.extend({
     sourceDir: 'source_panels/',
     panelFileNames: new Array<string>(),
     publicPath: process.env.BASE_URL,
-    tempParsedGenes: new Array<[string, ParsedGenes]>(),
+    tempParsedGenes: new Array<PanelBuilder>(),
+    started: false,
+    progress: 0,
   }),
   methods: {
     buildPanels() {
-      this.tempParsedGenes = Array<[string, ParsedGenes]>()
+      this.started = true
+      this.progress = 0
+      this.tempParsedGenes = new Array<PanelBuilder>()
       for (var i = 0; i < this.panelFileNames.length; i++) {
         var path = this.publicPath + this.rawDir + this.panelFileNames[i]
         axios
@@ -140,6 +210,8 @@ export default Vue.extend({
             params: {},
           })
           .then((response) => {
+            this.started = false
+            this.progress += 100 / this.panelFileNames.length
             const responseURLItems = response.request.responseURL.split('/')
             const panelFileName = responseURLItems[responseURLItems.length - 1]
             const extension = /\.csv$/.test(panelFileName) ? '.csv' : '.bed'
@@ -217,26 +289,64 @@ export default Vue.extend({
     formatPanel(panel: GenePanel, pretty: boolean) {
       return formatObjetToJson(panel, pretty)
     },
-    downloadPanel(panel: [string, ParsedGenes]) {
+    downloadPanel(genePanel: GenePanel) {
+      const content = this.formatPanel(genePanel, false)
+      const filename = genePanel.name.replaceAll(/[ ]+/g, '_') + '.json'
+      download(filename, content, 'text/json')
+    },
+    buildGenePanelObject(panelBuilder: PanelBuilder): GenePanel {
       //make sure there are no dups after adding synonyms
       const uniqGenes = new Set<string>(
-        panel[1].symbolFoundGenes.map((pg) => pg.gene.name)
+        panelBuilder.parsedGenes.symbolFoundGenes.map((pg) => pg.gene.name)
       )
-      const synonymsConverted = panel[1].synonymFoundGenes.map(
+      const synonymsConverted = panelBuilder.parsedGenes.synonymFoundGenes.map(
         (pg) => pg.realGene.symbol
       )
       synonymsConverted.forEach((s) => uniqGenes.add(s))
 
       const genes = Array.from(uniqGenes).map((s) => new Gene(s))
-      const content = this.formatPanel(new GenePanel(panel[0], genes), false)
-      const filename = panel[0].replaceAll(/[ ]+/g, '_') + '.json'
-      download(filename, content, 'text/json')
+      const genePanel = new GenePanel(panelBuilder.panelName, genes)
+      return genePanel
     },
     downloadAllPanels() {
+      const genePanelsToSave = new Array<GenePanel>()
       for (var i = 0; i < this.tempParsedGenes.length; i++) {
-        this.downloadPanel(this.tempParsedGenes[i])
+        const genePanel = this.buildGenePanelObject(this.tempParsedGenes[i])
+        genePanelsToSave.push(genePanel)
+        this.downloadPanel(genePanel)
       }
+      this.$store.commit('updatePanels', genePanelsToSave)
+      //removed from now
+      // this.downloadInstitutions()
     },
+    //removed from now
+    // downloadInstitutions() {
+    //   const institutionMapCopy = new Map<string, Institution>()
+    //   this.institutionsByName.forEach((value: Institution, key: string) => {
+    //     const newInstitution = new Institution(
+    //       value.name,
+    //       value.phone,
+    //       value.email,
+    //       value.website,
+    //       []
+    //     )
+    //     institutionMapCopy.set(key, newInstitution)
+    //   })
+    //   for (var i = 0; i < this.tempParsedGenes.length; i++) {
+    //     const name = this.tempParsedGenes[i].institutionName
+    //     const institution: Institution | undefined =
+    //       institutionMapCopy.get(name)
+    //     if (institution) {
+    //       institution.panels.push(this.tempParsedGenes[i].panelName)
+    //     }
+    //   }
+    //   const newInstitutions = Array.from(institutionMapCopy.values())
+    //   download(
+    //     'institutions.json',
+    //     formatObjetToJson(newInstitutions, false),
+    //     'text/json'
+    //   )
+    // },
     isEmptyPanels() {
       return !this.tempParsedGenes || this.tempParsedGenes.length == 0
     },
@@ -258,15 +368,25 @@ export default Vue.extend({
     onlySymbolsOrSynonyms(parsedGenes: ParsedGenes) {
       return parsedGenes.notFoundGenes.length == 0
     },
-    updatePanelName(newValue: string, panel: [string, ParsedGenes]) {
-      panel[0] = newValue
+    updatePanelName(newValue: string, panelBuilder: PanelBuilder) {
+      panelBuilder.panelName = newValue
     },
   },
   computed: {
     ...mapGetters({
       panels: 'getPanels',
-      institutionMap: 'getInstitutionMap',
+      //removed from now
+      // institutionMap: 'getInstitutionMap',
+      // institutionItems: 'getInstitutionDropDownItems',
+      // institutionsByName: 'getInstitutionsByName',
     }),
+    loading(): boolean {
+      return (
+        this.started ||
+        (this.tempParsedGenes.length > 0 &&
+          this.tempParsedGenes.length != this.panelFileNames.length)
+      )
+    },
   },
   mounted() {
     this.listPanelFiles(
@@ -278,7 +398,10 @@ export default Vue.extend({
         parsedGenes.notFoundGenes = event.data.parsedGenes.notFoundGenes
         parsedGenes.synonymFoundGenes = event.data.parsedGenes.synonymFoundGenes
         parsedGenes.symbolFoundGenes = event.data.parsedGenes.symbolFoundGenes
-        this.tempParsedGenes.push([event.data.panelName, parsedGenes])
+        const panelBuilder = new PanelBuilder()
+        ;(panelBuilder.panelName = event.data.panelName),
+          (panelBuilder.parsedGenes = parsedGenes)
+        this.tempParsedGenes.push(panelBuilder)
       }
     }
   },

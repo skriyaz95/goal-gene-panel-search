@@ -69,13 +69,13 @@ import { mapGetters } from 'vuex'
 // import { Gene, GenePanel, PanelPayload } from '@/types/panel-types'
 import download from '@/utils/download'
 import { formatObjetToJson } from '@/utils/download'
+import { NCBI_GENE_INFO_FILE_URL } from '@/utils/apis'
 
 export default Vue.extend({
   name: 'BuildDatabase',
 
   data: () => ({
-    sourceFileUrl:
-      'https://ftp.ncbi.nih.gov/gene/DATA/GENE_INFO/Mammalia/Homo_sapiens.gene_info.gz',
+    sourceFileUrl: NCBI_GENE_INFO_FILE_URL,
     rawDir: 'raw_panels/',
     sourceDir: 'source_panels/',
     publicPath: process.env.BASE_URL,
