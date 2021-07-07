@@ -1,99 +1,51 @@
 <template>
   <div>
-    <v-dialog v-model="institutionDialog" persistent max-width="800px">
-      <v-card>
-        <v-card-title>
-          {{ $t('panel-result.dialog.title-institution-details') }}
-        </v-card-title>
-        <v-card-text>
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-bank</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>{{ institution.name }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-phone-in-talk</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>
-                <a :href="linkTo(institution.phone, 'phone')">
-                  {{ institution.phone }}
-                </a>
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-email</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>
-                <a :href="linkTo(institution.email, 'email')">
-                  {{ institution.email }}
-                </a>
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-earth</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>
-                <a :href="institution.website" target="_blank">
-                  {{ $t('panel-result.dialog.institution-website-link') }}
-                </a>
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="green darken-1" text @click="institutionDialog = false">
-            {{ $t('panel-result.dialog.button.close') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="showDialog" persistent max-width="800px">
-      <v-card>
-        <v-card-title>
-          <span v-if="geneType === 'genesInPanel'">
-            {{ $t('panel-result.dialog.title-genes-in-panel') }}:
-            {{ panelName }}
-          </span>
-          <span v-else>
-            {{ $t('panel-result.dialog.title-genes-not-in-panel') }}:
-            {{ panelName }}
-          </span>
-        </v-card-title>
-        <v-card-text>
-          <v-virtual-scroll :items="genes" height="400" item-height="64">
-            <template v-slot:default="{ item }">
-              <v-list-item :key="item">
-                <v-list-item-content>
-                  <v-list-item-title> {{ item }} </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-divider />
-            </template>
-          </v-virtual-scroll>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="green darken-1" text @click="showDialog = false">
-            {{ $t('panel-result.dialog.button.close') }}
-          </v-btn>
-          <v-btn color="green darken-1" text @click="downloadGenes(genes)">
-            {{ $t('panel-result.dialog.button.save') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <dialog-template
+      max-width="800px"
+      v-model="institutionDialog"
+      @closing="institutionDialog = false"
+    >
+      <template v-slot:title>
+        {{ $t('panel-result.dialog.title-institution-details') }}
+      </template>
+      <template v-slot:content>
+        <institution-details :institution="currentInstitution" />
+      </template>
+    </dialog-template>
+    <dialog-template
+      max-width="800px"
+      v-model="showDialog"
+      @closing="showDialog = false"
+    >
+      <template v-slot:title>
+        <span v-if="geneType === 'genesInPanel'">
+          {{ $t('panel-result.dialog.title-genes-in-panel') }}:
+          {{ panelName }}
+        </span>
+        <span v-else>
+          {{ $t('panel-result.dialog.title-genes-not-in-panel') }}:
+          {{ panelName }}
+        </span>
+      </template>
+      <template v-slot:content>
+        <v-virtual-scroll :items="genes" height="400" item-height="64">
+          <template v-slot:default="{ item }">
+            <v-list-item :key="item">
+              <v-list-item-content>
+                <v-list-item-title> {{ item }} </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider />
+          </template>
+        </v-virtual-scroll>
+      </template>
+      <template v-slot:action-buttons>
+        <v-btn class="primary" @click="downloadGenes(genes)">
+          {{ $t('panel-result.dialog.button.save') }}
+        </v-btn>
+      </template>
+    </dialog-template>
+
     <v-card outlined>
       <v-card-title>
         {{ $t('panel-result.result.name') }}
@@ -194,9 +146,17 @@ import download, { formatObjetToJson } from '@/utils/download'
 import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
+import InstitutionDetails from './InstitutionDetails.vue'
+import DialogTemplate from '../DialogTemplate.vue'
 
 export default Vue.extend({
-  components: { PanelResultsHelp, HelpButton, InfoAlert },
+  components: {
+    PanelResultsHelp,
+    HelpButton,
+    InfoAlert,
+    InstitutionDetails,
+    DialogTemplate,
+  },
   name: 'PanelResult',
   props: {
     help: {
@@ -208,7 +168,7 @@ export default Vue.extend({
     return {
       institutionDialog: false,
       showDialog: false,
-      institution: {},
+      currentInstitution: new Institution('', '', '', '', []),
       geneType: new String(),
       panelName: new String(),
       genes: new Array<string>(),
@@ -257,7 +217,7 @@ export default Vue.extend({
           gene.name.toUpperCase()
         )
 
-        let institution = this.institutionMap.get(panel.name.toUpperCase())
+        let institution = this.institutionMap.get(panel.name)
         if (!institution) {
           institution = {}
         }
@@ -280,7 +240,7 @@ export default Vue.extend({
       this.showDialog = true
     },
     openInstitutionDetails(institution: Institution) {
-      this.institution = institution
+      this.currentInstitution = institution
       this.institutionDialog = true
     },
     downloadGenes(genes: string) {
@@ -298,10 +258,6 @@ export default Vue.extend({
     },
     formatResult(panel: any, pretty: boolean) {
       return formatObjetToJson(panel, pretty)
-    },
-    linkTo(link: string, linkType: string) {
-      const linkPrefix = linkType == 'phone' ? 'tel:' : 'mailto:'
-      return linkPrefix + link
     },
     isInstitutionEmpty(institution: Institution) {
       return Object.keys(institution).length < 0

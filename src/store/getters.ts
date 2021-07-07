@@ -1,4 +1,11 @@
-import {FullGene, Gene, GenePanel, Institution, PanelSearchResult, SynonymGene,} from "@/types/panel-types"
+import {
+  FullGene,
+  Gene,
+  GenePanel,
+  Institution,
+  PanelSearchResult,
+  SynonymGene,
+} from "@/types/panel-types"
 
 export default {
   getPanels: (state: any) => {
@@ -8,7 +15,7 @@ export default {
     return state.userGenes
   },
   getUserGenesSorted: (state: any) => {
-    return state.userGenes.sort((a: Gene, b: Gene) => {
+    return [...state.userGenes].sort((a: Gene, b: Gene) => {
       if (a.name < b.name) {
         return -1
       }
@@ -25,7 +32,7 @@ export default {
       if (genes.genesInPanel.length > 0 || genes.genesNotInPanel.length > 0) {
         result.push(
           new PanelSearchResult(
-            panel.name.toUpperCase(),
+            panel.name,
             genes.genesInPanel,
             genes.genesNotInPanel,
           ),
@@ -76,12 +83,60 @@ export default {
     const allInstitutions = new Map<String, Institution>()
     state.institutions.forEach((institution: Institution) => {
       institution.panels.forEach((panel: string) => {
-        allInstitutions.set(panel.toUpperCase(), institution)
+        allInstitutions.set(panel, institution)
       })
     })
     return allInstitutions
   },
+  //not use for now
+  // getInstitutionsByName: (state: any) => {
+  //   const allInstitutions = new Map<String, Institution>()
+  //   state.institutions.forEach((institution: Institution) => {
+  //     allInstitutions.set(institution.name, institution)
+  //   })
+  //   return allInstitutions
+  // },
   getLastSearch: (state: any) => {
     return state.lastSearch
   },
+  //not use for now
+  // getInstitutionDropDownItems: (state: any) => {
+  //   const institutionDropDownItems = new Array<{}>()
+  //   state.institutions.forEach((institution: Institution) => {
+  //     institutionDropDownItems.push(institution.name)
+  //   })
+  //   return institutionDropDownItems.sort()
+  // },
+  getInstitutionsSorted: (state: any) => {
+    return [...state.institutions].sort((a: Institution, b: Institution) => {
+      if (a.name < b.name) {
+        return -1
+      }
+      if (a.name > b.name) {
+        return 1
+      }
+      return 0
+    })
+  },
+  getInstitutions: (state: any) => {
+    return state.institutions
+  },
+  getPanelsSorted: (state: any) => {
+    return [...state.panels].sort((a: GenePanel, b: GenePanel) => {
+      if (a.name < b.name) {
+        return -1
+      }
+      if (a.name > b.name) {
+        return 1
+      }
+      return 0
+    })
+  },
+  // getPanelsByName: (state: any) => {
+  //   const allPanels = new Map<String, GenePanel>()
+  //   state.panels.forEach((panel: GenePanel) => {
+  //     allPanels.set(panel.name, panel)
+  //   })
+  //   return allPanels
+  // },
 }

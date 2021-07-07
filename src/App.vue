@@ -4,7 +4,7 @@
       :hue-rotation="hueRotationFilter()"
       :saturation="saturationFilter()"
     />
-    <v-app-bar app color="primary" dark flat clipped-left>
+    <!-- <v-app-bar app color="primary" dark flat clipped-left>
       <div class="d-flex align-center">
         <span class="title" v-text="toolbarTitle" />
       </div>
@@ -24,7 +24,7 @@
         </template>
         <span>{{ $t('button.link.repo.tooltip') }}</span>
       </v-tooltip>
-    </v-app-bar>
+    </v-app-bar> -->
 
     <v-main>
       <router-view />
@@ -38,7 +38,7 @@ import axios from 'axios'
 import { mapGetters } from 'vuex'
 import { PanelPayload } from '@/types/panel-types'
 import NavigationMenu from '@/components/NavigationMenu.vue'
-import { TranslateResult } from 'vue-i18n'
+// import { TranslateResult } from 'vue-i18n'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
 
 export default Vue.extend({
@@ -115,12 +115,12 @@ export default Vue.extend({
       allGeneMap: 'getAllGeneMap',
       synonymMap: 'getSynonymMap',
     }),
-    toolbarTitle(): TranslateResult {
-      if (this.$route.meta && this.$route.meta.i18n) {
-        return this.$t(this.$route.meta.i18n + '.toolbar.text')
-      }
-      return 'GTI'
-    },
+    // toolbarTitle(): TranslateResult {
+    //   if (this.$route.meta && this.$route.meta.i18n) {
+    //     return this.$t(this.$route.meta.i18n + '.toolbar.text')
+    //   }
+    //   return 'GTI'
+    // },
   },
   mounted() {
     this.initWorkers()

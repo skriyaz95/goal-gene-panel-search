@@ -4,13 +4,17 @@
       "text": "Existing Panel Files:"
     },
     "help": {
-      "text": "Click BUILD PANELS to create panels from the raw files.<br/>Then save all to download them all as JSON and place them in public/source_panels.<br/>They will automatically be added to the existing panels."
+      "text-prev": "Click BUILD PANELS to create panels from the raw files.<br/>Then <b>Save All</b> to download all panels as JSON and place them in public/source_panels.<br/>institutions.json goes in /src/assets/<br/>They will automatically be added to the existing panels.",
+      "text": "Click BUILD PANELS to create panels from the raw files.<br/>Then <b>Save All</b> to download all panels as JSON and place them in public/source_panels.<br/>"
     },
     "rawPanels": {
       "text": "Raw Panel Files:"
     },
     "panelName": {
       "text": "Panel Name"
+    },
+    "selectInstitution": {
+      "text": "Select an institution"
     }
   },
   "button": {
@@ -71,6 +75,15 @@
       },
       "title": {
         "text": "Utils"
+      }
+    },
+    "explore": {
+      "text": "Explore",
+      "toolbar": {
+        "text": "Browse Data"
+      },
+      "title": {
+        "text": "Explore"
       }
     }
   },
@@ -189,6 +202,19 @@
       "text": "Too many to display (> 500)"
     }
   },
+  "buidInstitutions": {
+    "list": {
+      "text": "Existing Institutions"
+    },
+    "new": {
+      "text": "Add New",
+      "tooltip": "Add an Institution to the List"
+    },
+    "saveAll": {
+      "text": "Save All",
+      "tooltip": "Download a JSON file of the institutions"
+    }
+  },
   "help": {
     "parsedInput": {
       "part1a": "Your ",
@@ -210,6 +236,51 @@
       "part1a": " shows the panels containing genes",
       "part1b": " from the items in ",
       "part2a": "Click on a cell to get more information about each value"
+    }
+  },
+  "institutionDetails": {
+    "name": {
+      "text": "Name",
+      "tooltip": "Institution Name"
+    },
+    "phone": {
+      "text": "Phone",
+      "tooltip": "Institution Phone"
+    },
+    "email": {
+      "text": "Email",
+      "tooltip": "Primary Contact Email"
+    },
+    "website": {
+      "text": "Website",
+      "tooltip": "Institution Website"
+    },
+    "panels": {
+      "text": "Panels",
+      "tooltip": "Institution Gene Panels"
+    }
+  },
+  "explore": {
+    "panels": {
+      "list": {
+        "text": "Existing Panels"
+      }
+    },
+    "genome": {
+      "title": {
+        "text": "Known Genes"
+      },
+      "search": {
+        "text": "Lookup Symbols, Synonyms, Ids, etc."
+      },
+      "genelink": {
+        "text": "NCBI Gene",
+        "tooltip": "Open Link to NCBI Gene Database"
+      },
+      "geneinfoSource": {
+        "text": "Gene Info File",
+        "tooltip": "Download gene_info file from NCBI Gene Database"
+      }
     }
   }
 }

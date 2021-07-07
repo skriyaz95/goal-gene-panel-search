@@ -32,5 +32,6 @@ export default Vue.extend({
       showHelp: false,
     }
   },
+  methods: {},
 })
 </script>

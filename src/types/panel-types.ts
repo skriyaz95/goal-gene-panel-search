@@ -155,3 +155,16 @@ export class ParsedGenes {
   synonymFoundGenes = new Array<ParsedGene>()
   notFoundGenes = new Array<ParsedGene>()
 }
+
+/**
+ * A temporary panel while it's being built
+ */
+export class PanelBuilder {
+  panelName!: string
+  parsedGenes!: ParsedGenes
+  institutionName!: string
+
+  constructor() {
+    this.institutionName = ""
+  }
+}

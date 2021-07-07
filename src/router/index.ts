@@ -1,6 +1,7 @@
 import Vue from "vue"
 import VueRouter from "vue-router"
 import Home from "../views/Home.vue"
+import Explore from "../views/Explore.vue"
 import i18n from "@/i18n"
 
 Vue.use(VueRouter)
@@ -19,6 +20,13 @@ const routes = [
     meta: { i18n: "navigation.utils" },
     component: () =>
       import(/* webpackChunkName: "utils" */ "../views/Utils.vue"),
+  },
+  {
+    path: "/explore",
+    name: "Explore",
+    meta: { i18n: "navigation.explore" },
+
+    component: Explore,
   },
 ]
 
