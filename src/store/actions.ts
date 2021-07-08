@@ -1,25 +1,34 @@
-import { Gene, PanelSearchResult, ParsedGenes } from "@/types/panel-types"
+import { Gene, GenePanel, ParsedGenes } from "@/types/panel-types"
+import { UserInputPayload } from "@/types/payload-types"
+import $getFindGenesWorker from "@/utils/workers/worker-instance"
 
 export default {
-  async setUserGenes(context: any, payload: Gene[]) {
-    return new Promise((resolve) => {
-      context.commit("setUserGenes", payload)
-      resolve(true)
+  async cleanUserInput(context: any, payload: UserInputPayload) {
+    $getFindGenesWorker().postMessage({
+      init: false,
+      todo: "cleanUserInput",
+      payload: payload,
     })
   },
   async updateLastSearch(context: any, payload: String) {
     context.commit("updateLastSearch", payload)
   },
-  async setParsedGenes(context: any, payload: ParsedGenes) {
-    return new Promise((resolve) => {
-      context.commit("setParsedGenes", payload)
-      resolve(true)
+  async parseUserGenes(context: any, payload: Gene[]) {
+    $getFindGenesWorker().postMessage({
+      init: false,
+      todo: "parseUserGenes",
+      userGenes: payload,
     })
   },
-  async setPanelSearchResult(context: any, payload: PanelSearchResult) {
-    return new Promise((resolve) => {
-      context.commit("setPanelSearchResult", payload)
-      resolve(true)
+  async findGenesInAllPanels(context: any, payload: ParsedGenes) {
+    $getFindGenesWorker().postMessage({
+      init: false,
+      todo: "findGenesInAllPanels",
+      parsedGenes: payload,
+      panels: context.state.panels,
     })
+  },
+  async updatePanels(context: any, payload: GenePanel[]) {
+    context.commit("updatePanels", payload)
   },
 }

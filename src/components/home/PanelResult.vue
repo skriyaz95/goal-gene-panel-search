@@ -62,11 +62,13 @@
             <panel-results-help />
           </template>
         </info-alert>
-        <div v-if="parsedGenes.symbolFoundGenes.length > 0 || parsedGenes.synonymFoundGenes.length > 0">
-          {{ $t('panel-result.result.title') }}: {{ parsedGenes.symbolFoundGenes.length + parsedGenes.synonymFoundGenes.length }}
+        <div v-if="symbolOrSynonymLength > 0">
+          {{ $t('panel-result.result.title') }}:
+          {{ symbolOrSynonymLength }}
         </div>
-        <div v-if="notFoundGenes.length > 0">
-          {{ $t('panel-result.result.not-found-genes-title') }}: {{ notFoundGenes.length }}
+        <div v-if="notFoundLength > 0">
+          {{ $t('panel-result.result.not-found-genes-title') }}:
+          {{ notFoundLength }}
         </div>
         <v-data-table
           :headers="tableHeaders"
@@ -76,8 +78,10 @@
           <template v-slot:[`item.institution`]="{ item }">
             <v-tooltip bottom v-if="!isInstitutionEmpty(item.institution)">
               <template v-slot:activator="{ on }">
-                <v-btn text v-on="on"
-                       @click.stop="openInstitutionDetails(item.institution)"
+                <v-btn
+                  text
+                  v-on="on"
+                  @click.stop="openInstitutionDetails(item.institution)"
                 >
                   {{ item.institution.name }}
                   <v-icon>mdi-arrow-top-right-thick</v-icon>
@@ -140,7 +144,14 @@ import download, { formatObjetToJson } from '@/utils/download'
 import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
-import {Gene, Institution, PanelResultFormattedRow, PanelSearchResult, ParsedGene,} from '@/types/panel-types'
+import {
+  Gene,
+  Institution,
+  PanelResultFormattedRow,
+  PanelSearchResult,
+  ParsedGenes,
+  // ParsedGene,
+} from '@/types/panel-types'
 import InstitutionDetails from './InstitutionDetails.vue'
 import DialogTemplate from '../DialogTemplate.vue'
 
@@ -158,6 +169,13 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    parsedGenes: {
+      type: ParsedGenes,
+    },
+    panelSearchResults: {
+      type: Array,
+      default: () => new Array<PanelSearchResult>(),
+    },
   },
   data() {
     return {
@@ -167,10 +185,8 @@ export default Vue.extend({
       geneType: new String(),
       panelName: new String(),
       genes: new Array<string>(),
-      notFoundGenes: new Array<ParsedGene>(),
       expanded: [],
       singleExpand: false,
-      panelContent: new Array<PanelResultFormattedRow>(),
       tableHeaders: [
         {
           text: this.$t('panel-result.table.headers.institution-name'),
@@ -199,45 +215,60 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
-      userGenes: 'getUserGenes',
       institutionMap: 'getInstitutionMap',
-      panelSearchResult: 'getPanelSearchResult',
-      parsedGenes: 'getParsedGenes'
     }),
-  },
-  watch: {
-    panelSearchResult: 'showPanelResult',
-  },
-  methods: {
-    showPanelResult() {
-      this.notFoundGenes = this.parsedGenes.notFoundGenes
-      this.panelContent = this.panelSearchResult.map((panel: PanelSearchResult) => {
-        const genesInPanel = panel.genesInPanel.map((gene: Gene) =>
-            gene.name.toUpperCase()
-        )
-        const genesNotInPanel = panel.genesNotInPanel.map((gene: Gene) =>
-            gene.name.toUpperCase()
-        )
-        let institution = this.institutionMap.get(panel.name)
-        if (!institution) {
-          institution = {}
-        }
-
-        return new PanelResultFormattedRow(
-          panel.name,
-          genesInPanel.length,
-          genesNotInPanel.length,
-          genesInPanel,
-          genesNotInPanel,
-          institution
-        )
-      })
+    notFoundLength() {
+      let length = 0
+      if (this.parsedGenes && this.parsedGenes.notFoundGenes) {
+        length = this.parsedGenes.notFoundGenes.length
+      }
+      return length
     },
+    symbolOrSynonymLength() {
+      let length = 0
+      if (this.parsedGenes) {
+        if (this.parsedGenes.synonymFoundGenes) {
+          length += this.parsedGenes.synonymFoundGenes.length
+        }
+        if (this.parsedGenes.symbolFoundGenes) {
+          length += this.parsedGenes.symbolFoundGenes.length
+        }
+      }
+      return length
+    },
+    panelContent(): Array<PanelResultFormattedRow> {
+      return (this.panelSearchResults as Array<PanelSearchResult>).map(
+        (panel: PanelSearchResult) => {
+          const genesInPanel = panel.genesInPanel.map((gene: Gene) =>
+            gene.name.toUpperCase()
+          )
+          const genesNotInPanel = panel.genesNotInPanel.map((gene: Gene) =>
+            gene.name.toUpperCase()
+          )
+          let institution = this.institutionMap.get(panel.name)
+          if (!institution) {
+            institution = {}
+          }
+
+          return new PanelResultFormattedRow(
+            panel.name,
+            genesInPanel.length,
+            genesNotInPanel.length,
+            genesInPanel,
+            genesNotInPanel,
+            institution
+          )
+        }
+      )
+    },
+  },
+  watch: {},
+  methods: {
     openDialog(panel: PanelResultFormattedRow, geneType: string) {
       this.panelName = panel.name
       this.geneType = geneType
       this.genes =
-          geneType === 'genesInPanel' ? panel.genesInPanel : panel.genesNotInPanel
+        geneType === 'genesInPanel' ? panel.genesInPanel : panel.genesNotInPanel
       this.showDialog = true
     },
     openInstitutionDetails(institution: Institution) {

@@ -8,7 +8,18 @@ let synonymMap = new Map()
 const stateSymbol = "symbol"
 const stateSynonym = "synonym"
 const stateNotFound = "notfound"
-// let running = false
+
+function cleanUserInput(userinput, validSeparators) {
+  const genes = userinput.toUpperCase().split(validSeparators)
+  const uniqGenes = Array.from(new Set(genes)) //remove duplicates
+  const userGenesList = []
+  for (const symbol of uniqGenes) {
+    if (symbol && symbol != "") {
+      userGenesList.push(new Gene(symbol))
+    }
+  }
+  return userGenesList
+}
 
 function parseUserGenes(userGenes) {
   const parsedGenes = new ParsedGenes()
@@ -120,22 +131,16 @@ addEventListener("message", (event) => {
   if (event.data.init) {
     allGeneMap = event.data.allGeneMap
     synonymMap = event.data.synonymMap
+  } else if (event.data.todo == "cleanUserInput") {
+    const userGeneList = cleanUserInput(
+      event.data.payload.userinput,
+      event.data.payload.validSeparators,
+    )
+    ctx.postMessage({ userGeneList, todo: "cleanUserInput" })
   } else if (event.data.todo == "parseUserGenes") {
-    // if (running) {
-    //   console.log("already running", event.data.userGenes)
-    // } else {
-    //   console.log("not running", event.data.userGenes)
-    // }
-    // running = true
     const parsedGenes = parseUserGenes(event.data.userGenes)
     ctx.postMessage({ parsedGenes, todo: "parseUserGenes" })
   } else if (event.data.todo == "findGenesInAllPanels") {
-    // if (running) {
-    //   console.log("already running", event.data.parsedGenes)
-    // } else {
-    //   console.log("not running", event.data.parsedGenes)
-    // }
-    // running = true
     const allSymbols = findAllSymbols(event.data.parsedGenes)
     const genesInAllPanels = findGenesInAllPanels(allSymbols, event.data.panels)
     ctx.postMessage({
@@ -143,12 +148,6 @@ addEventListener("message", (event) => {
       genesInAllPanels: genesInAllPanels,
     })
   } else if (event.data.todo == "findPanelGenes") {
-    // if (running) {
-    //   console.log("already running", event.data.userGenes)
-    // } else {
-    //   console.log("not running", event.data.userGenes)
-    // }
-    // running = true
     const parsedGenes = parseUserGenes(event.data.userGenes)
     ctx.postMessage({
       parsedGenes,
@@ -156,5 +155,4 @@ addEventListener("message", (event) => {
       panelName: event.data.panelName,
     })
   }
-  // running = false
 })

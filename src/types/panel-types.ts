@@ -42,7 +42,7 @@ export class PanelSearchResult {
   }
 }
 
-export class  Gene {
+export class Gene {
   name: string
 
   constructor(name: string) {
@@ -105,17 +105,6 @@ export class SynonymGene {
   constructor(synonym: string, gene: FullGene) {
     this.synonym = synonym
     this.gene = gene
-  }
-}
-
-/** payload object to commit to the Vuex store
- * It's best to commit a payload object rather than the panel directly
- */
-export class PanelPayload {
-  panel: GenePanel
-
-  constructor(panel: GenePanel) {
-    this.panel = panel
   }
 }
 

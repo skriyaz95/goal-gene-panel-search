@@ -34,7 +34,6 @@
           clear-icon="mdi-close-circle"
           rows="13"
           @click:clear="clear()"
-          @blur="clearIfEmpty"
         />
         <v-btn
           class="ma-2"
@@ -57,11 +56,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
-import { Gene } from '@/types/panel-types'
+// import { Gene } from '@/types/panel-types'
 import debounce from '@/utils/debounce'
 import GeneSearchHelp from '@/components/help/GeneSearchHelp.vue'
 import HelpButton from '../help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
+import { UserInputPayload } from '@/types/payload-types'
 
 export default Vue.extend({
   components: { GeneSearchHelp, HelpButton, InfoAlert },
@@ -81,9 +81,7 @@ export default Vue.extend({
   }),
   computed: {
     ...mapGetters({
-      userGenes: 'getUserGenesSorted',
       lastSearch: 'getLastSearch',
-      panels: 'getPanels',
     }),
     geneListRules(): any {
       // const x = this.$t('userInput.validation.list-empty')
@@ -102,25 +100,21 @@ export default Vue.extend({
     }, 500),
   },
   methods: {
-    ...mapActions(['setUserGenes', 'updateLastSearch']),
+    ...mapActions(['cleanUserInput', 'updateLastSearch']),
     submitUserInput(userinput: string, withAlert: boolean) {
+      // console.log(userinput, withAlert)
+      if (!userinput) {
+        return
+      }
       if (!this.geneList || !this.isFormValid) {
         if (withAlert) {
           alert('Form is not valid')
         }
         return
       } else {
-        let genes = userinput.toUpperCase().split(this.validSeparators)
-        let uniqGenes = Array.from(new Set(genes)) //remove duplicates
-        let userGenesList: Gene[] = []
-        for (let symbol of uniqGenes) {
-          if (symbol && symbol != '') {
-            userGenesList.push(new Gene(symbol))
-          }
-        }
-        this.setUserGenes(userGenesList).then(() => {
-          this.$emit('userInputDone')
-        })
+        this.cleanUserInput(
+          new UserInputPayload(userinput, this.validSeparators)
+        )
         this.updateLastSearch(this.geneList)
       }
     },
@@ -128,9 +122,9 @@ export default Vue.extend({
       return new Promise((resolve) => {
         let form: any = this.$refs.form
         this.geneList = String()
-        this.setUserGenes([])
         form.reset()
         this.demoRunning = false
+        this.cleanUserInput(new UserInputPayload('', this.validSeparators))
         resolve('success')
       })
     },

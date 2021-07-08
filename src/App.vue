@@ -36,7 +36,6 @@
 import Vue from 'vue'
 // import axios from 'axios'
 import { mapGetters } from 'vuex'
-// import { PanelPayload } from '@/types/panel-types'
 import NavigationMenu from '@/components/NavigationMenu.vue'
 // import { TranslateResult } from 'vue-i18n'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'

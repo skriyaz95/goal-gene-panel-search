@@ -64,9 +64,7 @@
 <script lang="ts">
 import { FullGene, SynonymGene } from '@/types/panel-types'
 import Vue from 'vue'
-// import axios from 'axios'
 import { mapGetters } from 'vuex'
-// import { Gene, GenePanel, PanelPayload } from '@/types/panel-types'
 import download from '@/utils/download'
 import { formatObjetToJson } from '@/utils/download'
 import { NCBI_GENE_INFO_FILE_URL } from '@/utils/apis'
@@ -195,9 +193,7 @@ export default Vue.extend({
     },
   },
   computed: {
-    ...mapGetters({
-      panels: 'getPanels',
-    }),
+    ...mapGetters({}),
   },
   mounted() {},
 })

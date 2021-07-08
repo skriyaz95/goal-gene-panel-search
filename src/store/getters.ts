@@ -1,9 +1,7 @@
 import {
   FullGene,
-  Gene,
   GenePanel,
   Institution,
-  // PanelSearchResult,
   SynonymGene,
 } from "@/types/panel-types"
 
@@ -17,17 +15,17 @@ export default {
   getParsedGenes: (state: any) => {
     return state.parsedGenes
   },
-  getUserGenesSorted: (state: any) => {
-    return [...state.userGenes].sort((a: Gene, b: Gene) => {
-      if (a.name < b.name) {
-        return -1
-      }
-      if (a.name > b.name) {
-        return 1
-      }
-      return 0
-    })
-  },
+  // getUserGenesSorted: (state: any) => {
+  //   return [...state.userGenes].sort((a: Gene, b: Gene) => {
+  //     if (a.name < b.name) {
+  //       return -1
+  //     }
+  //     if (a.name > b.name) {
+  //       return 1
+  //     }
+  //     return 0
+  //   })
+  // },
   getPanelSearchResult: (state: any) => {
     return state.panelSearchResult
   },
