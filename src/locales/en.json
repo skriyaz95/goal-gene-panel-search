@@ -231,7 +231,10 @@
       "part2a": "If some genes submitted are not valid genes, ",
       "part2b": "look in ",
       "part2c": " to get more details.",
-      "part3": "Special characters are not allowed."
+      "part3": "Special characters are not allowed.",
+      "firstTime": {
+        "text": "Click here for help"
+      }
     },
     "panelResults": {
       "part1a": " shows the panels containing genes",

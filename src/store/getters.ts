@@ -49,7 +49,7 @@ export default {
     })
     return allSynonymMap
   },
-  getInstitutionMap: (state: any) => {
+  getInstitutionsByPanel: (state: any) => {
     const allInstitutions = new Map<String, Institution>()
     state.institutions.forEach((institution: Institution) => {
       institution.panels.forEach((panel: string) => {

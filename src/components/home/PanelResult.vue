@@ -215,7 +215,7 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
-      institutionMap: 'getInstitutionMap',
+      institutionsByPanel: 'getInstitutionsByPanel',
     }),
     notFoundLength() {
       let length = 0
@@ -245,7 +245,7 @@ export default Vue.extend({
           const genesNotInPanel = panel.genesNotInPanel.map((gene: Gene) =>
             gene.name.toUpperCase()
           )
-          let institution = this.institutionMap.get(panel.name)
+          let institution = this.institutionsByPanel.get(panel.name)
           if (!institution) {
             institution = {}
           }

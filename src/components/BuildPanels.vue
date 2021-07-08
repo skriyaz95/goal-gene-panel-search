@@ -328,7 +328,7 @@ export default Vue.extend({
     },
     //removed from now
     // downloadInstitutions() {
-    //   const institutionMapCopy = new Map<string, Institution>()
+    //   const institutionsByPanelCopy = new Map<string, Institution>()
     //   this.institutionsByName.forEach((value: Institution, key: string) => {
     //     const newInstitution = new Institution(
     //       value.name,
@@ -337,17 +337,17 @@ export default Vue.extend({
     //       value.website,
     //       []
     //     )
-    //     institutionMapCopy.set(key, newInstitution)
+    //     institutionsByPanelCopy.set(key, newInstitution)
     //   })
     //   for (var i = 0; i < this.tempParsedGenes.length; i++) {
     //     const name = this.tempParsedGenes[i].institutionName
     //     const institution: Institution | undefined =
-    //       institutionMapCopy.get(name)
+    //       institutionsByPanelCopy.get(name)
     //     if (institution) {
     //       institution.panels.push(this.tempParsedGenes[i].panelName)
     //     }
     //   }
-    //   const newInstitutions = Array.from(institutionMapCopy.values())
+    //   const newInstitutions = Array.from(institutionsByPanelCopy.values())
     //   download(
     //     'institutions.json',
     //     formatObjetToJson(newInstitutions, false),
@@ -381,7 +381,7 @@ export default Vue.extend({
     ...mapGetters({
       panels: 'getPanels',
       //removed from now
-      // institutionMap: 'getInstitutionMap',
+      // institutionsByPanel: 'getInstitutionsByPanel',
       // institutionItems: 'getInstitutionDropDownItems',
       // institutionsByName: 'getInstitutionsByName',
     }),

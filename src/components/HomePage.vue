@@ -2,12 +2,16 @@
   <v-container fluid class="mt-2">
     <v-row class="text-center" dense>
       <v-col cols="12" lg="3">
-        <user-input :help="showHelp" @help="showHelp = !showHelp" />
+        <user-input
+          :help="showHelp"
+          @help="handleHelp"
+          :firstTime="firstTime"
+        />
       </v-col>
       <v-col cols="12" lg="9">
         <panel-result
           :help="showHelp"
-          @help="showHelp = !showHelp"
+          @help="handleHelp"
           :loading="searchingPanels"
           :parsedGenes="formattedGenes"
           :panelSearchResults="panelSearchResults"
@@ -17,7 +21,7 @@
         <parsed-input
           ref="parsedInput"
           :help="showHelp"
-          @help="showHelp = !showHelp"
+          @help="handleHelp"
           :loading="parsingGenes"
           :formattedGenes="formattedGenes"
         />
@@ -49,16 +53,32 @@ export default Vue.extend({
       searchingPanels: false,
       formattedGenes: new ParsedGenes(),
       panelSearchResults: new Array<PanelSearchResult>(),
+      firstTime: false,
     }
   },
   methods: {
     ...mapActions(['parseUserGenes', 'findGenesInAllPanels']),
+    handleHelp() {
+      this.showHelp = !this.showHelp
+      this.firstTime = false
+    },
+    handleFirstTime() {
+      let decodedCookie = decodeURIComponent(document.cookie)
+      if (decodedCookie.indexOf('firstTime') == -1) {
+        //cookie doesn't exist
+        document.cookie = 'firstTime=false'
+        setTimeout(() => {
+          this.firstTime = true
+        }, 5000) //display 3 sec after loading
+      }
+    },
   },
   computed: {
     ...mapGetters({}),
   },
   watch: {},
   mounted() {
+    this.handleFirstTime()
     $getFindGenesWorker().onmessage = (event: any) => {
       if (event.data.todo == 'parseUserGenes') {
         this.formattedGenes = new ParsedGenes()

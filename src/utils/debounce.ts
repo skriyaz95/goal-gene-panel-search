@@ -14,7 +14,7 @@
  * @returns
  */
 
-export default function (fn: any, delay: number): any {
+export default function(fn: any, delay: number): any {
   let timeoutID: number | undefined = undefined
   return function(this: any, ...args: IArguments[]) {
     clearTimeout(timeoutID)
@@ -24,5 +24,3 @@ export default function (fn: any, delay: number): any {
     }, delay)
   }
 }
-
-

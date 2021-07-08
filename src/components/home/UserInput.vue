@@ -1,8 +1,21 @@
 <template>
-  <v-card outlined>
+  <v-card outlined :raised="firstTime">
     <v-card-title>
       {{ $t('userInput.gene-list') }}
       <v-spacer></v-spacer>
+      <v-scroll-x-transition>
+        <v-alert
+          dense
+          text
+          color="primary"
+          class="body-1 ma-0 pt-1 pb-1"
+          v-if="firstTime"
+        >
+          {{ $t('help.geneSearch.firstTime.text') }}
+
+          <v-icon class="primary--text"> mdi-arrow-right-thick </v-icon>
+        </v-alert>
+      </v-scroll-x-transition>
       <help-button @action="handleHelp()" :active="help">
         <template v-slot:content>
           <gene-search-help />
@@ -71,6 +84,10 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    firstTime: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     isFormValid: true,
@@ -78,6 +95,7 @@ export default Vue.extend({
     validSeparators: /[ ,;\s]+/,
     validCharacters: /^[-,;~\w\s]+$/,
     demoRunning: false,
+    previousInput: '',
   }),
   computed: {
     ...mapGetters({
