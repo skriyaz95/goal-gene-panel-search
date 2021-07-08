@@ -56,7 +56,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { Gene } from '@/types/panel-types'
 import debounce from '@/utils/debounce'
 import GeneSearchHelp from '@/components/help/GeneSearchHelp.vue'
@@ -83,7 +83,7 @@ export default Vue.extend({
     ...mapGetters({
       userGenes: 'getUserGenesSorted',
       lastSearch: 'getLastSearch',
-      panels: 'getPanels'
+      panels: 'getPanels',
     }),
     geneListRules(): any {
       // const x = this.$t('userInput.validation.list-empty')
@@ -102,6 +102,7 @@ export default Vue.extend({
     }, 500),
   },
   methods: {
+    ...mapActions(['setUserGenes', 'updateLastSearch']),
     submitUserInput(userinput: string, withAlert: boolean) {
       if (!this.geneList || !this.isFormValid) {
         if (withAlert) {
@@ -117,16 +118,17 @@ export default Vue.extend({
             userGenesList.push(new Gene(symbol))
           }
         }
-        this.$store.commit('setUserGenes', userGenesList)
-        this.saveLastInput()
-        this.$emit('postFindAllGenesMessage', this.userGenes)
+        this.setUserGenes(userGenesList).then(() => {
+          this.$emit('userInputDone')
+        })
+        this.updateLastSearch(this.geneList)
       }
     },
     clear() {
       return new Promise((resolve) => {
         let form: any = this.$refs.form
         this.geneList = String()
-        this.$store.commit('setUserGenes', [])
+        this.setUserGenes([])
         form.reset()
         this.demoRunning = false
         resolve('success')
@@ -148,9 +150,6 @@ export default Vue.extend({
       if (this.lastSearch) {
         this.geneList = this.lastSearch
       }
-    },
-    saveLastInput() {
-      this.$store.commit('updateLastSearch', this.geneList)
     },
     handleHelp() {
       this.$emit('help')

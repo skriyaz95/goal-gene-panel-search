@@ -1,5 +1,5 @@
-import {ParsedGene, ParsedGenes} from "@/types/panel-types"
-import {Gene, PanelSearchResult} from "../../types/panel-types";
+import { ParsedGene, ParsedGenes } from "@/types/panel-types"
+import { Gene, PanelSearchResult } from "../../types/panel-types"
 
 const ctx = self
 let allGeneMap = new Map()
@@ -8,8 +8,9 @@ let synonymMap = new Map()
 const stateSymbol = "symbol"
 const stateSynonym = "synonym"
 const stateNotFound = "notfound"
+// let running = false
 
-function findAllGenes(userGenes) {
+function parseUserGenes(userGenes) {
   const parsedGenes = new ParsedGenes()
   for (let i = 0; i < userGenes.length; i++) {
     const userGene = userGenes[i]
@@ -47,7 +48,7 @@ function applyState(userGene) {
 }
 
 function findGenesInAllPanels(genesList, panels) {
-  let result = [];
+  let result = []
   panels.forEach((panel) => {
     const genes = findGenesInSelectedPanel(genesList, panel)
     if (genes.genesInPanel.length > 0 || genes.genesNotInPanel.length > 0) {
@@ -67,9 +68,9 @@ function findGenesInSelectedPanel(genesList, panel) {
   const genesInPanel = []
   const genesNotInPanel = []
   const panelGenesSet = new Set(
-    panel.genes.map(gene => gene.name.toUpperCase()),
+    panel.genes.map((gene) => gene.name.toUpperCase()),
   )
-  genesList.forEach(gene => {
+  genesList.forEach((gene) => {
     if (panelGenesSet.has(gene)) {
       genesInPanel.push(new Gene(gene))
     } else {
@@ -83,59 +84,77 @@ function findGenesInSelectedPanel(genesList, panel) {
 }
 
 function findAllSymbols(parsedGenes) {
-  const genesList = new Set();
-  parsedGenes.symbolFoundGenes.forEach(parsedGene => {
-    genesList.add(parsedGene.gene.name.toUpperCase());
+  const genesList = new Set()
+  parsedGenes.symbolFoundGenes.forEach((parsedGene) => {
+    genesList.add(parsedGene.gene.name.toUpperCase())
   })
 
-  parsedGenes.synonymFoundGenes.forEach(parsedGene => {
-    genesList.add(parsedGene.realGene.symbol.toUpperCase());
+  parsedGenes.synonymFoundGenes.forEach((parsedGene) => {
+    genesList.add(parsedGene.realGene.symbol.toUpperCase())
   })
 
-  return genesList;
+  return genesList
 }
 
 //dispatch other listeners base on some properties like init
 /**
  * eg. ParseInput.vue listens for the workder with this:
  * $getFindGenesWorker().onmessage = (event: any) => {
-      if (event.data.todo == 'findAllGenes') {
+      if (event.data.todo == 'parseUserGenes') {
         this.formattedGenes = event.data.parsedGenes
       }
     }
  and posts a message to the workder with this
  $getFindGenesWorker().postMessage({
         init: false,
-        todo: 'findAllGenes',
+        todo: 'parseUserGenes',
         userGenes: this.userGenes,
       })
- 'findAllGenes' is a way to only process messages that the component
+ 'parseUserGenes' is a way to only process messages that the component
  cares about.
  ctx.postMessage needs to return a todo parameters with the same string
- that was sent in the todo argument from the component: 'findAllGenes'
+ that was sent in the todo argument from the component: 'parseUserGenes'
  in this case
  */
 addEventListener("message", (event) => {
   if (event.data.init) {
     allGeneMap = event.data.allGeneMap
     synonymMap = event.data.synonymMap
-  } else if (event.data.todo == "findAllGenes") {
-    const parsedGenes = findAllGenes(event.data.userGenes)
-    ctx.postMessage({parsedGenes, todo: "findAllGenes"})
+  } else if (event.data.todo == "parseUserGenes") {
+    // if (running) {
+    //   console.log("already running", event.data.userGenes)
+    // } else {
+    //   console.log("not running", event.data.userGenes)
+    // }
+    // running = true
+    const parsedGenes = parseUserGenes(event.data.userGenes)
+    ctx.postMessage({ parsedGenes, todo: "parseUserGenes" })
   } else if (event.data.todo == "findGenesInAllPanels") {
+    // if (running) {
+    //   console.log("already running", event.data.parsedGenes)
+    // } else {
+    //   console.log("not running", event.data.parsedGenes)
+    // }
+    // running = true
     const allSymbols = findAllSymbols(event.data.parsedGenes)
-    const genesInAllPanels = findGenesInAllPanels(allSymbols, event.data.panels);
+    const genesInAllPanels = findGenesInAllPanels(allSymbols, event.data.panels)
     ctx.postMessage({
-      parsedGenes: event.data.parsedGenes,
       todo: "findGenesInAllPanels",
       genesInAllPanels: genesInAllPanels,
     })
   } else if (event.data.todo == "findPanelGenes") {
-    const parsedGenes = findAllGenes(event.data.userGenes)
+    // if (running) {
+    //   console.log("already running", event.data.userGenes)
+    // } else {
+    //   console.log("not running", event.data.userGenes)
+    // }
+    // running = true
+    const parsedGenes = parseUserGenes(event.data.userGenes)
     ctx.postMessage({
       parsedGenes,
       todo: "findPanelGenes",
       panelName: event.data.panelName,
     })
   }
+  // running = false
 })

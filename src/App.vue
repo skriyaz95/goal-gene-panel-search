@@ -34,9 +34,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import axios from 'axios'
+// import axios from 'axios'
 import { mapGetters } from 'vuex'
-import { PanelPayload } from '@/types/panel-types'
+// import { PanelPayload } from '@/types/panel-types'
 import NavigationMenu from '@/components/NavigationMenu.vue'
 // import { TranslateResult } from 'vue-i18n'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
@@ -51,25 +51,6 @@ export default Vue.extend({
     publicPath: process.env.BASE_URL,
   }),
   methods: {
-    importExistingPanels(r: any): any {
-      this.$store.commit('resetPanels')
-      var jsonPanels = new Array<any>()
-      r.keys().forEach((key: any) => jsonPanels.push(key))
-      for (let i = 0; i < jsonPanels.length; i++) {
-        var path = this.publicPath + this.sourceDir + jsonPanels[i]
-        axios
-          .get(path, {
-            params: {},
-          })
-          .then((response) => {
-            var panel = response.data
-            this.$store.commit('addPanel', new PanelPayload(panel))
-          })
-          .catch((error) => {
-            alert(error)
-          })
-      }
-    },
     getBackgroundStyle(lighten: boolean) {
       var background: any = this.$vuetify.theme.themes[this.theme].background
       var backgroundString = ''
@@ -124,9 +105,6 @@ export default Vue.extend({
   },
   mounted() {
     this.initWorkers()
-    this.importExistingPanels(
-      require.context('../public/source_panels/', false, /\.json$/)
-    )
   },
   destroyed() {
     $getFindGenesWorker().terminate()

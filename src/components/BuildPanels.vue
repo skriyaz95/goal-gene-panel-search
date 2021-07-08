@@ -170,7 +170,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import axios from 'axios'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import {
   Gene,
   GenePanel,
@@ -199,6 +199,7 @@ export default Vue.extend({
     progress: 0,
   }),
   methods: {
+    ...mapActions(['updatePanels']),
     buildPanels() {
       this.started = true
       this.progress = 0
@@ -294,6 +295,11 @@ export default Vue.extend({
       const filename = genePanel.name.replaceAll(/[ ]+/g, '_') + '.json'
       download(filename, content, 'text/json')
     },
+    downloadPanelsAsOne(genePanelsToSave: GenePanel[]) {
+      const content = formatObjetToJson(genePanelsToSave, false)
+      const filename = 'panels.json'
+      download(filename, content, 'text/json')
+    },
     buildGenePanelObject(panelBuilder: PanelBuilder): GenePanel {
       //make sure there are no dups after adding synonyms
       const uniqGenes = new Set<string>(
@@ -313,9 +319,10 @@ export default Vue.extend({
       for (var i = 0; i < this.tempParsedGenes.length; i++) {
         const genePanel = this.buildGenePanelObject(this.tempParsedGenes[i])
         genePanelsToSave.push(genePanel)
-        this.downloadPanel(genePanel)
+        // this.downloadPanel(genePanel)
       }
-      this.$store.commit('updatePanels', genePanelsToSave)
+      this.updatePanels(genePanelsToSave)
+      this.downloadPanelsAsOne(genePanelsToSave)
       //removed from now
       // this.downloadInstitutions()
     },
@@ -355,8 +362,6 @@ export default Vue.extend({
       r.keys().forEach((key: any) => this.panelFileNames.push(key))
     },
     showGenes(genes: Array<ParsedGene>): boolean {
-      // console.log(genes)
-      // return true
       return genes.length > 0
     },
     onlySymbols(parsedGenes: ParsedGenes) {

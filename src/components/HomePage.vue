@@ -2,13 +2,25 @@
   <v-container fluid class="mt-2">
     <v-row class="text-center" dense>
       <v-col cols="12" lg="3">
-        <user-input :help="showHelp" @help="showHelp = !showHelp" @postFindAllGenesMessage="postFindAllGenesMessage($event)" />
+        <user-input
+          :help="showHelp"
+          @help="showHelp = !showHelp"
+          @userInputDone="postWorkerParseUserGenes"
+        />
       </v-col>
       <v-col cols="12" lg="9">
-        <panel-result :help="showHelp" @help="showHelp = !showHelp" />
+        <panel-result
+          :help="showHelp"
+          @help="showHelp = !showHelp"
+          :loading="searchingPanels"
+        />
       </v-col>
       <v-col cols="12" lg="6">
-        <parsed-input :help="showHelp" @help="showHelp = !showHelp" />
+        <parsed-input
+          :help="showHelp"
+          @help="showHelp = !showHelp"
+          :loading="parsingGenes"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -19,9 +31,8 @@ import Vue from 'vue'
 import UserInput from '@/components/home/UserInput.vue'
 import ParsedInput from '@/components/home/ParsedInput.vue'
 import PanelResult from '@/components/home/PanelResult.vue'
-import $getFindGenesWorker from "@/utils/workers/worker-instance";
-import {Gene} from "@/types/panel-types";
-import {mapGetters} from "vuex";
+import $getFindGenesWorker from '@/utils/workers/worker-instance'
+import { mapGetters, mapActions } from 'vuex'
 
 export default Vue.extend({
   name: 'HomePage',
@@ -33,40 +44,49 @@ export default Vue.extend({
   data() {
     return {
       showHelp: false,
+      parsingGenes: false,
+      searchingPanels: false,
     }
   },
   methods: {
-    postFindAllGenesMessage(userGenes: Gene[]) {
+    ...mapActions(['setParsedGenes', 'setPanelSearchResult']),
+    postWorkerParseUserGenes() {
+      this.parsingGenes = true
       $getFindGenesWorker().postMessage({
         init: false,
-        todo: 'findAllGenes',
-        userGenes: userGenes,
+        todo: 'parseUserGenes',
+        userGenes: this.userGenes,
       })
     },
-    postFindGenesInAllPanels() {
+    postWorkerFindGenesInAllPanels() {
+      this.searchingPanels = true
       $getFindGenesWorker().postMessage({
         init: false,
         todo: 'findGenesInAllPanels',
         parsedGenes: this.parsedGenes,
-        panels: this.panels
+        panels: this.panels,
       })
-    }
+    },
   },
   computed: {
     ...mapGetters({
       panels: 'getPanels',
-      parsedGenes: 'getParsedGenes'
+      userGenes: 'getUserGenes',
+      parsedGenes: 'getParsedGenes',
     }),
   },
-  watch: {
-    parsedGenes: 'postFindGenesInAllPanels'
-  },
+  watch: {},
   mounted() {
     $getFindGenesWorker().onmessage = (event: any) => {
-      if (event.data.todo == 'findAllGenes') {
-        this.$store.commit('setParsedGenes', event.data.parsedGenes)
-      }else if (event.data.todo == 'findGenesInAllPanels') {
-        this.$store.commit('setPanelSearchResult', event.data.genesInAllPanels)
+      if (event.data.todo == 'parseUserGenes') {
+        this.setParsedGenes(event.data.parsedGenes).then(() => {
+          this.postWorkerFindGenesInAllPanels()
+          this.parsingGenes = false
+        })
+      } else if (event.data.todo == 'findGenesInAllPanels') {
+        this.setPanelSearchResult(event.data.genesInAllPanels).then(() => {
+          this.searchingPanels = false
+        })
       }
     }
   },

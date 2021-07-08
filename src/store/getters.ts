@@ -1,4 +1,11 @@
-import {FullGene, Gene, GenePanel, Institution, PanelSearchResult, SynonymGene,} from "@/types/panel-types"
+import {
+  FullGene,
+  Gene,
+  GenePanel,
+  Institution,
+  // PanelSearchResult,
+  SynonymGene,
+} from "@/types/panel-types"
 
 export default {
   getPanels: (state: any) => {
