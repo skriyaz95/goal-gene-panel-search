@@ -62,12 +62,12 @@
             <panel-results-help />
           </template>
         </info-alert>
-        <div v-if="symbolOrSynonymLength > 0">
-          {{ $t('panel-result.result.title') }}:
+        <div class="text-left" v-if="symbolOrSynonymLength > 0">
+          <b>{{ $t('panel-result.result.title') }}:</b>
           {{ symbolOrSynonymLength }}
         </div>
-        <div v-if="notFoundLength > 0">
-          {{ $t('panel-result.result.not-found-genes-title') }}:
+        <div class="text-left" v-if="notFoundLength > 0">
+          <b>{{ $t('panel-result.result.not-found-genes-title') }}:</b>
           {{ notFoundLength }}
         </div>
         <v-data-table
