@@ -3,8 +3,8 @@
     <v-card-title>
       {{ $t('parsedInput.title.text') }}
       <v-fade-transition>
-        <span v-if="userGenes.length > 0" class="ml-3">
-          <v-tooltip bottom v-if="showNotFound">
+        <span class="ml-3" v-show="showAny">
+          <v-tooltip bottom v-show="showNotFound">
             <template v-slot:activator="{ on }">
               <v-chip color="error" class="ml-1 mr-1" v-on="on">
                 {{ $t('parsedInput.notFound.text') }} ({{
@@ -14,7 +14,7 @@
             </template>
             <span>{{ $t('parsedInput.notFound.tooltip') }}</span>
           </v-tooltip>
-          <v-tooltip bottom v-if="showSynonym">
+          <v-tooltip bottom v-show="showSynonym">
             <template v-slot:activator="{ on }">
               <v-chip color="warning" class="ml-1 mr-1" v-on="on">
                 {{ $t('parsedInput.synonyms.text') }} ({{
@@ -27,7 +27,7 @@
             </template>
             <span>{{ $t('parsedInput.synonyms.tooltip') }}</span>
           </v-tooltip>
-          <v-tooltip bottom v-if="showSymbol">
+          <v-tooltip bottom v-show="showSymbol">
             <template v-slot:activator="{ on }">
               <v-chip color="success" class="ml-1 mr-1" v-on="on">
                 {{ $t('parsedInput.symbols.text') }} ({{
@@ -40,7 +40,6 @@
         </span>
       </v-fade-transition>
       <v-spacer></v-spacer>
-      <v-progress-circular v-if="loading" indeterminate></v-progress-circular>
       <help-button @action="handleHelp()" :active="help">
         <template v-slot:content>
           <parsed-search-help />
@@ -53,11 +52,11 @@
           <parsed-search-help />
         </template>
       </info-alert>
-      <div v-if="userGenes.length == 0">
+      <div v-show="noData">
         {{ $t('parsedInput.empty.text') }}
       </div>
       <v-fade-transition>
-        <div v-if="userGenes.length != 0">
+        <div v-show="showAny">
           <gene-parsed-content
             :show-genes="[showNotFound, showSynonym, showSymbol]"
             :parsed-genes="formattedGenes"
@@ -70,8 +69,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {mapGetters} from 'vuex'
-import {ParsedGenes} from '@/types/panel-types'
+import { mapGetters } from 'vuex'
+import { ParsedGenes } from '@/types/panel-types'
 import GeneParsedContent from '@/components/GeneParsedContent.vue'
 import ParsedSearchHelp from '@/components/help/ParsedSearchHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
@@ -85,16 +84,19 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    formattedGenes: {
+      type: ParsedGenes,
+    },
   },
-  data: () => ({
-    formattedGenes: new ParsedGenes(),
-    loading: false, //processing seems too fast to need a loading state ATM
-  }),
+  data: () => ({}),
   computed: {
     ...mapGetters({
-      userGenes: 'getUserGenesSorted',
-      allGenes: 'getAllGenes',
-      parsedGenes: 'getParsedGenes'
+      // userGenes: 'getUserGenesSorted',
+      // parsedGenes: 'getParsedGenes',
     }),
     showNotFound(): boolean {
       return this.formattedGenes.notFoundGenes.length > 0
@@ -105,9 +107,15 @@ export default Vue.extend({
     showSymbol(): boolean {
       return this.formattedGenes.symbolFoundGenes.length > 0
     },
+    showAny(): boolean {
+      return this.showNotFound || this.showSynonym || this.showSymbol
+    },
+    noData(): boolean {
+      return !this.showNotFound && !this.showSynonym && !this.showSymbol
+    },
   },
   watch: {
-    parsedGenes: 'formatGenes',
+    // parsedGenes: 'formatGenes',
   },
   destroyed() {},
   methods: {
@@ -120,12 +128,12 @@ export default Vue.extend({
       }
       return 'error'
     },
-    formatGenes() {
-      this.formattedGenes = new ParsedGenes()
-      this.formattedGenes.notFoundGenes = this.parsedGenes.notFoundGenes
-      this.formattedGenes.synonymFoundGenes = this.parsedGenes.synonymFoundGenes
-      this.formattedGenes.symbolFoundGenes = this.parsedGenes.symbolFoundGenes
-    },
+    // formatGenes() {
+    //   this.formattedGenes = new ParsedGenes()
+    //   this.formattedGenes.notFoundGenes = this.parsedGenes.notFoundGenes
+    //   this.formattedGenes.synonymFoundGenes = this.parsedGenes.synonymFoundGenes
+    //   this.formattedGenes.symbolFoundGenes = this.parsedGenes.symbolFoundGenes
+    // },
     handleHelp() {
       this.$emit('help')
     },

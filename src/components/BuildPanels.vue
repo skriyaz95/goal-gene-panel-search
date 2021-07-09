@@ -170,7 +170,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import axios from 'axios'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import {
   Gene,
   GenePanel,
@@ -199,6 +199,7 @@ export default Vue.extend({
     progress: 0,
   }),
   methods: {
+    ...mapActions(['updatePanels']),
     buildPanels() {
       this.started = true
       this.progress = 0
@@ -294,6 +295,11 @@ export default Vue.extend({
       const filename = genePanel.name.replaceAll(/[ ]+/g, '_') + '.json'
       download(filename, content, 'text/json')
     },
+    downloadPanelsAsOne(genePanelsToSave: GenePanel[]) {
+      const content = formatObjetToJson(genePanelsToSave, false)
+      const filename = 'panels.json'
+      download(filename, content, 'text/json')
+    },
     buildGenePanelObject(panelBuilder: PanelBuilder): GenePanel {
       //make sure there are no dups after adding synonyms
       const uniqGenes = new Set<string>(
@@ -313,15 +319,16 @@ export default Vue.extend({
       for (var i = 0; i < this.tempParsedGenes.length; i++) {
         const genePanel = this.buildGenePanelObject(this.tempParsedGenes[i])
         genePanelsToSave.push(genePanel)
-        this.downloadPanel(genePanel)
+        // this.downloadPanel(genePanel)
       }
-      this.$store.commit('updatePanels', genePanelsToSave)
+      this.updatePanels(genePanelsToSave)
+      this.downloadPanelsAsOne(genePanelsToSave)
       //removed from now
       // this.downloadInstitutions()
     },
     //removed from now
     // downloadInstitutions() {
-    //   const institutionMapCopy = new Map<string, Institution>()
+    //   const institutionsByPanelCopy = new Map<string, Institution>()
     //   this.institutionsByName.forEach((value: Institution, key: string) => {
     //     const newInstitution = new Institution(
     //       value.name,
@@ -330,17 +337,17 @@ export default Vue.extend({
     //       value.website,
     //       []
     //     )
-    //     institutionMapCopy.set(key, newInstitution)
+    //     institutionsByPanelCopy.set(key, newInstitution)
     //   })
     //   for (var i = 0; i < this.tempParsedGenes.length; i++) {
     //     const name = this.tempParsedGenes[i].institutionName
     //     const institution: Institution | undefined =
-    //       institutionMapCopy.get(name)
+    //       institutionsByPanelCopy.get(name)
     //     if (institution) {
     //       institution.panels.push(this.tempParsedGenes[i].panelName)
     //     }
     //   }
-    //   const newInstitutions = Array.from(institutionMapCopy.values())
+    //   const newInstitutions = Array.from(institutionsByPanelCopy.values())
     //   download(
     //     'institutions.json',
     //     formatObjetToJson(newInstitutions, false),
@@ -355,8 +362,6 @@ export default Vue.extend({
       r.keys().forEach((key: any) => this.panelFileNames.push(key))
     },
     showGenes(genes: Array<ParsedGene>): boolean {
-      // console.log(genes)
-      // return true
       return genes.length > 0
     },
     onlySymbols(parsedGenes: ParsedGenes) {
@@ -376,7 +381,7 @@ export default Vue.extend({
     ...mapGetters({
       panels: 'getPanels',
       //removed from now
-      // institutionMap: 'getInstitutionMap',
+      // institutionsByPanel: 'getInstitutionsByPanel',
       // institutionItems: 'getInstitutionDropDownItems',
       // institutionsByName: 'getInstitutionsByName',
     }),

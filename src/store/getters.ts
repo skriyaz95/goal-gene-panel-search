@@ -1,4 +1,9 @@
-import {FullGene, Gene, GenePanel, Institution, PanelSearchResult, SynonymGene,} from "@/types/panel-types"
+import {
+  FullGene,
+  GenePanel,
+  Institution,
+  SynonymGene,
+} from "@/types/panel-types"
 
 export default {
   getPanels: (state: any) => {
@@ -10,17 +15,17 @@ export default {
   getParsedGenes: (state: any) => {
     return state.parsedGenes
   },
-  getUserGenesSorted: (state: any) => {
-    return [...state.userGenes].sort((a: Gene, b: Gene) => {
-      if (a.name < b.name) {
-        return -1
-      }
-      if (a.name > b.name) {
-        return 1
-      }
-      return 0
-    })
-  },
+  // getUserGenesSorted: (state: any) => {
+  //   return [...state.userGenes].sort((a: Gene, b: Gene) => {
+  //     if (a.name < b.name) {
+  //       return -1
+  //     }
+  //     if (a.name > b.name) {
+  //       return 1
+  //     }
+  //     return 0
+  //   })
+  // },
   getPanelSearchResult: (state: any) => {
     return state.panelSearchResult
   },
@@ -44,7 +49,7 @@ export default {
     })
     return allSynonymMap
   },
-  getInstitutionMap: (state: any) => {
+  getInstitutionsByPanel: (state: any) => {
     const allInstitutions = new Map<String, Institution>()
     state.institutions.forEach((institution: Institution) => {
       institution.panels.forEach((panel: string) => {

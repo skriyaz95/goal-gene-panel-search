@@ -1,8 +1,21 @@
 <template>
-  <v-card outlined>
+  <v-card outlined :raised="firstTime">
     <v-card-title>
       {{ $t('userInput.gene-list') }}
       <v-spacer></v-spacer>
+      <v-scroll-x-transition>
+        <v-alert
+          dense
+          text
+          color="primary"
+          class="body-1 ma-0 pt-1 pb-1"
+          v-if="firstTime"
+        >
+          {{ $t('help.geneSearch.firstTime.text') }}
+
+          <v-icon class="primary--text"> mdi-arrow-right-thick </v-icon>
+        </v-alert>
+      </v-scroll-x-transition>
       <help-button @action="handleHelp()" :active="help">
         <template v-slot:content>
           <gene-search-help />
@@ -34,7 +47,6 @@
           clear-icon="mdi-close-circle"
           rows="13"
           @click:clear="clear()"
-          @blur="clearIfEmpty"
         />
         <v-btn
           class="ma-2"
@@ -56,18 +68,23 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
-import { Gene } from '@/types/panel-types'
+import { mapGetters, mapActions } from 'vuex'
+// import { Gene } from '@/types/panel-types'
 import debounce from '@/utils/debounce'
 import GeneSearchHelp from '@/components/help/GeneSearchHelp.vue'
 import HelpButton from '../help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
+import { UserInputPayload } from '@/types/payload-types'
 
 export default Vue.extend({
   components: { GeneSearchHelp, HelpButton, InfoAlert },
   name: 'UserInput',
   props: {
     help: {
+      type: Boolean,
+      default: false,
+    },
+    firstTime: {
       type: Boolean,
       default: false,
     },
@@ -78,12 +95,11 @@ export default Vue.extend({
     validSeparators: /[ ,;\s]+/,
     validCharacters: /^[-,;~\w\s]+$/,
     demoRunning: false,
+    previousInput: '',
   }),
   computed: {
     ...mapGetters({
-      userGenes: 'getUserGenesSorted',
       lastSearch: 'getLastSearch',
-      panels: 'getPanels'
     }),
     geneListRules(): any {
       // const x = this.$t('userInput.validation.list-empty')
@@ -102,33 +118,31 @@ export default Vue.extend({
     }, 500),
   },
   methods: {
+    ...mapActions(['cleanUserInput', 'updateLastSearch']),
     submitUserInput(userinput: string, withAlert: boolean) {
+      // console.log(userinput, withAlert)
+      if (!userinput) {
+        return
+      }
       if (!this.geneList || !this.isFormValid) {
         if (withAlert) {
           alert('Form is not valid')
         }
         return
       } else {
-        let genes = userinput.toUpperCase().split(this.validSeparators)
-        let uniqGenes = Array.from(new Set(genes)) //remove duplicates
-        let userGenesList: Gene[] = []
-        for (let symbol of uniqGenes) {
-          if (symbol && symbol != '') {
-            userGenesList.push(new Gene(symbol))
-          }
-        }
-        this.$store.commit('setUserGenes', userGenesList)
-        this.saveLastInput()
-        this.$emit('postFindAllGenesMessage', this.userGenes)
+        this.cleanUserInput(
+          new UserInputPayload(userinput, this.validSeparators)
+        )
+        this.updateLastSearch(this.geneList)
       }
     },
     clear() {
       return new Promise((resolve) => {
         let form: any = this.$refs.form
         this.geneList = String()
-        this.$store.commit('setUserGenes', [])
         form.reset()
         this.demoRunning = false
+        this.cleanUserInput(new UserInputPayload('', this.validSeparators))
         resolve('success')
       })
     },
@@ -148,9 +162,6 @@ export default Vue.extend({
       if (this.lastSearch) {
         this.geneList = this.lastSearch
       }
-    },
-    saveLastInput() {
-      this.$store.commit('updateLastSearch', this.geneList)
     },
     handleHelp() {
       this.$emit('help')
