@@ -55,6 +55,7 @@ export default Vue.extend({
     title: String,
     synonym: Boolean,
     hidable: Boolean,
+    showLargeSets: Boolean,
   },
   data: () => ({
     visible: true,
@@ -65,7 +66,7 @@ export default Vue.extend({
   destroyed() {},
   methods: {
     showChips() {
-      return this.items.length < 500 && this.visible
+      return (this.showLargeSets || this.items.length < 500) && this.visible
     },
   },
 })

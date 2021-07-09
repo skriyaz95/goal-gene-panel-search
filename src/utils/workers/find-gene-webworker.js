@@ -153,6 +153,7 @@ addEventListener("message", (event) => {
       parsedGenes,
       todo: "findPanelGenes",
       panelName: event.data.panelName,
+      panelFileName: event.data.panelFileName,
     })
   }
 })

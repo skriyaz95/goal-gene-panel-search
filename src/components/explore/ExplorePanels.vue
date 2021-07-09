@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { GenePanel } from '@/types/panel-types'
+import { GenePanelDetails } from '@/types/panel-types'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import PanelDetails from '@/components/explore/PanelDetails.vue'
@@ -55,11 +55,11 @@ export default Vue.extend({
     publicPath: process.env.BASE_URL,
     panelIndex: 0,
     previousIndex: 0, //to prevent undefined error when clicking on the same panel twice
-    tempPanelSorted: new Array<GenePanel>(),
+    tempPanelSorted: new Array<GenePanelDetails>(),
     currentInstitution: 'test',
   }),
   methods: {
-    getCurrentPanel(): GenePanel | null {
+    getCurrentPanel(): GenePanelDetails | null {
       if (this.panelIndex != undefined) {
         this.previousIndex = this.panelIndex
       }
@@ -67,7 +67,7 @@ export default Vue.extend({
       this.currentInstitution = this.getInstitutionfromPanel(currentPanel)
       return currentPanel
     },
-    getInstitutionfromPanel(panel: GenePanel) {
+    getInstitutionfromPanel(panel: GenePanelDetails) {
       if (this.institutions && panel && panel.name) {
         for (let i = 0; i < this.institutions.length; i++) {
           if (

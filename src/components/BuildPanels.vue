@@ -148,6 +148,10 @@
                 </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
+                <div class="pa-2">
+                  {{ $t('buildPanels.sourceFile.text') }}:
+                  {{ panelBuilder.panelFileName }}
+                </div>
                 <v-fade-transition>
                   <gene-parsed-content
                     :show-genes="[
@@ -173,7 +177,7 @@ import axios from 'axios'
 import { mapGetters, mapActions } from 'vuex'
 import {
   Gene,
-  GenePanel,
+  GenePanelDetails,
   // Institution,
   PanelBuilder,
   ParsedGene,
@@ -238,7 +242,7 @@ export default Vue.extend({
                 name: geneSymbol.toUpperCase(),
               })
             }
-            this.formatGenes(panelGenes, panelName)
+            this.formatGenes(panelGenes, panelName, panelFileName)
           })
           .catch((error) => {
             alert(error)
@@ -279,43 +283,49 @@ export default Vue.extend({
       }
       return uniqueRows
     },
-    formatGenes(panelGenes: Gene[], panelName: String) {
+    formatGenes(panelGenes: Gene[], panelName: String, panelFileName: string) {
       $getFindGenesWorker().postMessage({
         init: false,
         todo: 'findPanelGenes',
         userGenes: panelGenes,
         panelName: panelName,
+        panelFileName: panelFileName,
       })
     },
-    formatPanel(panel: GenePanel, pretty: boolean) {
+    formatPanel(panel: GenePanelDetails, pretty: boolean) {
       return formatObjetToJson(panel, pretty)
     },
-    downloadPanel(genePanel: GenePanel) {
+    downloadPanel(genePanel: GenePanelDetails) {
       const content = this.formatPanel(genePanel, false)
       const filename = genePanel.name.replaceAll(/[ ]+/g, '_') + '.json'
       download(filename, content, 'text/json')
     },
-    downloadPanelsAsOne(genePanelsToSave: GenePanel[]) {
+    downloadPanelsAsOne(genePanelsToSave: GenePanelDetails[]) {
       const content = formatObjetToJson(genePanelsToSave, false)
       const filename = 'panels.json'
       download(filename, content, 'text/json')
     },
-    buildGenePanelObject(panelBuilder: PanelBuilder): GenePanel {
+    buildGenePanelObject(panelBuilder: PanelBuilder): GenePanelDetails {
       //make sure there are no dups after adding synonyms
       const uniqGenes = new Set<string>(
         panelBuilder.parsedGenes.symbolFoundGenes.map((pg) => pg.gene.name)
       )
       const synonymsConverted = panelBuilder.parsedGenes.synonymFoundGenes.map(
-        (pg) => pg.realGene.symbol
+        (pg) => (pg.realGene === undefined ? '' : pg.realGene.symbol)
       )
       synonymsConverted.forEach((s) => uniqGenes.add(s))
 
       const genes = Array.from(uniqGenes).map((s) => new Gene(s))
-      const genePanel = new GenePanel(panelBuilder.panelName, genes)
+      const genePanel = new GenePanelDetails(
+        panelBuilder.panelName,
+        genes,
+        panelBuilder.parsedGenes,
+        panelBuilder.panelFileName
+      )
       return genePanel
     },
     downloadAllPanels() {
-      const genePanelsToSave = new Array<GenePanel>()
+      const genePanelsToSave = new Array<GenePanelDetails>()
       for (var i = 0; i < this.tempParsedGenes.length; i++) {
         const genePanel = this.buildGenePanelObject(this.tempParsedGenes[i])
         genePanelsToSave.push(genePanel)
@@ -405,7 +415,8 @@ export default Vue.extend({
         parsedGenes.symbolFoundGenes = event.data.parsedGenes.symbolFoundGenes
         const panelBuilder = new PanelBuilder()
         ;(panelBuilder.panelName = event.data.panelName),
-          (panelBuilder.parsedGenes = parsedGenes)
+          (panelBuilder.parsedGenes = parsedGenes),
+          (panelBuilder.panelFileName = event.data.panelFileName)
         this.tempParsedGenes.push(panelBuilder)
       }
     }

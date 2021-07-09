@@ -1,4 +1,4 @@
-import { Gene, GenePanel, ParsedGenes } from "@/types/panel-types"
+import { Gene, GenePanelDetails, ParsedGenes } from "@/types/panel-types"
 import { UserInputPayload } from "@/types/payload-types"
 import $getFindGenesWorker from "@/utils/workers/worker-instance"
 
@@ -28,7 +28,7 @@ export default {
       panels: context.state.panels,
     })
   },
-  async updatePanels(context: any, payload: GenePanel[]) {
+  async updatePanels(context: any, payload: GenePanelDetails[]) {
     context.commit("updatePanels", payload)
   },
 }

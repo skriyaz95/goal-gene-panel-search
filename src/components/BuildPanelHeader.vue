@@ -12,8 +12,8 @@
       />
     </v-col>
     <v-col cols="6" lg="9">
-      <v-fade-transition>
-        <span class="ml-3">
+      <v-fade-transition class="ml-3">
+        <span>
           <v-tooltip bottom v-if="showNotFound">
             <template v-slot:activator="{ on }">
               <v-chip color="error" class="ml-1 mr-1" v-on="on">

@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { GenePanel, Institution } from '@/types/panel-types'
+import { GenePanelDetails, Institution } from '@/types/panel-types'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import InstitutionDetails from './home/InstitutionDetails.vue'
@@ -151,7 +151,7 @@ export default Vue.extend({
       panels: 'getPanels',
     }),
     panelNames(): string[] {
-      return this.panels.map((p: GenePanel) => p.name)
+      return this.panels.map((p: GenePanelDetails) => p.name)
     },
   },
   mounted() {

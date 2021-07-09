@@ -57,7 +57,6 @@
 </template>
 
 <script lang="ts">
-// import { GenePanel } from '@/types/panel-types'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import debounce from '@/utils/debounce'

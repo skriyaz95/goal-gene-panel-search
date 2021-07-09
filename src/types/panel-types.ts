@@ -20,13 +20,38 @@ export class Institution {
   }
 }
 
-export class GenePanel {
-  name: string
-  genes: Gene[]
+// export class GenePanel {
+//   name: string
+//   genes: Gene[]
 
-  constructor(name: string, genes: Gene[]) {
+//   constructor(name: string, genes: Gene[]) {
+//     this.name = name
+//     this.genes = genes
+//   }
+// }
+
+export class GenePanelDetails {
+  name: string
+  genes: Gene[] //all gene symbols for fast search
+  symbolsOnly: Gene[]
+  synonymsOnly: SynonymGene[]
+  notFound: Gene[]
+  sourceFile: string
+
+  constructor(
+    name: string,
+    genes: Gene[],
+    parsedGenes: ParsedGenes,
+    sourceFile: string,
+  ) {
     this.name = name
     this.genes = genes
+    this.symbolsOnly = parsedGenes.symbolFoundGenes.map((pg) => pg.gene)
+    this.synonymsOnly = parsedGenes.synonymFoundGenes.map(
+      (pg) => new SynonymGene(pg.gene.name, pg.realGene),
+    )
+    this.notFound = parsedGenes.notFoundGenes.map((pg) => pg.gene)
+    this.sourceFile = sourceFile
   }
 }
 
@@ -59,11 +84,13 @@ export class Gene {
  */
 export class ParsedGene {
   gene: Gene
-  state!: string
-  realGene!: FullGene //only synonyms would have a realGene value
+  state!: string | undefined
+  realGene!: FullGene | undefined //only synonyms would have a realGene value
 
-  constructor(gene: Gene) {
+  constructor(gene: Gene, state?: string, realGene?: FullGene) {
     this.gene = gene
+    this.state = state ? state : undefined
+    this.realGene = realGene ? realGene : undefined
   }
 }
 
@@ -100,9 +127,9 @@ export class FullGene {
  */
 export class SynonymGene {
   synonym!: string
-  gene!: FullGene
+  gene!: FullGene | undefined
 
-  constructor(synonym: string, gene: FullGene) {
+  constructor(synonym: string, gene: FullGene | undefined) {
     this.synonym = synonym
     this.gene = gene
   }
@@ -152,6 +179,7 @@ export class PanelBuilder {
   panelName!: string
   parsedGenes!: ParsedGenes
   institutionName!: string
+  panelFileName!: string
 
   constructor() {
     this.institutionName = ""

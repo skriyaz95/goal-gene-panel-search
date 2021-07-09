@@ -1,6 +1,6 @@
 import {
   FullGene,
-  GenePanel,
+  GenePanelDetails,
   Institution,
   SynonymGene,
 } from "@/types/panel-types"
@@ -92,15 +92,17 @@ export default {
     return state.institutions
   },
   getPanelsSorted: (state: any) => {
-    return [...state.panels].sort((a: GenePanel, b: GenePanel) => {
-      if (a.name < b.name) {
-        return -1
-      }
-      if (a.name > b.name) {
-        return 1
-      }
-      return 0
-    })
+    return [...state.panels].sort(
+      (a: GenePanelDetails, b: GenePanelDetails) => {
+        if (a.name < b.name) {
+          return -1
+        }
+        if (a.name > b.name) {
+          return 1
+        }
+        return 0
+      },
+    )
   },
   // getPanelsByName: (state: any) => {
   //   const allPanels = new Map<String, GenePanel>()
