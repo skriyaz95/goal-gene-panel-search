@@ -13,7 +13,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { TranslateResult } from 'vue-i18n'
-import HomePage from '../components/HomePage.vue'
+import HomePage from '@/components/HomePage.vue'
 
 export default Vue.extend({
   name: 'Home',

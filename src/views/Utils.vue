@@ -46,10 +46,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import BuildPanels from '../components/BuildPanels.vue'
-import ThemePicker from '../components/ThemePicker.vue'
-import BuildDatabase from '../components/BuildDatabase.vue'
-import BuildInstitutions from '../components/BuildInstitutions.vue'
+import BuildPanels from '@/components/BuildPanels.vue'
+import ThemePicker from '@/components/ThemePicker.vue'
+import BuildDatabase from '@/components/BuildDatabase.vue'
+import BuildInstitutions from '@/components/BuildInstitutions.vue'
 import { TranslateResult } from 'vue-i18n'
 
 export default Vue.extend({

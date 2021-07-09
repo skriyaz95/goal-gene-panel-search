@@ -72,7 +72,7 @@ import { mapGetters, mapActions } from 'vuex'
 // import { Gene } from '@/types/panel-types'
 import debounce from '@/utils/debounce'
 import GeneSearchHelp from '@/components/help/GeneSearchHelp.vue'
-import HelpButton from '../help/HelpButton.vue'
+import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import { UserInputPayload } from '@/types/payload-types'
 

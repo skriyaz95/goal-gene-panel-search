@@ -8,14 +8,14 @@
       :style="hueRotationFilter"
     >
       <v-img
-        src="../assets/gti/gti_logo_nolabel_128.png"
+        src="@/assets/gti/gti_logo_nolabel_128.png"
         alt="GTI Logo"
         width="80%"
         class="mt-2"
         :style="imageStyle"
       />
       <v-img
-        src="../assets/gti/gti_acronym_orig.png"
+        src="@/assets/gti/gti_acronym_orig.png"
         alt="GTI Logo"
         class="mt-10"
         :style="imageStyle"
@@ -29,14 +29,14 @@
       :style="hueRotationFilter"
     >
       <v-img
-        src="../assets/gti/gti_logo_256.png"
+        src="@/assets/gti/gti_logo_256.png"
         alt="GTI Logo"
         width="70%"
         class="mt-2 mb-4"
         :style="imageStyle"
       />
       <v-img
-        src="../assets/gti/gti_label_512.png"
+        src="@/assets/gti/gti_label_512.png"
         alt="GTI Title"
         width="225px"
         :style="imageStyle"
@@ -46,14 +46,14 @@
       <v-row align="center">
         <v-col cols="3">
           <v-img
-            src="../assets/gti/gti_logo_64.png"
+            src="@/assets/gti/gti_logo_64.png"
             alt="GTI Logo"
             :style="imageStyle"
           />
         </v-col>
         <v-col cols="8">
           <v-img
-            src="../assets/gti/gti_label_256.png"
+            src="@/assets/gti/gti_label_256.png"
             alt="GTI Title"
             :content-class="imageStyle"
           />

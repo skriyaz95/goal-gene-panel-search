@@ -1,5 +1,9 @@
-import { ParsedGene, ParsedGenes } from "@/types/panel-types"
-import { Gene, PanelSearchResult } from "../../types/panel-types"
+import {
+  ParsedGene,
+  ParsedGenes,
+  Gene,
+  PanelSearchResult,
+} from "@/types/panel-types"
 
 const ctx = self
 let allGeneMap = new Map()

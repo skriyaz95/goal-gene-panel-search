@@ -186,8 +186,7 @@ import {
   ParsedGene,
   ParsedGenes,
 } from '@/types/panel-types'
-import download from '@/utils/download'
-import { formatObjetToJson } from '@/utils/download'
+import download, { formatObjetToJson } from '@/utils/download'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import BuildPanelHeader from '@/components/BuildPanelHeader.vue'
 import GeneParsedContent from '@/components/GeneParsedContent.vue'

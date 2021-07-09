@@ -58,9 +58,8 @@ import { GenePanelDetails, Institution } from '@/types/panel-types'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
-import download from '@/utils/download'
-import { formatObjetToJson } from '@/utils/download'
-import ListTemplate from './explore/ListTemplate.vue'
+import download, { formatObjetToJson } from '@/utils/download'
+import ListTemplate from '@/components/explore/ListTemplate.vue'
 
 export default Vue.extend({
   components: { InstitutionDetails, ListTemplate },

@@ -65,8 +65,7 @@
 import { FullGene, SynonymGene } from '@/types/panel-types'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
-import download from '@/utils/download'
-import { formatObjetToJson } from '@/utils/download'
+import download, { formatObjetToJson } from '@/utils/download'
 import { NCBI_GENE_INFO_FILE_URL } from '@/utils/apis'
 
 export default Vue.extend({
