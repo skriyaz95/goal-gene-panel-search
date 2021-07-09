@@ -76,7 +76,7 @@
       <v-list-item
         link
         :to="{ name: 'Home' }"
-        active-class="primary lighten-2"
+        active-class="primary lighten-2 font-weight-bold"
         exact
         @click.stop=""
       >
@@ -88,7 +88,7 @@
       <v-list-item
         link
         :to="{ name: 'Explore', query: { tab: 'panels' } }"
-        active-class="primary lighten-2"
+        active-class="primary lighten-2 font-weight-bold"
         exact-path
         @click.stop=""
       >
@@ -102,7 +102,7 @@
       <v-list-item
         link
         :to="{ name: 'Utils', query: { tab: 'panels' } }"
-        active-class="primary lighten-2"
+        active-class="primary lighten-2 font-weight-bold"
         exact-path
         @click.stop=""
       >

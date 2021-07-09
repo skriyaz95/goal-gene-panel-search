@@ -14,7 +14,7 @@
       ></v-autocomplete>
       <v-list-item-group
         :value="value"
-        active-class="primary lighten-2"
+        active-class="primary lighten-2 font-weight-bold"
         @change="handleEvent($event)"
       >
         <v-list>
