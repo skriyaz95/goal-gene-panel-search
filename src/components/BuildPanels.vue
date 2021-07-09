@@ -4,10 +4,10 @@
     <v-row>
       <v-col cols="12" lg="4">
         <v-card outlined>
+          <v-card-title>
+            {{ $t('buildPanels.existingPanels.text') }}
+          </v-card-title>
           <v-card-text>
-            <div class="mb-1 mt-1">
-              {{ $t('buildPanels.existingPanels.text') }}
-            </div>
             <v-chip
               v-for="panel in panels"
               :key="panel.name"
@@ -16,9 +16,12 @@
             >
               {{ panel.name }} ({{ $tc('count.gene', $n(panel.genes.length)) }})
             </v-chip>
-            <div class="mb-1 mt-1">
-              {{ $t('buildPanels.rawPanels.text') }}
-            </div>
+          </v-card-text>
+          <v-card-title>
+            {{ $t('buildPanels.rawPanels.text') }}
+          </v-card-title>
+
+          <v-card-text>
             <v-chip
               v-for="panelName in panelFileNames"
               :key="panelName"

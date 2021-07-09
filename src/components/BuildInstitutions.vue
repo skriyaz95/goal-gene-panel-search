@@ -3,29 +3,15 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" lg="4">
-        <v-card outlined>
-          <v-card-text>
-            <div class="mb-1 mt-1">{{ $t('buidInstitutions.list.text') }}:</div>
-            <v-list-item-group
-              v-model="institutionIndex"
-              active-class="primary lighten-2"
-            >
-              <v-list>
-                <v-list-item
-                  v-for="(institution, index) in tempInstitutionSorted"
-                  :key="index"
-                >
-                  <v-list-item-icon>
-                    <v-icon>mdi-bank</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    {{ institution.name }}
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </v-list-item-group>
-          </v-card-text>
-          <v-card-actions v-if="editable">
+        <list-template
+          v-model="institutionIndex"
+          @change="handleChange($event)"
+          :itemsSorted="tempInstitutionSorted"
+        >
+          <template v-slot:title>
+            {{ $t('buidInstitutions.list.text') }}:
+          </template>
+          <template v-slot:actions v-if="editable">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
                 <v-btn class="primary" v-on="on" @click="addInstitution()">
@@ -47,8 +33,8 @@
               </template>
               <span> {{ $t('buidInstitutions.saveAll.tooltip') }}</span>
             </v-tooltip>
-          </v-card-actions>
-        </v-card>
+          </template>
+        </list-template>
       </v-col>
       <v-col cols="12" lg="8">
         <v-card outlined class="mb-2">
@@ -71,12 +57,13 @@
 import { GenePanelDetails, Institution } from '@/types/panel-types'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
-import InstitutionDetails from './home/InstitutionDetails.vue'
+import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import download from '@/utils/download'
 import { formatObjetToJson } from '@/utils/download'
+import ListTemplate from './explore/ListTemplate.vue'
 
 export default Vue.extend({
-  components: { InstitutionDetails },
+  components: { InstitutionDetails, ListTemplate },
   name: 'BuildInstitutions',
   props: {
     editable: Boolean,
@@ -143,6 +130,11 @@ export default Vue.extend({
         return 1
       }
       return 0
+    },
+    handleChange($event: any) {
+      if ($event !== undefined) {
+        this.institutionIndex = $event
+      }
     },
   },
   computed: {

@@ -152,8 +152,8 @@ import {
   ParsedGenes,
   // ParsedGene,
 } from '@/types/panel-types'
-import InstitutionDetails from './InstitutionDetails.vue'
-import DialogTemplate from '../DialogTemplate.vue'
+import InstitutionDetails from '@/components/InstitutionDetails.vue'
+import DialogTemplate from '@/components/DialogTemplate.vue'
 
 export default Vue.extend({
   components: {

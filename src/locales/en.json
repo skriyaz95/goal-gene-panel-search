@@ -294,5 +294,10 @@
         "text": "Genes in Panel"
       }
     }
+  },
+  "input": {
+    "details": {
+      "text": "Open Details"
+    }
   }
 }
