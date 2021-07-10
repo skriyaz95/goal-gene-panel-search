@@ -214,6 +214,10 @@
     "saveAll": {
       "text": "Save All",
       "tooltip": "Download a JSON file of the institutions"
+    },
+    "delete": {
+      "text": "Delete Institution",
+      "tooltip": "Delete Temporary Institution"
     }
   },
   "help": {

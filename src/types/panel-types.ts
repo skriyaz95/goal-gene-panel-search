@@ -4,6 +4,7 @@ export class Institution {
   email: string
   website: string
   panels: string[]
+  existing!: boolean
 
   constructor(
     name: string,
