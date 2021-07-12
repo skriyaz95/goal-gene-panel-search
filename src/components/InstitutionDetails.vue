@@ -67,7 +67,7 @@
               <v-btn color="error" v-on="on" @click="deleteInstitution()">
                 {{ $t('buidInstitutions.delete.text') }}
                 <v-spacer></v-spacer>
-                <v-icon>mdi-delete</v-icon>
+                <v-icon right>mdi-delete</v-icon>
               </v-btn>
             </template>
             <span>{{ $t('buidInstitutions.delete.tooltip') }}</span>
@@ -179,7 +179,7 @@ export default Vue.extend({
     },
     deleteInstitution() {
       this.$emit('delete-institution')
-    }
+    },
   },
   watch: {},
   mounted() {},
