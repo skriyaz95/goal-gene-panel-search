@@ -58,6 +58,7 @@
               :editable="editable"
               :panels="panelNames"
               @name-changed="updateTempInstitutions"
+              @delete-institution="deleteInstitution()"
               :show-read-only-panels="showReadOnlyPanels"
             />
           </v-card-text>
@@ -134,6 +135,9 @@ export default Vue.extend({
           break
         }
       }
+    },
+    deleteInstitution() {
+      this.tempInstitutionSorted.splice(this.institutionIndex, 1)
     },
     sortInstitutionsByName(a: Institution, b: Institution) {
       if (a.name < b.name) {
