@@ -91,7 +91,7 @@
             </v-tooltip>
           </template>
           <template v-slot:[`item.countGenesInPanel`]="{ item }">
-            <v-tooltip bottom>
+            <v-tooltip bottom v-if="item.countGenesInPanel > 0">
               <template v-slot:activator="{ on }">
                 <v-chip
                   class="ma-2"
@@ -107,7 +107,7 @@
             </v-tooltip>
           </template>
           <template v-slot:[`item.countGenesNotInPanel`]="{ item }">
-            <v-tooltip bottom>
+            <v-tooltip bottom v-if="item.countGenesNotInPanel > 0">
               <template v-slot:activator="{ on }">
                 <v-chip
                   class="ma-2 secondary"
