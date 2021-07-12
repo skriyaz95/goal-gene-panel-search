@@ -16,6 +16,13 @@
           :parsedGenes="formattedGenes"
           :panelSearchResults="panelSearchResults"
         />
+        <panel-compare
+          :help="showHelp"
+          @help="handleHelp"
+          :loading="searchingPanels"
+          :parsedGenes="formattedGenes"
+          :panelSearchResults="panelSearchResults"
+        />
       </v-col>
       <v-col cols="12" lg="6">
         <parsed-input
@@ -38,6 +45,7 @@ import PanelResult from '@/components/home/PanelResult.vue'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import { mapGetters, mapActions } from 'vuex'
 import { PanelSearchResult, ParsedGenes } from '@/types/panel-types'
+import PanelCompare from '@/components/home/PanelCompare.vue'
 
 export default Vue.extend({
   name: 'HomePage',
@@ -45,6 +53,7 @@ export default Vue.extend({
     UserInput,
     ParsedInput,
     PanelResult,
+    PanelCompare,
   },
   data() {
     return {

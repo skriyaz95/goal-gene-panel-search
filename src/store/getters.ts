@@ -12,9 +12,9 @@ export default {
   getUserGenes: (state: any) => {
     return state.userGenes
   },
-  getParsedGenes: (state: any) => {
-    return state.parsedGenes
-  },
+  // getParsedGenes: (state: any) => {
+  //   return state.parsedGenes
+  // },
   // getUserGenesSorted: (state: any) => {
   //   return [...state.userGenes].sort((a: Gene, b: Gene) => {
   //     if (a.name < b.name) {

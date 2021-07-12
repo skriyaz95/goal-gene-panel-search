@@ -59,11 +59,21 @@ export class PanelSearchResult {
   name: string
   genesInPanel: Gene[]
   genesNotInPanel: Gene[]
+  panelSymbols: Gene[]
+  panelSynonyms: Gene[]
 
-  constructor(name: string, genesInPanel: Gene[], genesNotInPanel: Gene[]) {
+  constructor(
+    name: string,
+    genesInPanel: Gene[],
+    genesNotInPanel: Gene[],
+    panelSymbols: Gene[],
+    panelSynonyms: Gene[],
+  ) {
     this.name = name
     this.genesInPanel = genesInPanel
     this.genesNotInPanel = genesNotInPanel
+    this.panelSymbols = panelSymbols
+    this.panelSynonyms = panelSynonyms
   }
 }
 
@@ -158,6 +168,11 @@ export class PanelResultFormattedRow {
     this.genesNotInPanel = genesNotInPanel
     this.institution = institution
   }
+}
+
+export class PanelCompareRow {
+  gene!: string
+  panels!: Map<String, ParsedGene>
 }
 
 /**

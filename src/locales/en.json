@@ -303,5 +303,17 @@
     "details": {
       "text": "Open Details"
     }
+  },
+  "panelCompare": {
+    "title": {
+      "text": "Compare Panels"
+    },
+    "table": {
+      "headers": {
+        "gene": {
+          "text": "Gene"
+        }
+      }
+    }
   }
 }

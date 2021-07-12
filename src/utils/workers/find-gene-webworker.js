@@ -62,16 +62,18 @@ function applyState(userGene) {
   return parsedGene
 }
 
-function findGenesInAllPanels(genesList, panels) {
+function findGenesInAllPanels(allMatches, panels) {
   let result = []
   panels.forEach((panel) => {
-    const genes = findGenesInSelectedPanel(genesList, panel)
+    const genes = findGenesInSelectedPanel(allMatches, panel)
     if (genes.genesInPanel.length > 0 || genes.genesNotInPanel.length > 0) {
       result.push(
         new PanelSearchResult(
           panel.name,
           genes.genesInPanel,
           genes.genesNotInPanel,
+          genes.panelSymbols,
+          genes.panelSynonyms,
         ),
       )
     }
@@ -79,36 +81,54 @@ function findGenesInAllPanels(genesList, panels) {
   return result
 }
 
-function findGenesInSelectedPanel(genesList, panel) {
+function findGenesInSelectedPanel(allMatches, panel) {
   const genesInPanel = []
   const genesNotInPanel = []
   const panelGenesSet = new Set(
     panel.genes.map((gene) => gene.name.toUpperCase()),
   )
-  genesList.forEach((gene) => {
+  //keep track of which is symbol and which is synonym
+  const panelSymbols = []
+  const panelSynonyms = []
+  //
+  allMatches.geneSet.forEach((gene) => {
+    const geneObj = new Gene(gene)
     if (panelGenesSet.has(gene)) {
-      genesInPanel.push(new Gene(gene))
+      genesInPanel.push(geneObj)
+      if (allMatches.symbolSet.has(gene)) {
+        panelSymbols.push(geneObj)
+      } else {
+        panelSynonyms.push(geneObj)
+      }
     } else {
-      genesNotInPanel.push(new Gene(gene))
+      genesNotInPanel.push(geneObj)
     }
   })
   return {
-    genesInPanel: genesInPanel,
-    genesNotInPanel: genesNotInPanel,
+    genesInPanel,
+    genesNotInPanel,
+    panelSymbols,
+    panelSynonyms,
   }
 }
 
-function findAllSymbols(parsedGenes) {
-  const genesList = new Set()
+function findAllMatches(parsedGenes) {
+  const geneSet = new Set()
+  const symbolSet = new Set()
+  const synonymSet = new Set()
   parsedGenes.symbolFoundGenes.forEach((parsedGene) => {
-    genesList.add(parsedGene.gene.name.toUpperCase())
+    const name = parsedGene.gene.name.toUpperCase()
+    geneSet.add(name)
+    symbolSet.add(name)
   })
 
   parsedGenes.synonymFoundGenes.forEach((parsedGene) => {
-    genesList.add(parsedGene.realGene.symbol.toUpperCase())
+    const name = parsedGene.realGene.symbol.toUpperCase()
+    geneSet.add(name)
+    synonymSet.add(parsedGene.gene.name.toUpperCase())
   })
 
-  return genesList
+  return { geneSet, symbolSet, synonymSet }
 }
 
 //dispatch other listeners base on some properties like init
@@ -145,8 +165,8 @@ addEventListener("message", (event) => {
     const parsedGenes = parseUserGenes(event.data.userGenes)
     ctx.postMessage({ parsedGenes, todo: "parseUserGenes" })
   } else if (event.data.todo == "findGenesInAllPanels") {
-    const allSymbols = findAllSymbols(event.data.parsedGenes)
-    const genesInAllPanels = findGenesInAllPanels(allSymbols, event.data.panels)
+    const allMatches = findAllMatches(event.data.parsedGenes)
+    const genesInAllPanels = findGenesInAllPanels(allMatches, event.data.panels)
     ctx.postMessage({
       todo: "findGenesInAllPanels",
       genesInAllPanels: genesInAllPanels,
