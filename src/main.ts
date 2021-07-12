@@ -1,15 +1,15 @@
-import Vue from 'vue'
-import './plugins/axios'
-import App from './App.vue'
-import router from './router'
-import store from './store'
-import vuetify from './plugins/vuetify'
-
-Vue.config.productionTip = false
+import Vue from "vue"
+import "./plugins/axios"
+import App from "./App.vue"
+import router from "./router"
+import store from "./store"
+import vuetify from "./plugins/vuetify"
+import i18n from "./i18n"
 
 new Vue({
   router,
   store,
   vuetify,
-  render: h => h(App)
-}).$mount('#app')
+  i18n,
+  render: (h) => h(App),
+}).$mount("#app")

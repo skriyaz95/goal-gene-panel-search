@@ -1,0 +1,294 @@
+{
+  "buildPanels": {
+    "existingPanels": {
+      "text": "Existing Panel Files:"
+    },
+    "help": {
+      "text-prev": "Click BUILD PANELS to create panels from the raw files.<br/>Then <b>Save All</b> to download all panels as JSON and place them in public/source_panels.<br/>institutions.json goes in /src/assets/<br/>They will automatically be added to the existing panels.",
+      "text": "Click BUILD PANELS to create panels from the raw files.<br/>Then <b>Save All</b> to download all panels as JSON and place them in public/source_panels.<br/>"
+    },
+    "rawPanels": {
+      "text": "Raw Panel Files:"
+    },
+    "panelName": {
+      "text": "Panel Name"
+    },
+    "selectInstitution": {
+      "text": "Select an institution"
+    }
+  },
+  "button": {
+    "buildPanels": {
+      "text": "Build Panels",
+      "tooltip": "Parse CSV Files to JSON Gene Panels"
+    },
+    "link": {
+      "repo": {
+        "text": "Latest Version",
+        "tooltip": "Open Github in a new tab"
+      }
+    },
+    "saveAllPanels": {
+      "text": "Save All",
+      "tooltip": "Download all JSON Gene Panels"
+    },
+    "saveOnePanel": {
+      "tooltip": "Save this Panel"
+    },
+    "saveAllGenes": {
+      "tootip": "Save all Genes"
+    },
+    "cannotSaveOnePanel": {
+      "tooltip": "Cannot Save if Contains Not Found or Synonyms"
+    },
+    "saveWarning": {
+      "tooltip": "GTI will skip 'Not Found' and replace Synonyms"
+    },
+    "showHide": {
+      "tooltip": "Show/Hide"
+    },
+    "demo": {
+      "text": "Demo"
+    }
+  },
+  "count": {
+    "gene": "{count} gene | {count} genes"
+  },
+  "navigation": {
+    "home": {
+      "text": "Home",
+      "toolbar": {
+        "text": "Find Genes in Panel"
+      },
+      "title": {
+        "text": "Home"
+      }
+    },
+    "mini": {
+      "text": "Hide Menu",
+      "tooltip": "Show/Hide Menu"
+    },
+    "utils": {
+      "text": "Utils",
+      "toolbar": {
+        "text": "Tools for Admins"
+      },
+      "title": {
+        "text": "Utils"
+      }
+    },
+    "explore": {
+      "text": "Explore",
+      "toolbar": {
+        "text": "Browse Data"
+      },
+      "title": {
+        "text": "Explore"
+      }
+    }
+  },
+  "themePicker": {
+    "button": {
+      "theme": {
+        "text": "Theme"
+      }
+    },
+    "primary": {
+      "text": "Primary (toolbars and buttons)"
+    },
+    "result": {
+      "text": "Merge this theme in vuetify.ts (under light or dark)"
+    },
+    "secondary": {
+      "text": "Secondary (alternate color)"
+    },
+    "logo": {
+      "color": {
+        "title": {
+          "text": "Logo Color"
+        }
+      },
+      "explain": {
+        "text": "For deeper changes to the default logo and app title, modify images in /src/assets/gti/ and /public/favicon.ico"
+      }
+    }
+  },
+  "userInput": {
+    "button": {
+      "clear": "Clear",
+      "submit": "Submit"
+    },
+    "gene-list": "Gene Search",
+    "label": "Paste or Type Genes Here",
+    "validation": {
+      "list-empty": "Gene List must not be empty",
+      "list-min-characters": "Gene List must be at least 2 characters",
+      "list-regex": "Remove special characters ($%^&<> etc.)"
+    }
+  },
+  "panel-result": {
+    "show-institution-details": "Show Institution Details",
+    "result": {
+      "name": "Panel Results",
+      "title": "Genes Evaluated (Symbol & Synonyms)",
+      "not-found-genes-title": "Entries Ignored (Invalid)"
+    },
+    "table": {
+      "headers": {
+        "institution-name": "Institution Name",
+        "panel-name": "Gene Panel Name",
+        "genes-found": "Genes Found",
+        "genes-not-found": "Genes Not Found",
+        "actions": "Actions"
+      }
+    },
+    "chip": {
+      "show-genes": "Show Genes"
+    },
+    "tooltip": {
+      "save-result": "Save this Result"
+    },
+    "dialog": {
+      "title-institution-details": "Institution Details",
+      "institution-website-link": "Go to Website",
+      "title-genes-in-panel": "Genes in Panel",
+      "title-genes-not-in-panel": "Genes Not in Panel",
+      "button": {
+        "close": "Close",
+        "save": "Save"
+      }
+    }
+  },
+  "build-database": {
+    "title": {
+      "text": "Update Gene Reference Database"
+    },
+    "step": {
+      "text": "Step"
+    },
+    "download": {
+      "title": {
+        "text": "Download and unzip this file"
+      }
+    },
+    "replace": {
+      "title": {
+        "text": "Replace files assets/all_genes.json & assets/synonyms.json"
+      }
+    }
+  },
+  "parsedInput": {
+    "title": {
+      "text": "Parsed Search"
+    },
+    "symbols": {
+      "text": "Symbols",
+      "tooltip": "Symbols: It's an exact match to a gene symbol."
+    },
+    "synonyms": {
+      "text": "Synonyms",
+      "tooltip": "Synonyms: You submitted a synonym. GTI found a corresponding gene symbol.",
+      "details": "GTI will use the corresponding symbol instead of the synonym.<br/>Use a valid symbol if the default replacement does not match.",
+      "examplePart1": "Eg. Synonym",
+      "examplePart2": " is replaced by Symbol"
+    },
+    "notFound": {
+      "text": "Not Found",
+      "tooltip": "Not Found: It could be a typo or a non-standard gene."
+    },
+    "empty": {
+      "text": "Nothing yet. Type some genes above first."
+    },
+    "tooMany": {
+      "text": "Too many to display (> 500)"
+    }
+  },
+  "buidInstitutions": {
+    "list": {
+      "text": "Existing Institutions"
+    },
+    "new": {
+      "text": "Add New",
+      "tooltip": "Add an Institution to the List"
+    },
+    "saveAll": {
+      "text": "Save All",
+      "tooltip": "Download a JSON file of the institutions"
+    },
+    "delete": {
+      "text": "Delete",
+      "tooltip": "Remove from the list"
+    }
+  },
+  "help": {
+    "parsedInput": {
+      "part1a": "Your ",
+      "part1b": "entries are compared to known genes.",
+      "part2": "3 labels categorize your input:",
+      "part3a": "The ",
+      "part3b": "table will discard any ",
+      "part3c": "items."
+    },
+    "geneSearch": {
+      "part1a": " uses your gene list",
+      "part1b": " to find which panels contain those genes.",
+      "part2a": "If some genes submitted are not valid genes, ",
+      "part2b": "look in ",
+      "part2c": " to get more details.",
+      "part3": "Special characters are not allowed.",
+      "firstTime": {
+        "text": "Click here for help"
+      }
+    },
+    "panelResults": {
+      "part1a": " shows the panels containing genes",
+      "part1b": " from the items in ",
+      "part2a": "Click on a cell to get more information about each value"
+    }
+  },
+  "institutionDetails": {
+    "name": {
+      "text": "Name",
+      "tooltip": "Institution Name"
+    },
+    "phone": {
+      "text": "Phone",
+      "tooltip": "Institution Phone"
+    },
+    "email": {
+      "text": "Email",
+      "tooltip": "Primary Contact Email"
+    },
+    "website": {
+      "text": "Website",
+      "tooltip": "Institution Website"
+    },
+    "panels": {
+      "text": "Panels",
+      "tooltip": "Institution Gene Panels"
+    }
+  },
+  "explore": {
+    "panels": {
+      "list": {
+        "text": "Existing Panels"
+      }
+    },
+    "genome": {
+      "title": {
+        "text": "Known Genes"
+      },
+      "search": {
+        "text": "Lookup Symbols, Synonyms, Ids, etc."
+      },
+      "genelink": {
+        "text": "NCBI Gene",
+        "tooltip": "Open Link to NCBI Gene Database"
+      },
+      "geneinfoSource": {
+        "text": "Gene Info File",
+        "tooltip": "Download gene_info file from NCBI Gene Database"
+      }
+    }
+  }
+}
