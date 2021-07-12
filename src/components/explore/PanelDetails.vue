@@ -89,7 +89,6 @@
           <gene-parsed-content
             :show-genes="[showNotFound, showSynonym, showSymbol]"
             :parsed-genes="formattedGenes"
-            showLargeSets
           />
         </div>
       </v-fade-transition>
