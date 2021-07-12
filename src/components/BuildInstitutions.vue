@@ -114,10 +114,7 @@ export default Vue.extend({
       return this.tempInstitutionSorted[this.previousIndex]
     },
     updateTempInstitutionsFromStore() {
-      this.tempInstitutionSorted = JSON.parse(JSON.stringify(this.institutions)).map((institution:Institution) => {
-        institution.existing = true;
-        return institution
-      })
+      this.tempInstitutionSorted = JSON.parse(JSON.stringify(this.institutions))
       for (let i = 0; i < this.tempInstitutionSorted.length; i++) {
         for (let j = 0; j < this.tempInstitutionSorted[i].panels.length; j++) {
           if (

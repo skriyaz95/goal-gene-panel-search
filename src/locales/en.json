@@ -216,8 +216,8 @@
       "tooltip": "Download a JSON file of the institutions"
     },
     "delete": {
-      "text": "Delete Institution",
-      "tooltip": "Delete Temporary Institution"
+      "text": "Delete",
+      "tooltip": "Remove from the list"
     }
   },
   "help": {

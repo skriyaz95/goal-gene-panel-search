@@ -60,12 +60,14 @@
           ></v-autocomplete>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item v-if="!institution.existing">
+      <v-list-item>
         <v-list-item-content>
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-btn color="error" v-on="on" @click="deleteInstitution()">
                 {{ $t('buidInstitutions.delete.text') }}
+                <v-spacer></v-spacer>
+                <v-icon>mdi-delete</v-icon>
               </v-btn>
             </template>
             <span>{{ $t('buidInstitutions.delete.tooltip') }}</span>
