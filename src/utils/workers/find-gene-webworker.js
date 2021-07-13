@@ -168,6 +168,97 @@ function findAllMatches(parsedGenes) {
   return { geneSet, symbolSet, synonymSet }
 }
 
+function buildCompareHeaders(payload) {
+  const h = [
+    {
+      text: "Gene",
+      value: "gene",
+    },
+  ]
+  payload.panelNames.forEach((p) =>
+    h.push({
+      text: p,
+      value: p,
+    }),
+  )
+  return h
+}
+
+function formatCompareItems(payload) {
+  const headers = buildCompareHeaders(payload)
+  const panelSearchResultsMap = new Map()
+  payload.panelSearchResults.forEach((p) =>
+    panelSearchResultsMap.set(p.name, p),
+  )
+  const rows = []
+  const allFound = payload.parsedGenes.symbolFoundGenes.concat(
+    payload.parsedGenes.synonymFoundGenes,
+  )
+  for (let g = 0; g < allFound.length; g++) {
+    const row = {}
+    row.geneId = allFound[g].gene.name
+    const parsedGene = JSON.parse(JSON.stringify(allFound[g]))
+    row.gene = parsedGene
+    for (let h = 0; h < headers.length; h++) {
+      const value = headers[h].value
+      const parsedGeneForPanel = new ParsedGene(
+        JSON.parse(JSON.stringify(allFound[g].gene)),
+      )
+      if (value !== "gene") {
+        row[value] = parsedGeneForPanel
+      }
+      const panel = panelSearchResultsMap.get(value)
+      if (!panel) {
+        continue
+      }
+      let found = false
+      if (panel.panelSymbolToSymbolMatch.length > 0) {
+        const symbolSet = new Set(panel.panelSymbolToSymbolMatch)
+        if (symbolSet.has(row.geneId)) {
+          parsedGeneForPanel.state = "symbol"
+          found = true
+        }
+      }
+      if (panel.panelSynonymToSynonymMatch.length > 0) {
+        const synonymSet = new Set(panel.panelSynonymToSynonymMatch)
+        if (synonymSet.has(row.geneId)) {
+          parsedGeneForPanel.state = "synonym"
+          found = true
+        }
+      }
+      if (panel.panelSymbolToSynonymMatch.length > 0) {
+        for (let i = 0; i < panel.panelSymbolToSynonymMatch.length; i++) {
+          const s = panel.panelSymbolToSynonymMatch[i]
+          if (s.gene == row.geneId) {
+            parsedGeneForPanel.state = "symbolToSynonym"
+            parsedGeneForPanel.gene.name = s.synonym
+            parsedGeneForPanel.realGene = s.gene
+            found = true
+            break
+          }
+        }
+      }
+      if (panel.panelSynonymToSymbolMatch.length > 0) {
+        for (let i = 0; i < panel.panelSynonymToSymbolMatch.length; i++) {
+          const s = panel.panelSynonymToSymbolMatch[i]
+          if (s.gene == row.geneId) {
+            parsedGeneForPanel.state = "synonymToSymbol"
+            parsedGeneForPanel.gene.name = s.synonym
+            parsedGeneForPanel.realGene = s.gene
+            found = true
+            break
+          }
+        }
+      }
+      if (!found) {
+        parsedGeneForPanel.state = "notFound"
+      }
+    }
+    rows.push(row)
+  }
+  return { items: rows, headers: headers }
+}
+
 //dispatch other listeners base on some properties like init
 /**
  * eg. ParseInput.vue listens for the workder with this:
@@ -219,6 +310,13 @@ addEventListener("message", (event) => {
       todo: "findPanelGenes",
       panelName: event.data.panelName,
       panelFileName: event.data.panelFileName,
+    })
+  } else if (event.data.todo == "formatCompareItems") {
+    const { items, headers } = formatCompareItems(event.data.payload)
+    ctx.postMessage({
+      items,
+      headers,
+      todo: "formatCompareItems",
     })
   }
 })

@@ -179,6 +179,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import { mapGetters, mapActions } from 'vuex'
 import {
+  FullGene,
   Gene,
   GenePanelDetails,
   // Institution,
@@ -313,7 +314,8 @@ export default Vue.extend({
         panelBuilder.parsedGenes.symbolFoundGenes.map((pg) => pg.gene.name)
       )
       const synonymsConverted = panelBuilder.parsedGenes.synonymFoundGenes.map(
-        (pg) => (pg.realGene === undefined ? '' : pg.realGene.symbol)
+        (pg) =>
+          pg.realGene === undefined ? '' : (pg.realGene as FullGene).symbol
       )
       synonymsConverted.forEach((s) => uniqGenes.add(s))
 

@@ -1,5 +1,8 @@
 import { Gene, GenePanelDetails, ParsedGenes } from "@/types/panel-types"
-import { UserInputPayload } from "@/types/payload-types"
+import {
+  FormatCompareItemsPayload,
+  UserInputPayload,
+} from "@/types/payload-types"
 import $getFindGenesWorker from "@/utils/workers/worker-instance"
 import { getCookie, setCookie } from "@/utils/cookies"
 
@@ -57,5 +60,16 @@ export default {
   },
   async updatePanels(context: any, payload: GenePanelDetails[]) {
     context.commit("updatePanels", payload)
+  },
+  async formatCompareItems(context: any, payload: FormatCompareItemsPayload) {
+    const panelNamesSorted = context.state.panels.map(
+      (p: GenePanelDetails) => p.name,
+    )
+    payload.panelNames = panelNamesSorted
+    $getFindGenesWorker().postMessage({
+      init: false,
+      todo: "formatCompareItems",
+      payload: payload,
+    })
   },
 }

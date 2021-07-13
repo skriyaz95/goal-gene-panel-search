@@ -67,8 +67,8 @@
                 :help="showHelp"
                 @help="handleHelp"
                 :loading="searchingPanels"
-                :parsedGenes="formattedGenes"
-                :panelSearchResults="panelSearchResults"
+                :items="compareItems"
+                :headers="compareHeaders"
               />
             </v-tab-item>
           </v-tabs-items>
@@ -89,6 +89,7 @@ import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import { PanelSearchResult, ParsedGenes } from '@/types/panel-types'
 import PanelCompare from '@/components/home/PanelCompare.vue'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
+import { FormatCompareItemsPayload } from '@/types/payload-types'
 
 export default Vue.extend({
   components: { UserInput, ParsedInput, PanelResult, PanelCompare },
@@ -102,6 +103,9 @@ export default Vue.extend({
     formattedGenes: new ParsedGenes(),
     panelSearchResults: new Array<PanelSearchResult>(),
     firstTime: false,
+    formattedCompareItems: [],
+    compareItems: [],
+    compareHeaders: [],
   }),
   computed: {
     ...mapGetters({
@@ -129,6 +133,7 @@ export default Vue.extend({
     ...mapActions([
       'parseUserGenes',
       'findGenesInAllPanels',
+      'formatCompareItems',
       // 'initLastSearches',
     ]),
     handleHelp(): any {
@@ -169,9 +174,20 @@ export default Vue.extend({
         // })
       } else if (event.data.todo == 'findGenesInAllPanels') {
         this.panelSearchResults = event.data.genesInAllPanels
+        const payload = new FormatCompareItemsPayload(
+          this.formattedGenes,
+          this.panelSearchResults
+        )
+        this.formatCompareItems(payload)
         this.searchingPanels = false
       } else if (event.data.todo == 'cleanUserInput') {
         this.parseUserGenes(event.data.userGeneList)
+      } else if (event.data.todo == 'formatCompareItems') {
+        this.compareItems = event.data.items
+        event.data.headers[0].text = this.$t(
+          'panelCompare.table.headers.gene.text'
+        ) //replace placeholder with i18n value
+        this.compareHeaders = event.data.headers
       }
     }
     // this.initLastSearches()

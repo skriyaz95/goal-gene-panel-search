@@ -176,11 +176,6 @@ export class PanelResultFormattedRow {
   }
 }
 
-export class PanelCompareRow {
-  gene!: string
-  panels!: Map<String, ParsedGene>
-}
-
 /**
  * Store the user input, once parsed into a ParsedGenes class
  * This will help passing the object back from the worker
