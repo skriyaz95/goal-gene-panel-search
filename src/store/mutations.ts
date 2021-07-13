@@ -10,7 +10,11 @@ export default {
   updateSynonyms(state: any, payload: SynonymGene[]) {
     state.synonyms = payload
   },
-  updateLastSearch(state: any, payload: String) {
-    state.lastSearch = payload
+  updateLastSearch(state: any, payload: any) {
+    state.lastSearch = payload.lastSearch
+    state.lastSearches = payload.lastSearches
+  },
+  updateLastSearches(state: any, payload: any) {
+    state.lastSearches = payload
   },
 }

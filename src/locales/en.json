@@ -52,6 +52,9 @@
     },
     "demo": {
       "text": "Demo"
+    },
+    "help": {
+      "text": "Help"
     }
   },
   "count": {
@@ -247,6 +250,10 @@
       "part1a": " shows the panels containing genes",
       "part1b": " from the items in ",
       "part2a": "Click on a cell to get more information about each value"
+    },
+    "panelCompare": {
+      "part1a": " shows each valid gene and which panel has those genes.",
+      "part2": "A gene (row) may match a gene symbol or a synonym in each panel (column)"
     }
   },
   "institutionDetails": {

@@ -9,4 +9,5 @@ export default {
   synonyms: synonymData,
   lastSearch: String(),
   institutions: institutionData,
+  lastSearches: new Array<String>(),
 }

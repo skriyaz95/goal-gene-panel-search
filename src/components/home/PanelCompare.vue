@@ -6,38 +6,40 @@
         <v-spacer></v-spacer>
         <help-button @action="handleHelp()" :active="help">
           <template v-slot:content>
-            <panel-results-help />
+            <span>
+              {{ $t('button.showHide.tooltip') }}
+              {{ $t('button.help.text') }}
+            </span>
           </template>
         </help-button>
       </v-card-title>
       <v-card-text>
         <info-alert :active="help">
           <template v-slot:content>
-            <panel-results-help />
+            <panel-compare-help />
           </template>
         </info-alert>
         <v-data-table
           :headers="headers"
           :items="items"
-          item-key="gene"
+          item-key="geneId"
           sort-by="gene"
         >
           <template v-if="items.length > 0" v-slot:body="{ items }">
             <tbody>
-              <tr v-for="item in items" :key="item.gene">
+              <tr v-for="item in items" :key="item.geneId">
                 <td v-for="header in headers" :key="header.value">
-                  <v-chip v-if="showChip(item, header)">
+                  <v-chip
+                    v-if="showChip(item, header)"
+                    :color="formatState(item, header)"
+                  >
                     <div class="d-flex align-center">
                       {{ geneName(item, header) }}
-                      <span v-if="item[header.value].state === 'synonym'">
-                        <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
-                        {{ item[header.value].realGene.symbol }}
-                      </span>
                     </div>
                   </v-chip>
-                  <span v-else-if="header.value === 'gene'">
+                  <!-- <span v-else-if="header.value === 'gene'">
                     {{ item.gene }}
-                  </span>
+                  </span> -->
                 </td>
               </tr>
             </tbody>
@@ -54,21 +56,20 @@ import { mapGetters } from 'vuex'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import {
-  FullGene,
   GenePanelDetails,
   PanelCompareRow,
   PanelSearchResult,
   ParsedGene,
   ParsedGenes,
-  // ParsedGene,
+  SynonymGene,
 } from '@/types/panel-types'
-import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
+import PanelCompareHelp from '@/components/help/PanelCompareHelp.vue'
 
 export default Vue.extend({
   components: {
     HelpButton,
     InfoAlert,
-    PanelResultsHelp,
+    PanelCompareHelp,
   },
   name: 'PanelCompare',
   props: {
@@ -92,39 +93,69 @@ export default Vue.extend({
       panels: 'getPanelsSorted',
     }),
     items(): Array<PanelCompareRow> {
+      //TODO move formatting to a worker
       const rows = new Array<PanelCompareRow>()
       const allFound = this.parsedGenes.symbolFoundGenes.concat(
         this.parsedGenes.synonymFoundGenes
       )
       for (let g = 0; g < allFound.length; g++) {
         const row: any = {}
-        row.gene = allFound[g].gene.name
+        row.geneId = allFound[g].gene.name
+        const parsedGene = JSON.parse(JSON.stringify(allFound[g]))
+        row.gene = parsedGene
         for (let h = 0; h < this.headers.length; h++) {
           const value = this.headers[h].value
-          if (value === 'gene') {
-            continue
+          const parsedGeneForPanel = new ParsedGene(
+            JSON.parse(JSON.stringify(allFound[g].gene))
+          )
+          if (value !== 'gene') {
+            row[value] = parsedGeneForPanel
           }
           const panel = this.panelSearchResultsMap.get(value)
-          if (panel && panel.genesInPanel) {
-            const parsedGene = new ParsedGene(allFound[g].gene)
-            row[value] = parsedGene
-            const symbolSet = new Set(
-              panel.panelSymbols.map((gene) => gene.name.toUpperCase())
-            )
-            if (symbolSet.has(row.gene)) {
-              parsedGene.state = 'symbol'
-              continue
+          if (!panel) {
+            continue
+          }
+          let found = false
+          if (panel.panelSymbolToSymbolMatch.length > 0) {
+            const symbolSet = new Set(panel.panelSymbolToSymbolMatch)
+            if (symbolSet.has(row.geneId)) {
+              parsedGeneForPanel.state = 'symbol'
+              found = true
             }
-            const synonymSet = new Set(
-              panel.panelSynonyms.map((gene) => gene.name.toUpperCase())
-            )
-            const realGene: FullGene | undefined = allFound[g].realGene
-            if (realGene && synonymSet.has(realGene.symbol)) {
-              parsedGene.state = 'synonym'
-              parsedGene.realGene = allFound[g].realGene
-              continue
+          }
+          if (panel.panelSynonymToSynonymMatch.length > 0) {
+            const synonymSet = new Set(panel.panelSynonymToSynonymMatch)
+            if (synonymSet.has(row.geneId)) {
+              parsedGeneForPanel.state = 'synonym'
+              found = true
             }
-            parsedGene.state = 'notFound'
+          }
+          if (panel.panelSymbolToSynonymMatch.length > 0) {
+            for (let i = 0; i < panel.panelSymbolToSynonymMatch.length; i++) {
+              const s: SynonymGene = panel.panelSymbolToSynonymMatch[i]
+              if (s.gene == row.geneId) {
+                parsedGeneForPanel.state = 'symbolToSynonym'
+                parsedGeneForPanel.gene.name = s.synonym
+                parsedGeneForPanel.realGene = s.gene
+                found = true
+                break
+              }
+            }
+          }
+          if (panel.panelSynonymToSymbolMatch.length > 0) {
+            for (let i = 0; i < panel.panelSynonymToSymbolMatch.length; i++) {
+              const s: SynonymGene = panel.panelSynonymToSymbolMatch[i]
+              if (s.gene == row.geneId) {
+                parsedGeneForPanel.state = 'synonymToSymbol'
+                parsedGeneForPanel.gene.name = s.synonym
+                parsedGeneForPanel.realGene = s.gene
+                found = true
+                break
+              }
+            }
+          }
+          if (!found) {
+            parsedGeneForPanel.state = 'notFound'
           }
         }
         rows.push(row)
@@ -167,7 +198,22 @@ export default Vue.extend({
     },
     showChip(item: any, header: any) {
       const label: string = header.value
-      return label != 'gene' && item[label] && item[label].state != 'notFound'
+      // console.log(item[label])
+      return item[label] && item[label].state !== 'notFound'
+    },
+    formatState(item: any, header: any) {
+      const label: string = header.value
+      if (item[label].state === 'symbol') {
+        return 'success'
+      }
+      if (
+        item[label].state === 'synonym' ||
+        item[label].state === 'symbolToSynonym' ||
+        item[label].state === 'synonymToSymbol'
+      ) {
+        return 'warning'
+      }
+      return 'error'
     },
   },
 })

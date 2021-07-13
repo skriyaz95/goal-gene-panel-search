@@ -3,6 +3,7 @@ import {
   ParsedGenes,
   Gene,
   PanelSearchResult,
+  SynonymGene,
 } from "@/types/panel-types"
 
 const ctx = self
@@ -62,18 +63,20 @@ function applyState(userGene) {
   return parsedGene
 }
 
-function findGenesInAllPanels(allMatches, panels) {
+function findGenesInAllPanels(allMatches, panels, parsedGenes) {
   let result = []
   panels.forEach((panel) => {
-    const genes = findGenesInSelectedPanel(allMatches, panel)
+    const genes = findGenesInSelectedPanel(allMatches, panel, parsedGenes)
     if (genes.genesInPanel.length > 0 || genes.genesNotInPanel.length > 0) {
       result.push(
         new PanelSearchResult(
           panel.name,
           genes.genesInPanel,
           genes.genesNotInPanel,
-          genes.panelSymbols,
-          genes.panelSynonyms,
+          genes.panelSymbolToSymbolMatch,
+          genes.panelSynonymToSynonymMatch,
+          genes.panelSymbolToSynonymMatch,
+          genes.panelSynonymToSymbolMatch,
         ),
       )
     }
@@ -81,34 +84,68 @@ function findGenesInAllPanels(allMatches, panels) {
   return result
 }
 
-function findGenesInSelectedPanel(allMatches, panel) {
+function findGenesInSelectedPanel(allMatches, panel, parsedGenes) {
   const genesInPanel = []
   const genesNotInPanel = []
   const panelGenesSet = new Set(
     panel.genes.map((gene) => gene.name.toUpperCase()),
   )
   //keep track of which is symbol and which is synonym
-  const panelSymbols = []
-  const panelSynonyms = []
+  const panelSymbolToSymbolMatch = []
+  const panelSynonymToSynonymMatch = []
+  const panelSymbolToSynonymMatch = []
+  const panelSynonymToSymbolMatch = []
   //
   allMatches.geneSet.forEach((gene) => {
     const geneObj = new Gene(gene)
     if (panelGenesSet.has(gene)) {
       genesInPanel.push(geneObj)
-      if (allMatches.symbolSet.has(gene)) {
-        panelSymbols.push(geneObj)
-      } else {
-        panelSynonyms.push(geneObj)
-      }
     } else {
       genesNotInPanel.push(geneObj)
+    }
+  })
+  //look for symbols to symbol match and symbol to synonym match
+  const symbolsInPanel = new Set(panel.symbolsOnly.map((g) => g.name))
+  const synonymsInPanelArray = panel.synonymsOnly.map((g) => g.synonym)
+  parsedGenes.symbolFoundGenes.forEach((parsedGene) => {
+    if (symbolsInPanel.has(parsedGene.gene.name)) {
+      panelSymbolToSymbolMatch.push(parsedGene.gene.name)
+    }
+    //user entered a symbol, look for synonyms in panel
+    const possibleSynonyms = new Set(
+      allGeneMap.get(parsedGene.gene.name).synonyms,
+    )
+    for (let i = 0; i < synonymsInPanelArray.length; i++) {
+      const s = synonymsInPanelArray[i]
+      if (possibleSynonyms.has(s)) {
+        const synonym = new SynonymGene(s, parsedGene.gene.name)
+        panelSymbolToSynonymMatch.push(synonym) // use the synonym name to display it in compare panels
+        break
+      }
+    }
+  })
+  //look for synonyms to synonym match
+  const synonymsInPanel = new Set(synonymsInPanelArray)
+  parsedGenes.synonymFoundGenes.forEach((parsedGene) => {
+    if (synonymsInPanel.has(parsedGene.gene.name)) {
+      panelSynonymToSynonymMatch.push(parsedGene.gene.name)
+    }
+    //user entered a synonym, look for symbols in panel
+    if (symbolsInPanel.has(parsedGene.realGene.symbol)) {
+      const synonym = new SynonymGene(
+        parsedGene.realGene.symbol,
+        parsedGene.gene.name,
+      )
+      panelSynonymToSymbolMatch.push(synonym)
     }
   })
   return {
     genesInPanel,
     genesNotInPanel,
-    panelSymbols,
-    panelSynonyms,
+    panelSymbolToSymbolMatch,
+    panelSynonymToSynonymMatch,
+    panelSymbolToSynonymMatch,
+    panelSynonymToSymbolMatch,
   }
 }
 
@@ -166,7 +203,11 @@ addEventListener("message", (event) => {
     ctx.postMessage({ parsedGenes, todo: "parseUserGenes" })
   } else if (event.data.todo == "findGenesInAllPanels") {
     const allMatches = findAllMatches(event.data.parsedGenes)
-    const genesInAllPanels = findGenesInAllPanels(allMatches, event.data.panels)
+    const genesInAllPanels = findGenesInAllPanels(
+      allMatches,
+      event.data.panels,
+      event.data.parsedGenes,
+    )
     ctx.postMessage({
       todo: "findGenesInAllPanels",
       genesInAllPanels: genesInAllPanels,

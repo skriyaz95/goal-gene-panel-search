@@ -18,7 +18,10 @@
       </v-scroll-x-transition>
       <help-button @action="handleHelp()" :active="help">
         <template v-slot:content>
-          <gene-search-help />
+          <span>
+            {{ $t('button.showHide.tooltip') }}
+            {{ $t('button.help.text') }}
+          </span>
         </template>
       </help-button>
     </v-card-title>

@@ -104,6 +104,15 @@ export default {
       },
     )
   },
+  getLastSearches: (state: any) => {
+    const realSearches = []
+    for (let i = 0; i < state.lastSearches.length; i++) {
+      if (state.lastSearches[i]) {
+        realSearches.push(state.lastSearches[i])
+      }
+    }
+    return realSearches
+  },
   // getPanelsByName: (state: any) => {
   //   const allPanels = new Map<String, GenePanel>()
   //   state.panels.forEach((panel: GenePanel) => {

@@ -20,7 +20,7 @@
         <span>{{ $t('button.link.repo.tooltip') }}</span>
       </v-tooltip>
     </v-toolbar>
-    <v-container class="pa-0">
+    <v-container class="pa-0" fluid>
       <v-tabs centered v-model="tab" :background-color="background">
         <v-tab :href="'#' + tabTitle" v-for="tabTitle in tabs" :key="tabTitle">
           {{ tabTitle }}

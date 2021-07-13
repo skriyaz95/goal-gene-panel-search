@@ -77,7 +77,7 @@
         link
         :to="{ name: 'Home' }"
         active-class="primary lighten-2 font-weight-bold"
-        exact
+        exact-path
         @click.stop=""
       >
         <v-list-item-icon>

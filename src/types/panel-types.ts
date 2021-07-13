@@ -59,21 +59,27 @@ export class PanelSearchResult {
   name: string
   genesInPanel: Gene[]
   genesNotInPanel: Gene[]
-  panelSymbols: Gene[]
-  panelSynonyms: Gene[]
+  panelSymbolToSymbolMatch: string[]
+  panelSynonymToSynonymMatch: string[]
+  panelSymbolToSynonymMatch: SynonymGene[]
+  panelSynonymToSymbolMatch: SynonymGene[]
 
   constructor(
     name: string,
     genesInPanel: Gene[],
     genesNotInPanel: Gene[],
-    panelSymbols: Gene[],
-    panelSynonyms: Gene[],
+    panelSymbolToSymbolMatch: string[],
+    panelSynonymToSynonymMatch: string[],
+    panelSymbolToSynonymMatch: SynonymGene[],
+    panelSynonymToSymbolMatch: SynonymGene[],
   ) {
     this.name = name
     this.genesInPanel = genesInPanel
     this.genesNotInPanel = genesNotInPanel
-    this.panelSymbols = panelSymbols
-    this.panelSynonyms = panelSynonyms
+    this.panelSymbolToSymbolMatch = panelSymbolToSymbolMatch
+    this.panelSynonymToSynonymMatch = panelSynonymToSynonymMatch
+    this.panelSymbolToSynonymMatch = panelSymbolToSynonymMatch
+    this.panelSynonymToSymbolMatch = panelSynonymToSymbolMatch
   }
 }
 
@@ -95,7 +101,7 @@ export class Gene {
 export class ParsedGene {
   gene: Gene
   state!: string | undefined
-  realGene!: FullGene | undefined //only synonyms would have a realGene value
+  realGene!: FullGene | string | undefined //only synonyms would have a realGene value
 
   constructor(gene: Gene, state?: string, realGene?: FullGene) {
     this.gene = gene
@@ -137,9 +143,9 @@ export class FullGene {
  */
 export class SynonymGene {
   synonym!: string
-  gene!: FullGene | undefined
+  gene!: FullGene | string | undefined //use string when the full gene is not needed
 
-  constructor(synonym: string, gene: FullGene | undefined) {
+  constructor(synonym: string, gene: FullGene | string | undefined) {
     this.synonym = synonym
     this.gene = gene
   }

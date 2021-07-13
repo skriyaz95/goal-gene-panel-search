@@ -2,11 +2,27 @@
   <v-card outlined>
     <v-card-title>
       {{ $t('parsedInput.title.text') }}
+      <v-spacer></v-spacer>
+      <help-button @action="handleHelp()" :active="help">
+        <template v-slot:content>
+          <span>
+            {{ $t('button.showHide.tooltip') }}
+            {{ $t('button.help.text') }}
+          </span>
+        </template>
+      </help-button>
+    </v-card-title>
+    <v-card-text class="text-left">
+      <info-alert :active="help">
+        <template v-slot:content>
+          <parsed-search-help />
+        </template>
+      </info-alert>
       <v-fade-transition>
-        <span class="ml-3" v-show="showAny">
+        <span class="text-xs-left" v-show="showAny">
           <v-tooltip bottom v-show="showNotFound">
             <template v-slot:activator="{ on }">
-              <v-chip color="error" class="ml-1 mr-1" v-on="on">
+              <v-chip color="error" class="ml-1 mr-1 mb-1" v-on="on">
                 {{ $t('parsedInput.notFound.text') }} ({{
                   $tc('count.gene', $n(formattedGenes.notFoundGenes.length))
                 }})
@@ -16,7 +32,7 @@
           </v-tooltip>
           <v-tooltip bottom v-show="showSynonym">
             <template v-slot:activator="{ on }">
-              <v-chip color="warning" class="ml-1 mr-1" v-on="on">
+              <v-chip color="warning" class="ml-1 mr-1 mb-1" v-on="on">
                 {{ $t('parsedInput.synonyms.text') }} ({{
                   $tc(
                     'count.gene',
@@ -29,7 +45,7 @@
           </v-tooltip>
           <v-tooltip bottom v-show="showSymbol">
             <template v-slot:activator="{ on }">
-              <v-chip color="success" class="ml-1 mr-1" v-on="on">
+              <v-chip color="success" class="ml-1 mr-1 mb-1" v-on="on">
                 {{ $t('parsedInput.symbols.text') }} ({{
                   $tc('count.gene', $n(formattedGenes.symbolFoundGenes.length))
                 }})
@@ -39,19 +55,6 @@
           </v-tooltip>
         </span>
       </v-fade-transition>
-      <v-spacer></v-spacer>
-      <help-button @action="handleHelp()" :active="help">
-        <template v-slot:content>
-          <parsed-search-help />
-        </template>
-      </help-button>
-    </v-card-title>
-    <v-card-text class="text-left">
-      <info-alert :active="help">
-        <template v-slot:content>
-          <parsed-search-help />
-        </template>
-      </info-alert>
       <div v-show="noData">
         {{ $t('parsedInput.empty.text') }}
       </div>
@@ -119,21 +122,6 @@ export default Vue.extend({
   },
   destroyed() {},
   methods: {
-    formatState(state: string) {
-      if (state == 'symbol') {
-        return 'success'
-      }
-      if (state == 'synonym') {
-        return 'warning'
-      }
-      return 'error'
-    },
-    // formatGenes() {
-    //   this.formattedGenes = new ParsedGenes()
-    //   this.formattedGenes.notFoundGenes = this.parsedGenes.notFoundGenes
-    //   this.formattedGenes.synonymFoundGenes = this.parsedGenes.synonymFoundGenes
-    //   this.formattedGenes.symbolFoundGenes = this.parsedGenes.symbolFoundGenes
-    // },
     handleHelp() {
       this.$emit('help')
     },

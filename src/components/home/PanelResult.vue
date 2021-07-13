@@ -52,7 +52,10 @@
         <v-spacer></v-spacer>
         <help-button @action="handleHelp()" :active="help">
           <template v-slot:content>
-            <panel-results-help />
+            <span>
+              {{ $t('button.showHide.tooltip') }}
+              {{ $t('button.help.text') }}
+            </span>
           </template>
         </help-button>
       </v-card-title>
