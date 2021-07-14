@@ -111,7 +111,7 @@ export default Vue.extend({
   }),
   computed: {
     ...mapGetters({
-      lastSearch: 'getLastSearch',
+      inputNeedsReload: 'getInputNeedsReload',
     }),
     geneListRules(): any {
       // const x = this.$t('userInput.validation.list-empty')
@@ -130,7 +130,12 @@ export default Vue.extend({
     }, 500),
   },
   methods: {
-    ...mapActions(['cleanUserInput', 'updateLastSearch', 'clearLastSearches']),
+    ...mapActions([
+      'cleanUserInput',
+      'updateLastSearch',
+      'clearLastSearches',
+      'updateInputNeedsReload',
+    ]),
     submitUserInput(userinput: string, withAlert: boolean) {
       // console.log(userinput, withAlert)
       if (!userinput) {
@@ -170,8 +175,8 @@ export default Vue.extend({
       }
     },
     loadLastInput() {
-      if (this.lastSearch) {
-        this.geneList = this.lastSearch
+      if (this.inputNeedsReload && this.lastSearches.length > 0) {
+        this.geneList = this.lastSearches[this.lastSearches.length - 1]
       }
     },
     handleHelp() {
@@ -207,16 +212,13 @@ export default Vue.extend({
         this.updateLastSearch(this.geneList).then((result: []) => {
           this.lastSearches = result
         })
+        this.updateInputNeedsReload(true)
+      } else {
+        this.updateInputNeedsReload(false)
       }
     },
     fillLastSearch(search: string) {
       this.geneList = search
-    },
-    lastSearchLabel(search: string) {
-      if (search.length > 5) {
-        return search.substring(0, 5) + '...'
-      }
-      return search
     },
     resetLastSearches() {
       this.clearLastSearches().then(() => {
@@ -226,11 +228,12 @@ export default Vue.extend({
     initLastSearches() {
       this.updateLastSearch('').then((result: []) => {
         this.lastSearches = result
+        this.loadLastInput()
       })
     },
   },
   mounted() {
-    this.loadLastInput()
+    console.log('mounted')
     this.initLastSearches()
   },
 })

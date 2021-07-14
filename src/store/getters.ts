@@ -46,9 +46,6 @@ export default {
   //   })
   //   return allInstitutions
   // },
-  getLastSearch: (state: any) => {
-    return state.lastSearch
-  },
   //not use for now
   // getInstitutionDropDownItems: (state: any) => {
   //   const institutionDropDownItems = new Array<{}>()
@@ -84,17 +81,11 @@ export default {
       },
     )
   },
-  getLastSearches: (state: any) => {
-    const realSearches = []
-    for (let i = 0; i < state.lastSearches.length; i++) {
-      if (state.lastSearches[i]) {
-        realSearches.push(state.lastSearches[i])
-      }
-    }
-    return realSearches
-  },
   getChipOutlined: (state: any) => {
     return state.uiProps.chipOutlined
+  },
+  getInputNeedsReload: (state: any) => {
+    return state.inputNeedsReload
   },
   // getPanelsByName: (state: any) => {
   //   const allPanels = new Map<String, GenePanel>()

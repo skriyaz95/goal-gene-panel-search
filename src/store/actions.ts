@@ -80,4 +80,7 @@ export default {
       resolve("success")
     })
   },
+  async updateInputNeedsReload(context: any, payload: boolean) {
+    context.commit("updateInputNeedsReload", payload)
+  },
 }

@@ -24,6 +24,7 @@
           :items="items"
           item-key="geneId"
           sort-by="gene"
+          :custom-sort="customSort"
         >
           <template v-if="items.length > 0" v-slot:body="{ items }">
             <tbody>
@@ -119,6 +120,24 @@ export default Vue.extend({
         return 'mdi-check'
       }
       return 'mdi-approximately-equal'
+    },
+    customSort(items: any[], sortBy: string[], sortDesc: boolean[]): any[] {
+      items.sort((a: any, b: any) => {
+        if (!sortBy[0]) {
+          return 0
+        }
+        const aItem = a[sortBy[0]].gene.name
+        const bItem = b[sortBy[0]].gene.name
+        const desc = sortDesc[0]
+        if (aItem > bItem) {
+          return desc ? 1 : -1
+        }
+        if (aItem < bItem) {
+          return desc ? -1 : 1
+        }
+        return 0
+      })
+      return items
     },
   },
 })

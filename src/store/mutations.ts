@@ -10,10 +10,10 @@ export default {
   updateSynonyms(state: any, payload: SynonymGene[]) {
     state.synonyms = payload
   },
-  updateLastSearch(state: any, payload: any) {
-    state.lastSearch = payload.lastSearch
-  },
   updateChipOutlined(state: any, payload: boolean) {
     state.uiProps.chipOutlined = payload
+  },
+  updateInputNeedsReload(state: any, payload: boolean) {
+    state.inputNeedsReload = payload
   },
 }
