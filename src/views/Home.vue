@@ -7,12 +7,12 @@
       <v-spacer />
     </v-toolbar>
     <v-container class="pa-0" fluid>
-      <v-row class="text-center" dense>
-        <v-col cols="12" lg="4" class="pt-13">
+      <v-row class="text-start" dense>
+        <v-col cols="12" lg="4">
           <v-container>
             <v-row>
-              <!-- <v-col cols="12">
-                Previous Searches:
+              <!-- <v-col cols="12" class="pt-3 pb-0 pl-4">
+                Recall Searches:
                 <v-btn
                   v-for="(search, index) in lastSearches"
                   :key="index"
@@ -90,6 +90,7 @@ import { PanelSearchResult, ParsedGenes } from '@/types/panel-types'
 import PanelCompare from '@/components/home/PanelCompare.vue'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 import { FormatCompareItemsPayload } from '@/types/payload-types'
+import { getCookie, setCookie } from '@/utils/cookies'
 
 export default Vue.extend({
   components: { UserInput, ParsedInput, PanelResult, PanelCompare },
@@ -108,9 +109,7 @@ export default Vue.extend({
     compareHeaders: [],
   }),
   computed: {
-    ...mapGetters({
-      // lastSearches: 'getLastSearches',
-    }),
+    ...mapGetters({}),
     tab: {
       set(tab: string) {
         this.$router.replace({ query: { ...this.$route.query, tab } })
@@ -134,31 +133,21 @@ export default Vue.extend({
       'parseUserGenes',
       'findGenesInAllPanels',
       'formatCompareItems',
-      // 'initLastSearches',
     ]),
     handleHelp(): any {
       this.showHelp = !this.showHelp
       this.firstTime = false
     },
     handleFirstTime(): any {
-      let decodedCookie = decodeURIComponent(document.cookie)
-      if (decodedCookie.indexOf('firstTime') == -1) {
+      const cookie = getCookie('firstTime')
+      if (!cookie) {
         //cookie doesn't exist
-        document.cookie = 'firstTime=false'
+        setCookie('firstTime', false, 365)
         setTimeout(() => {
           this.firstTime = true
-        }, 5000) //display 3 sec after loading
+        }, 5000) //display 5 sec after loading
       }
     },
-    // fillLastSearch(search: string) {
-    //   console.log(search)
-    // },
-    // lastSearchLabel(search: string) {
-    //   if (search.length > 5) {
-    //     return search.substring(0, 5) + '...'
-    //   }
-    //   return search
-    // },
   },
   mounted() {
     this.handleFirstTime()
@@ -190,7 +179,6 @@ export default Vue.extend({
         this.compareHeaders = event.data.headers
       }
     }
-    // this.initLastSearches()
   },
 })
 </script>

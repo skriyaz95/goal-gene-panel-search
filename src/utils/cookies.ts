@@ -1,6 +1,6 @@
 export function setCookie(
   cname: string,
-  cvalue: string | null,
+  cvalue: string | boolean | null,
   exdays: number,
 ) {
   if (!cvalue) {

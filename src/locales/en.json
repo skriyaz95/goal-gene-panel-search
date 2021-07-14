@@ -134,6 +134,17 @@
       "list-empty": "Gene List must not be empty",
       "list-min-characters": "Gene List must be at least 2 characters",
       "list-regex": "Remove special characters ($%^&<> etc.)"
+    },
+    "recall": {
+      "title": {
+        "text": "Last Searches"
+      },
+      "clear": {
+        "text": "Clear Saved Searches"
+      },
+      "empty": {
+        "text": "The last 3 searches will be displayed here"
+      }
     }
   },
   "panel-result": {
