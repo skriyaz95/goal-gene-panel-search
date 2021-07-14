@@ -55,7 +55,7 @@
                     />
                     <div>{{ $t('themePicker.logo.explain.text') }}</div>
                   </v-col>
-                  <v-col cols="8">
+                  <v-col cols="8" align-self="end">
                     <v-chip color="error" class="mr-2" :outlined="chipOutlined">
                       {{ $t('parsedInput.notFound.text') }}
                     </v-chip>

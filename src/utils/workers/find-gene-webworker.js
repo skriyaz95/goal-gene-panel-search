@@ -6,9 +6,18 @@ import {
   SynonymGene,
 } from "@/types/panel-types"
 
+import allGenesData from "@/assets/all_genes.json"
+import synonymData from "@/assets/synonyms.json"
+
 const ctx = self
 let allGeneMap = new Map()
 let synonymMap = new Map()
+allGenesData.forEach((gene) => {
+  allGeneMap.set(gene.symbol, gene)
+})
+synonymData.forEach((synonym) => {
+  synonymMap.set(synonym.synonym, synonym)
+})
 
 const stateSymbol = "symbol"
 const stateSynonym = "synonym"
@@ -269,7 +278,6 @@ function formatCompareItems(payload) {
     }
  and posts a message to the workder with this
  $getFindGenesWorker().postMessage({
-        init: false,
         todo: 'parseUserGenes',
         userGenes: this.userGenes,
       })
@@ -281,8 +289,8 @@ function formatCompareItems(payload) {
  */
 addEventListener("message", (event) => {
   if (event.data.init) {
-    allGeneMap = event.data.allGeneMap
-    synonymMap = event.data.synonymMap
+    // allGeneMap = event.data.allGeneMap
+    // synonymMap = event.data.synonymMap
   } else if (event.data.todo == "cleanUserInput") {
     const userGeneList = cleanUserInput(
       event.data.payload.userinput,

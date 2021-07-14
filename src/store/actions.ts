@@ -9,7 +9,6 @@ import { getCookie, setCookie } from "@/utils/cookies"
 export default {
   async cleanUserInput(context: any, payload: UserInputPayload) {
     $getFindGenesWorker().postMessage({
-      init: false,
       todo: "cleanUserInput",
       payload: payload,
     })
@@ -45,14 +44,12 @@ export default {
   },
   async parseUserGenes(context: any, payload: Gene[]) {
     $getFindGenesWorker().postMessage({
-      init: false,
       todo: "parseUserGenes",
       userGenes: payload,
     })
   },
   async findGenesInAllPanels(context: any, payload: ParsedGenes) {
     $getFindGenesWorker().postMessage({
-      init: false,
       todo: "findGenesInAllPanels",
       parsedGenes: payload,
       panels: context.state.panels,
@@ -67,7 +64,6 @@ export default {
     )
     payload.panelNames = panelNamesSorted
     $getFindGenesWorker().postMessage({
-      init: false,
       todo: "formatCompareItems",
       payload: payload,
     })

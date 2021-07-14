@@ -29,26 +29,6 @@ export default {
   getPanelSearchResult: (state: any) => {
     return state.panelSearchResult
   },
-  getAllGenes: (state: any) => {
-    return state.allGenes
-  },
-  getAllGeneMap: (state: any) => {
-    const allGeneMap = new Map<String, FullGene>()
-    state.allGenes.forEach((gene: FullGene) => {
-      allGeneMap.set(gene.symbol, gene)
-    })
-    return allGeneMap
-  },
-  getSynonyms: (state: any) => {
-    return state.synonyms
-  },
-  getSynonymMap: (state: any) => {
-    const allSynonymMap = new Map<String, SynonymGene>()
-    state.synonyms.forEach((synonym: SynonymGene) => {
-      allSynonymMap.set(synonym.synonym, synonym)
-    })
-    return allSynonymMap
-  },
   getInstitutionsByPanel: (state: any) => {
     const allInstitutions = new Map<String, Institution>()
     state.institutions.forEach((institution: Institution) => {

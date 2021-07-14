@@ -58,9 +58,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
 import debounce from '@/utils/debounce'
 import { NCBI_GENE_URL, NCBI_GENE_INFO_FILE_URL } from '@/utils/apis'
+import allGenesData from '@/assets/all_genes.json'
 
 export default Vue.extend({
   components: {},
@@ -82,9 +82,9 @@ export default Vue.extend({
     }
   },
   computed: {
-    ...mapGetters({
-      allGenes: 'getAllGenes',
-    }),
+    allGenes() {
+      return allGenesData
+    },
   },
   methods: {},
   watch: {

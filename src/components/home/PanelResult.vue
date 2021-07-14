@@ -100,7 +100,6 @@
                   :outlined="chipOutlined"
                   class="ma-2"
                   color="primary"
-                  text-color="white"
                   v-on="on"
                   @click.stop="openDialog(item, 'genesInPanel')"
                 >

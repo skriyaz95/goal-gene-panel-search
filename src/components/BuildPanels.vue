@@ -290,7 +290,6 @@ export default Vue.extend({
     },
     formatGenes(panelGenes: Gene[], panelName: String, panelFileName: string) {
       $getFindGenesWorker().postMessage({
-        init: false,
         todo: 'findPanelGenes',
         userGenes: panelGenes,
         panelName: panelName,

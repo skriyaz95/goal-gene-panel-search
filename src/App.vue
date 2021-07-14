@@ -4,28 +4,6 @@
       :hue-rotation="hueRotationFilter()"
       :saturation="saturationFilter()"
     />
-    <!-- <v-app-bar app color="primary" dark flat clipped-left>
-      <div class="d-flex align-center">
-        <span class="title" v-text="toolbarTitle" />
-      </div>
-
-      <v-spacer />
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on }">
-          <v-btn
-            href="https://github.com/skriyaz95/goal-gene-panel-search"
-            target="_blank"
-            text
-            v-on="on"
-          >
-            <span class="mr-2">{{ $t('button.link.repo.text') }}</span>
-            <v-icon>mdi-open-in-new</v-icon>
-          </v-btn>
-        </template>
-        <span>{{ $t('button.link.repo.tooltip') }}</span>
-      </v-tooltip>
-    </v-app-bar> -->
-
     <v-main>
       <router-view />
     </v-main>
@@ -74,11 +52,11 @@ export default Vue.extend({
      *
      */
     initWorkers() {
-      $getFindGenesWorker().postMessage({
-        init: true,
-        allGeneMap: this.allGeneMap,
-        synonymMap: this.synonymMap,
-      })
+      // $getFindGenesWorker().postMessage({
+      //   init: true,
+      //   allGeneMap: this.allGeneMap,
+      //   synonymMap: this.synonymMap,
+      // })
     },
   },
   computed: {
@@ -91,9 +69,6 @@ export default Vue.extend({
     },
     ...mapGetters({
       panels: 'getPanels',
-      allGenes: 'getAllGenes',
-      allGeneMap: 'getAllGeneMap',
-      synonymMap: 'getSynonymMap',
     }),
     // toolbarTitle(): TranslateResult {
     //   if (this.$route.meta && this.$route.meta.i18n) {
