@@ -55,6 +55,35 @@
                     />
                     <div>{{ $t('themePicker.logo.explain.text') }}</div>
                   </v-col>
+                  <v-col cols="8" align-self="end">
+                    <v-chip color="error" class="mr-2" :outlined="chipOutlined">
+                      {{ $t('parsedInput.notFound.text') }}
+                    </v-chip>
+                    <v-chip
+                      color="warning"
+                      class="mr-2"
+                      :outlined="chipOutlined"
+                    >
+                      {{ $t('parsedInput.synonyms.text') }}
+                    </v-chip>
+                    <v-chip
+                      color="success"
+                      class="mr-2"
+                      :outlined="chipOutlined"
+                    >
+                      {{ $t('parsedInput.symbols.text') }}
+                    </v-chip>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-switch
+                      @click="updateChipOutlined(!chipOutlined)"
+                      :label="$t('button.outlined.text')"
+                      color="primary"
+                      hide-details
+                      :input-value="chipOutlined"
+                    >
+                    </v-switch>
+                  </v-col>
                 </v-row>
               </v-col>
               <v-col cols="12" lg="4">
@@ -80,6 +109,7 @@
 import Vue from 'vue'
 import ColorPicker from '@/components/ColorPicker.vue'
 import { lightThemes } from '@/plugins/vuetify'
+import { mapGetters, mapActions } from 'vuex'
 
 export default Vue.extend({
   name: 'ThemePicker',
@@ -98,11 +128,15 @@ export default Vue.extend({
         return 'light'
       }
     },
+    ...mapGetters({
+      chipOutlined: 'getChipOutlined',
+    }),
   },
   mounted() {
     this.changeTheme()
   },
   methods: {
+    ...mapActions(['updateChipOutlined']),
     getPrimary() {
       return this.$vuetify.theme.themes[this.theme].primary
     },

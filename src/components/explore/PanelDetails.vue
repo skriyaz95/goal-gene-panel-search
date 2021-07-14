@@ -40,7 +40,12 @@
               <span class="ml-3" v-show="showAny">
                 <v-tooltip bottom v-show="showNotFound">
                   <template v-slot:activator="{ on }">
-                    <v-chip color="error" class="ml-1 mr-1" v-on="on">
+                    <v-chip
+                      :outlined="chipOutlined"
+                      color="error"
+                      class="ml-1 mr-1"
+                      v-on="on"
+                    >
                       {{ $t('parsedInput.notFound.text') }} ({{
                         $tc(
                           'count.gene',
@@ -53,7 +58,12 @@
                 </v-tooltip>
                 <v-tooltip bottom v-show="showSynonym">
                   <template v-slot:activator="{ on }">
-                    <v-chip color="warning" class="ml-1 mr-1" v-on="on">
+                    <v-chip
+                      :outlined="chipOutlined"
+                      color="warning"
+                      class="ml-1 mr-1"
+                      v-on="on"
+                    >
                       {{ $t('parsedInput.synonyms.text') }} ({{
                         $tc(
                           'count.gene',
@@ -66,7 +76,12 @@
                 </v-tooltip>
                 <v-tooltip bottom v-show="showSymbol">
                   <template v-slot:activator="{ on }">
-                    <v-chip color="success" class="ml-1 mr-1" v-on="on">
+                    <v-chip
+                      :outlined="chipOutlined"
+                      color="success"
+                      class="ml-1 mr-1"
+                      v-on="on"
+                    >
                       {{ $t('parsedInput.symbols.text') }} ({{
                         $tc(
                           'count.gene',
@@ -98,6 +113,7 @@
 
 <script lang="ts">
 import {
+  FullGene,
   Gene,
   GenePanelDetails,
   ParsedGene,
@@ -106,6 +122,7 @@ import {
 } from '@/types/panel-types'
 import Vue from 'vue'
 import GeneParsedContent from '@/components/GeneParsedContent.vue'
+import { mapGetters } from 'vuex'
 
 export default Vue.extend({
   components: { GeneParsedContent },
@@ -124,6 +141,9 @@ export default Vue.extend({
     return {}
   },
   computed: {
+    ...mapGetters({
+      chipOutlined: 'getChipOutlined',
+    }),
     formattedGenes() {
       const parsedGenes = new ParsedGenes()
       parsedGenes.symbolFoundGenes = this.panel.symbolsOnly.map(
@@ -131,7 +151,7 @@ export default Vue.extend({
       )
       parsedGenes.synonymFoundGenes = this.panel.synonymsOnly.map(
         (sg: SynonymGene) =>
-          new ParsedGene(new Gene(sg.synonym), 'synonym', sg.gene)
+          new ParsedGene(new Gene(sg.synonym), 'synonym', sg.gene as FullGene)
       )
       parsedGenes.notFoundGenes = this.panel.notFound.map(
         (g: Gene) => new ParsedGene(g, 'notFound')

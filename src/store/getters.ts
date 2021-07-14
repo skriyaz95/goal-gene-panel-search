@@ -12,9 +12,9 @@ export default {
   getUserGenes: (state: any) => {
     return state.userGenes
   },
-  getParsedGenes: (state: any) => {
-    return state.parsedGenes
-  },
+  // getParsedGenes: (state: any) => {
+  //   return state.parsedGenes
+  // },
   // getUserGenesSorted: (state: any) => {
   //   return [...state.userGenes].sort((a: Gene, b: Gene) => {
   //     if (a.name < b.name) {
@@ -28,26 +28,6 @@ export default {
   // },
   getPanelSearchResult: (state: any) => {
     return state.panelSearchResult
-  },
-  getAllGenes: (state: any) => {
-    return state.allGenes
-  },
-  getAllGeneMap: (state: any) => {
-    const allGeneMap = new Map<String, FullGene>()
-    state.allGenes.forEach((gene: FullGene) => {
-      allGeneMap.set(gene.symbol, gene)
-    })
-    return allGeneMap
-  },
-  getSynonyms: (state: any) => {
-    return state.synonyms
-  },
-  getSynonymMap: (state: any) => {
-    const allSynonymMap = new Map<String, SynonymGene>()
-    state.synonyms.forEach((synonym: SynonymGene) => {
-      allSynonymMap.set(synonym.synonym, synonym)
-    })
-    return allSynonymMap
   },
   getInstitutionsByPanel: (state: any) => {
     const allInstitutions = new Map<String, Institution>()
@@ -103,6 +83,18 @@ export default {
         return 0
       },
     )
+  },
+  getLastSearches: (state: any) => {
+    const realSearches = []
+    for (let i = 0; i < state.lastSearches.length; i++) {
+      if (state.lastSearches[i]) {
+        realSearches.push(state.lastSearches[i])
+      }
+    }
+    return realSearches
+  },
+  getChipOutlined: (state: any) => {
+    return state.uiProps.chipOutlined
   },
   // getPanelsByName: (state: any) => {
   //   const allPanels = new Map<String, GenePanel>()

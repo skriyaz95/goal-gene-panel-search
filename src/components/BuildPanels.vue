@@ -9,6 +9,7 @@
           </v-card-title>
           <v-card-text>
             <v-chip
+              :outlined="chipOutlined"
               v-for="panel in panels"
               :key="panel.name"
               text-color="black"
@@ -23,6 +24,7 @@
 
           <v-card-text>
             <v-chip
+              :outlined="chipOutlined"
               v-for="panelName in panelFileNames"
               :key="panelName"
               class="ma-2 primary"
@@ -67,12 +69,12 @@
         </v-card>
       </v-col>
       <v-col cols="12" lg="8">
-        <v-card outlined class="mb-2">
+        <v-card :outlined="chipOutlined" class="mb-2">
           <v-card-text>
             <span v-html="$t('buildPanels.help.text')" />
           </v-card-text>
         </v-card>
-        <v-card v-if="tempParsedGenes.length > 0" outlined>
+        <v-card v-if="tempParsedGenes.length > 0" :outlined="chipOutlined">
           <v-expansion-panels flat focusable>
             <v-expansion-panel
               v-for="panelBuilder in tempParsedGenes"
@@ -179,6 +181,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import { mapGetters, mapActions } from 'vuex'
 import {
+  FullGene,
   Gene,
   GenePanelDetails,
   // Institution,
@@ -287,7 +290,6 @@ export default Vue.extend({
     },
     formatGenes(panelGenes: Gene[], panelName: String, panelFileName: string) {
       $getFindGenesWorker().postMessage({
-        init: false,
         todo: 'findPanelGenes',
         userGenes: panelGenes,
         panelName: panelName,
@@ -313,7 +315,8 @@ export default Vue.extend({
         panelBuilder.parsedGenes.symbolFoundGenes.map((pg) => pg.gene.name)
       )
       const synonymsConverted = panelBuilder.parsedGenes.synonymFoundGenes.map(
-        (pg) => (pg.realGene === undefined ? '' : pg.realGene.symbol)
+        (pg) =>
+          pg.realGene === undefined ? '' : (pg.realGene as FullGene).symbol
       )
       synonymsConverted.forEach((s) => uniqGenes.add(s))
 
@@ -392,6 +395,7 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       panels: 'getPanels',
+      chipOutlined: 'getChipOutlined',
       //removed from now
       // institutionsByPanel: 'getInstitutionsByPanel',
       // institutionItems: 'getInstitutionDropDownItems',

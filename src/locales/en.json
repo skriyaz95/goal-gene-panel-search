@@ -52,6 +52,13 @@
     },
     "demo": {
       "text": "Demo"
+    },
+    "help": {
+      "text": "Help"
+    },
+    "outlined": {
+      "text": "Outlined",
+      "toolip": "Use filled or outlined mode"
     }
   },
   "count": {
@@ -247,6 +254,21 @@
       "part1a": " shows the panels containing genes",
       "part1b": " from the items in ",
       "part2a": "Click on a cell to get more information about each value"
+    },
+    "panelCompare": {
+      "example": "Here is an example",
+      "part1a": " shows each Symbol and Synonym from ",
+      "part1b": "and which panel has those genes.",
+      "part2": "A gene (each row in leftmost column) may match a gene symbol or a synonym in each panel (column)",
+      "part3": {
+        "exactMatch": "has the exact ",
+        "anyMatch": "has a ",
+        "noMatch": "does not have a Symbol (or Synonym) for the",
+        "symbolMatching": "Symbol matching the ",
+        "synonymMatching": "Synonym matching the ",
+        "symbolInput": "Symbol",
+        "synonyminput": "Synonym"
+      }
     }
   },
   "institutionDetails": {
@@ -302,6 +324,24 @@
   "input": {
     "details": {
       "text": "Open Details"
+    }
+  },
+  "panelCompare": {
+    "title": {
+      "text": "Compare Panels"
+    },
+    "table": {
+      "headers": {
+        "gene": {
+          "text": "Gene"
+        },
+        "panel": {
+          "text": "My Panel"
+        },
+        "explanation": {
+          "text": "Explanation"
+        }
+      }
     }
   }
 }

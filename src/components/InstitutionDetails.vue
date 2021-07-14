@@ -127,6 +127,7 @@
         <v-list-item-content>
           <v-list-item-title>
             <v-chip
+              :outlined="chipOutlined"
               class="mr-2"
               v-for="(panel, index) in institution.panels"
               :key="index"
@@ -143,6 +144,7 @@
 <script lang="ts">
 import { Institution } from '@/types/panel-types'
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
 
 export default Vue.extend({
   components: {},
@@ -168,7 +170,11 @@ export default Vue.extend({
   data() {
     return {}
   },
-  computed: {},
+  computed: {
+    ...mapGetters({
+      chipOutlined: 'getChipOutlined',
+    }),
+  },
   methods: {
     linkTo(link: string, linkType: string) {
       const linkPrefix = linkType == 'phone' ? 'tel:' : 'mailto:'

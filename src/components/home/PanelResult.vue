@@ -52,7 +52,10 @@
         <v-spacer></v-spacer>
         <help-button @action="handleHelp()" :active="help">
           <template v-slot:content>
-            <panel-results-help />
+            <span>
+              {{ $t('button.showHide.tooltip') }}
+              {{ $t('button.help.text') }}
+            </span>
           </template>
         </help-button>
       </v-card-title>
@@ -94,9 +97,9 @@
             <v-tooltip bottom v-if="item.countGenesInPanel > 0">
               <template v-slot:activator="{ on }">
                 <v-chip
+                  :outlined="chipOutlined"
                   class="ma-2"
                   color="primary"
-                  text-color="white"
                   v-on="on"
                   @click.stop="openDialog(item, 'genesInPanel')"
                 >
@@ -110,6 +113,7 @@
             <v-tooltip bottom v-if="item.countGenesNotInPanel > 0">
               <template v-slot:activator="{ on }">
                 <v-chip
+                  :outlined="chipOutlined"
                   class="ma-2 secondary"
                   text-color="black"
                   v-on="on"
@@ -216,6 +220,7 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       institutionsByPanel: 'getInstitutionsByPanel',
+      chipOutlined: 'getChipOutlined',
     }),
     notFoundLength() {
       let length = 0
