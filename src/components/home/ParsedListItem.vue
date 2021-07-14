@@ -21,6 +21,7 @@
           {{ items[0].realGene.symbol }}
         </div>
         <v-chip
+          :outlined="chipOutlined"
           v-for="gene in items"
           :key="gene.gene.name"
           class="ma-1"
@@ -46,6 +47,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
 
 export default Vue.extend({
   name: 'ParsedListItem',
@@ -60,7 +62,11 @@ export default Vue.extend({
   data: () => ({
     visible: true,
   }),
-  computed: {},
+  computed: {
+    ...mapGetters({
+      chipOutlined: 'getChipOutlined',
+    }),
+  },
   watch: {},
   mounted() {},
   destroyed() {},

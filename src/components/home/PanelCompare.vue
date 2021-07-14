@@ -30,12 +30,12 @@
               <tr v-for="item in items" :key="item.geneId">
                 <td v-for="header in headers" :key="header.value">
                   <v-chip
+                    :outlined="chipOutlined"
                     v-if="showChip(item, header)"
                     :color="formatState(item, header)"
                   >
-                    <div class="d-flex align-center">
-                      {{ geneName(item, header) }}
-                    </div>
+                    <v-icon left v-text="formatIcon(item, header)"> </v-icon>
+                    {{ geneName(item, header) }}
                   </v-chip>
                 </td>
               </tr>
@@ -52,6 +52,7 @@ import Vue from 'vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import PanelCompareHelp from '@/components/help/PanelCompareHelp.vue'
+import { mapGetters } from 'vuex'
 
 export default Vue.extend({
   components: {
@@ -77,7 +78,11 @@ export default Vue.extend({
   data() {
     return {}
   },
-  computed: {},
+  computed: {
+    ...mapGetters({
+      chipOutlined: 'getChipOutlined',
+    }),
+  },
   watch: {},
   methods: {
     handleHelp() {
@@ -104,6 +109,16 @@ export default Vue.extend({
         return 'warning'
       }
       return 'error'
+    },
+    formatIcon(item: any, header: any) {
+      const label: string = header.value
+      if (
+        item[label].state === 'symbol' ||
+        item[label].state === 'synonymToSymbol'
+      ) {
+        return 'mdi-check'
+      }
+      return 'mdi-approximately-equal'
     },
   },
 })

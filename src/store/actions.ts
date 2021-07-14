@@ -72,4 +72,7 @@ export default {
       payload: payload,
     })
   },
+  async updateChipOutlined(context: any, payload: boolean) {
+    context.commit("updateChipOutlined", payload)
+  },
 }

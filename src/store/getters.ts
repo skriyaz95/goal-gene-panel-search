@@ -113,6 +113,9 @@ export default {
     }
     return realSearches
   },
+  getChipOutlined: (state: any) => {
+    return state.uiProps.chipOutlined
+  },
   // getPanelsByName: (state: any) => {
   //   const allPanels = new Map<String, GenePanel>()
   //   state.panels.forEach((panel: GenePanel) => {

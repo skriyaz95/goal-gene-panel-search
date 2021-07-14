@@ -9,6 +9,7 @@
           </v-card-title>
           <v-card-text>
             <v-chip
+              :outlined="chipOutlined"
               v-for="panel in panels"
               :key="panel.name"
               text-color="black"
@@ -23,6 +24,7 @@
 
           <v-card-text>
             <v-chip
+              :outlined="chipOutlined"
               v-for="panelName in panelFileNames"
               :key="panelName"
               class="ma-2 primary"
@@ -67,12 +69,12 @@
         </v-card>
       </v-col>
       <v-col cols="12" lg="8">
-        <v-card outlined class="mb-2">
+        <v-card :outlined="chipOutlined" class="mb-2">
           <v-card-text>
             <span v-html="$t('buildPanels.help.text')" />
           </v-card-text>
         </v-card>
-        <v-card v-if="tempParsedGenes.length > 0" outlined>
+        <v-card v-if="tempParsedGenes.length > 0" :outlined="chipOutlined">
           <v-expansion-panels flat focusable>
             <v-expansion-panel
               v-for="panelBuilder in tempParsedGenes"
@@ -394,6 +396,7 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       panels: 'getPanels',
+      chipOutlined: 'getChipOutlined',
       //removed from now
       // institutionsByPanel: 'getInstitutionsByPanel',
       // institutionItems: 'getInstitutionDropDownItems',

@@ -32,8 +32,22 @@ or a help card or other tutorial content
         </thead>
         <tbody>
           <tr v-for="item in items" :key="item.gene">
-            <td>{{ item.gene }}</td>
-            <td>{{ item.panel }}</td>
+            <td>
+              <v-chip :color="item.geneColor" :outlined="chipOutlined">
+                <v-icon left v-text="item.geneIcon"> </v-icon>
+                {{ item.gene }}
+              </v-chip>
+            </td>
+            <td>
+              <v-chip
+                :color="item.panelColor"
+                v-if="item.panel"
+                :outlined="chipOutlined"
+              >
+                <v-icon left v-text="item.panelIcon"> </v-icon>
+                {{ item.panel }}
+              </v-chip>
+            </td>
             <td>
               {{ $t('panelCompare.table.headers.panel.text') }}
 
@@ -50,12 +64,16 @@ or a help card or other tutorial content
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
 
 export default Vue.extend({
   name: 'PanelCompareHelp',
   props: {},
   data: () => ({}),
   computed: {
+    ...mapGetters({
+      chipOutlined: 'getChipOutlined',
+    }),
     items() {
       const it = []
       it.push({
@@ -64,6 +82,10 @@ export default Vue.extend({
         explain1: this.$t('help.panelCompare.part3.exactMatch'),
         explain2: this.$t('help.panelCompare.part3.symbolMatching'),
         explain3: this.$t('help.panelCompare.part3.symbolInput'),
+        geneColor: 'success',
+        geneIcon: 'mdi-check',
+        panelColor: 'success',
+        panelIcon: 'mdi-check',
       })
       it.push({
         gene: 'TENT5C',
@@ -71,6 +93,10 @@ export default Vue.extend({
         explain1: this.$t('help.panelCompare.part3.anyMatch'),
         explain2: this.$t('help.panelCompare.part3.synonymMatching'),
         explain3: this.$t('help.panelCompare.part3.symbolInput'),
+        geneColor: 'success',
+        geneIcon: 'mdi-check',
+        panelColor: 'warning',
+        panelIcon: 'mdi-approximately-equal',
       })
       it.push({
         gene: 'BRAF1',
@@ -78,6 +104,10 @@ export default Vue.extend({
         explain1: this.$t('help.panelCompare.part3.exactMatch'),
         explain2: this.$t('help.panelCompare.part3.symbolMatching'),
         explain3: this.$t('help.panelCompare.part3.synonyminput'),
+        geneColor: 'warning',
+        geneIcon: 'mdi-approximately-equal',
+        panelColor: 'success',
+        panelIcon: 'mdi-check',
       })
       it.push({
         gene: 'KRAS1',
@@ -85,6 +115,10 @@ export default Vue.extend({
         explain1: this.$t('help.panelCompare.part3.anyMatch'),
         explain2: this.$t('help.panelCompare.part3.synonymMatching'),
         explain3: this.$t('help.panelCompare.part3.synonyminput'),
+        geneColor: 'warning',
+        geneIcon: 'mdi-approximately-equal',
+        panelColor: 'warning',
+        panelIcon: 'mdi-approximately-equal',
       })
       it.push({
         gene: 'BRCA1',
@@ -92,6 +126,10 @@ export default Vue.extend({
         explain1: this.$t('help.panelCompare.part3.noMatch'),
         explain2: '',
         explain3: this.$t('help.panelCompare.part3.symbolInput'),
+        geneColor: 'success',
+        geneIcon: 'mdi-check',
+        panelColor: 'success',
+        panelIcon: 'mdi-check',
       })
       return it
     },

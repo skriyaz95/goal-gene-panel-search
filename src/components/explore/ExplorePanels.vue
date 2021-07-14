@@ -14,7 +14,7 @@
         </list-template>
       </v-col>
       <v-col cols="12" lg="8">
-        <v-card outlined class="mb-2">
+        <v-card :outlined="chipOutlined" class="mb-2">
           <v-card-text>
             <panel-details
               :panel="getCurrentPanel()"
@@ -75,6 +75,7 @@ export default Vue.extend({
     ...mapGetters({
       panelsSorted: 'getPanelsSorted',
       institutions: 'getInstitutions',
+      chipOutlined: 'getChipOutlined',
     }),
   },
   mounted() {},

@@ -55,6 +55,10 @@
     },
     "help": {
       "text": "Help"
+    },
+    "outlined": {
+      "text": "Outlined",
+      "toolip": "Use filled or outlined mode"
     }
   },
   "count": {

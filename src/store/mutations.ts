@@ -17,4 +17,7 @@ export default {
   updateLastSearches(state: any, payload: any) {
     state.lastSearches = payload
   },
+  updateChipOutlined(state: any, payload: boolean) {
+    state.uiProps.chipOutlined = payload
+  },
 }

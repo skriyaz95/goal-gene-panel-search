@@ -22,7 +22,12 @@
         <span class="text-xs-left" v-show="showAny">
           <v-tooltip bottom v-show="showNotFound">
             <template v-slot:activator="{ on }">
-              <v-chip color="error" class="ml-1 mr-1 mb-1" v-on="on">
+              <v-chip
+                :outlined="chipOutlined"
+                color="error"
+                class="ml-1 mr-1 mb-1"
+                v-on="on"
+              >
                 {{ $t('parsedInput.notFound.text') }} ({{
                   $tc('count.gene', $n(formattedGenes.notFoundGenes.length))
                 }})
@@ -32,7 +37,12 @@
           </v-tooltip>
           <v-tooltip bottom v-show="showSynonym">
             <template v-slot:activator="{ on }">
-              <v-chip color="warning" class="ml-1 mr-1 mb-1" v-on="on">
+              <v-chip
+                :outlined="chipOutlined"
+                color="warning"
+                class="ml-1 mr-1 mb-1"
+                v-on="on"
+              >
                 {{ $t('parsedInput.synonyms.text') }} ({{
                   $tc(
                     'count.gene',
@@ -45,7 +55,12 @@
           </v-tooltip>
           <v-tooltip bottom v-show="showSymbol">
             <template v-slot:activator="{ on }">
-              <v-chip color="success" class="ml-1 mr-1 mb-1" v-on="on">
+              <v-chip
+                :outlined="chipOutlined"
+                color="success"
+                class="ml-1 mr-1 mb-1"
+                v-on="on"
+              >
                 {{ $t('parsedInput.symbols.text') }} ({{
                   $tc('count.gene', $n(formattedGenes.symbolFoundGenes.length))
                 }})
@@ -100,6 +115,7 @@ export default Vue.extend({
     ...mapGetters({
       // userGenes: 'getUserGenesSorted',
       // parsedGenes: 'getParsedGenes',
+      chipOutlined: 'getChipOutlined',
     }),
     showNotFound(): boolean {
       return this.formattedGenes.notFoundGenes.length > 0

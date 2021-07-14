@@ -10,4 +10,7 @@ export default {
   lastSearch: String(),
   institutions: institutionData,
   lastSearches: new Array<String>(),
+  uiProps: {
+    chipOutlined: false,
+  },
 }
