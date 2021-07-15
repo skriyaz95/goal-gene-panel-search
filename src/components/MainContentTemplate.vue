@@ -1,18 +1,25 @@
 <template>
-  <v-container fluid :class="[outter ? 'px-3' : 'px-0', tab ? 'py-3' : 'py-0']">
+  <v-container
+    fluid
+    :class="[outter ? 'px-3' : 'px-0', header ? 'py-0' : 'py-0']"
+  >
     <v-row class="text-start" dense>
-      <v-col cols="12" :lg="cols == 2 ? 4 : 3" v-if="cols == 2">
-        <slot name="left-col"></slot>
+      <v-col cols="12" v-if="header" class="height48 mb-2" align-self="center">
+        <slot name="header"></slot>
       </v-col>
-      <v-col cols="12" lg="3" v-if="cols == 3">
-        <slot name="middle-col"></slot>
-      </v-col>
-      <v-col cols="12" :lg="cols == 2 ? 8 : 6" v-if="cols == 2">
-        <slot name="right-col"></slot>
-      </v-col>
-      <v-col cols="12" v-if="cols == 1">
-        <slot name="one-col"></slot>
-      </v-col>
+      <template v-if="twoCols">
+        <v-col cols="12" :md="even ? 6 : 4">
+          <slot name="left-col"></slot>
+        </v-col>
+        <v-col cols="12" :md="even ? 6 : 8">
+          <slot name="right-col"></slot>
+        </v-col>
+      </template>
+      <template v-else>
+        <v-col cols="12">
+          <slot name="one-col"></slot>
+        </v-col>
+      </template>
     </v-row>
   </v-container>
 </template>
@@ -23,18 +30,29 @@ import Vue from 'vue'
 export default Vue.extend({
   name: 'MainContentTemplate',
   props: {
-    cols: {
-      type: Number,
-      default: 2,
+    twoCols: {
+      type: Boolean,
+      default: true,
     },
     outter: {
       type: Boolean,
       default: false,
     },
-    tab: {
+    header: {
+      type: Boolean,
+      default: false,
+    },
+    even: {
       type: Boolean,
       default: false,
     },
   },
 })
 </script>
+
+<style scoped>
+.height48 {
+  height: 48px;
+  min-height: 48px;
+}
+</style>

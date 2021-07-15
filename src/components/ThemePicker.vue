@@ -1,5 +1,5 @@
 <template>
-  <main-content-template :cols="1" inner>
+  <main-content-template :twoCols="false" inner>
     <template v-slot:one-col>
       <v-card outlined>
         <v-card-text>

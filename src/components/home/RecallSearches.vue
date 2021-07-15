@@ -1,5 +1,5 @@
 <template>
-  <v-row class="pl-2 pb-3" align-content="center">
+  <v-row>
     <v-col class="flex-grow-0 flex-shrink-1 text-no-wrap" align-self="center">
       <div v-if="!empty">{{ $t('userInput.recall.title.text') }}:</div>
       <div v-else>{{ $t('userInput.recall.empty.text') }}</div>

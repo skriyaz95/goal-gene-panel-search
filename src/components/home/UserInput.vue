@@ -1,10 +1,5 @@
 <template>
   <div>
-    <recall-searches
-      :lastSearches="lastSearches"
-      @recallLastSearch="fillLastSearch"
-      @resetLastSearches="resetLastSearches"
-    />
     <v-card outlined :raised="firstTime">
       <v-card-title>
         {{ $t('userInput.gene-list') }}
@@ -86,10 +81,9 @@ import GeneSearchHelp from '@/components/help/GeneSearchHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import { UserInputPayload } from '@/types/payload-types'
-import RecallSearches from './RecallSearches.vue'
 
 export default Vue.extend({
-  components: { GeneSearchHelp, HelpButton, InfoAlert, RecallSearches },
+  components: { GeneSearchHelp, HelpButton, InfoAlert },
   name: 'UserInput',
   props: {
     help: {
@@ -107,12 +101,9 @@ export default Vue.extend({
     validSeparators: /[ ,;\s]+/,
     validCharacters: /^[-,;~\w\s]+$/,
     demoRunning: false,
-    lastSearches: [],
   }),
   computed: {
-    ...mapGetters({
-      inputNeedsReload: 'getInputNeedsReload',
-    }),
+    ...mapGetters({}),
     geneListRules(): any {
       // const x = this.$t('userInput.validation.list-empty')
       // const y = this.$t('userInput.validation.list-min-characters')
@@ -174,11 +165,6 @@ export default Vue.extend({
         this.clear()
       }
     },
-    loadLastInput() {
-      if (this.inputNeedsReload && this.lastSearches.length > 0) {
-        this.geneList = this.lastSearches[this.lastSearches.length - 1]
-      }
-    },
     handleHelp() {
       this.$emit('help')
     },
@@ -208,32 +194,13 @@ export default Vue.extend({
       // this.geneList = 'TP53\nBRCA1,BRCA2\nNOT_A_GENE, ALK_FUSION\nBRAF1'
     },
     handleBlur() {
-      if (this.geneList && this.geneList.trim() && this.isFormValid) {
-        this.updateLastSearch(this.geneList).then((result: []) => {
-          this.lastSearches = result
-        })
-        this.updateInputNeedsReload(true)
-      } else {
-        this.updateInputNeedsReload(false)
-      }
+      const valid = this.geneList && this.geneList.trim() && this.isFormValid
+      this.$emit('afterBlur', [this.geneList, valid])
     },
     fillLastSearch(search: string) {
       this.geneList = search
     },
-    resetLastSearches() {
-      this.clearLastSearches().then(() => {
-        this.lastSearches = []
-      })
-    },
-    initLastSearches() {
-      this.updateLastSearch('').then((result: []) => {
-        this.lastSearches = result
-        this.loadLastInput()
-      })
-    },
   },
-  mounted() {
-    this.initLastSearches()
-  },
+  mounted() {},
 })
 </script>

@@ -6,12 +6,19 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
-    <v-tabs centered v-model="tab" :background-color="background">
-      <v-tab :href="'#' + tabTitle" v-for="tabTitle in tabs" :key="tabTitle">
-        {{ tabTitle }}
-      </v-tab>
-    </v-tabs>
-    <main-content-template :cols="1" tab outter>
+
+    <main-content-template :twoCols="false" header outter>
+      <template v-slot:header>
+        <v-tabs centered v-model="tab" :background-color="background">
+          <v-tab
+            :href="'#' + tabTitle"
+            v-for="tabTitle in tabs"
+            :key="tabTitle"
+          >
+            {{ tabTitle }}
+          </v-tab>
+        </v-tabs>
+      </template>
       <template v-slot:one-col>
         <v-tabs-items v-model="tab" class="background">
           <v-tab-item value="panels">

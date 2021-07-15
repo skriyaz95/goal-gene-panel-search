@@ -1,6 +1,6 @@
 /* eslint-disable vue/html-indent */
 <template>
-  <main-content-template :cols="2" inner>
+  <main-content-template inner>
     <template v-slot:left-col>
       <list-template
         v-model="panelIndex"
