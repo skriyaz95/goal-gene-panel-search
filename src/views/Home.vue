@@ -6,75 +6,69 @@
       </v-toolbar-title>
       <v-spacer />
     </v-toolbar>
-    <v-container class="pa-0" fluid>
-      <v-row class="text-start" dense>
-        <v-col cols="12" lg="4">
-          <v-container>
-            <v-row>
-              <!-- <v-col cols="12" class="pt-3 pb-0 pl-4">
-                Recall Searches:
-                <v-btn
-                  v-for="(search, index) in lastSearches"
-                  :key="index"
-                  @click="fillLastSearch(search)"
-                  text
+    <main-content-template outter>
+      <template v-slot:left-col>
+        <v-container class="px-0 py-3">
+          <v-row>
+            <v-col cols="12" class="pb-0">
+              <user-input
+                :help="showHelp"
+                @help="handleHelp"
+                :firstTime="firstTime"
+              ></user-input>
+            </v-col>
+            <v-col cols="12">
+              <parsed-input
+                ref="parsedInput"
+                :help="showHelp"
+                @help="handleHelp"
+                :loading="parsingGenes"
+                :formattedGenes="formattedGenes"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
+      </template>
+      <template v-slot:right-col>
+        <v-container class="pa-0" fluid>
+          <v-row class="text-start" dense>
+            <v-col cols="12">
+              <v-tabs centered v-model="tab" :background-color="background">
+                <v-tab
+                  :href="'#' + tabTitle"
+                  v-for="tabTitle in tabs"
+                  :key="tabTitle"
                 >
-                  <span>{{ lastSearchLabel(search) }}</span>
-                  <v-icon right>mdi-magnify</v-icon>
-                </v-btn>
-              </v-col> -->
-              <v-col cols="12" class="pb-0">
-                <user-input
-                  :help="showHelp"
-                  @help="handleHelp"
-                  :firstTime="firstTime"
-                ></user-input>
-              </v-col>
-              <v-col cols="12">
-                <parsed-input
-                  ref="parsedInput"
-                  :help="showHelp"
-                  @help="handleHelp"
-                  :loading="parsingGenes"
-                  :formattedGenes="formattedGenes"
-                />
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-col>
-        <v-col cols="12" lg="8">
-          <v-tabs centered v-model="tab" :background-color="background">
-            <v-tab
-              :href="'#' + tabTitle"
-              v-for="tabTitle in tabs"
-              :key="tabTitle"
-            >
-              {{ tabTitle }}
-            </v-tab>
-          </v-tabs>
-          <v-tabs-items v-model="tab" class="background pt-3">
-            <v-tab-item value="results">
-              <panel-result
-                :help="showHelp"
-                @help="handleHelp"
-                :loading="searchingPanels"
-                :parsedGenes="formattedGenes"
-                :panelSearchResults="panelSearchResults"
-              />
-            </v-tab-item>
-            <v-tab-item value="compare">
-              <panel-compare
-                :help="showHelp"
-                @help="handleHelp"
-                :loading="searchingPanels"
-                :items="compareItems"
-                :headers="compareHeaders"
-              />
-            </v-tab-item>
-          </v-tabs-items>
-        </v-col>
-      </v-row>
-    </v-container>
+                  {{ tabTitle }}
+                </v-tab>
+              </v-tabs>
+              <v-tabs-items v-model="tab" class="background pt-3">
+                <v-tab-item value="results">
+                  <panel-result
+                    :help="showHelp"
+                    @help="handleHelp"
+                    :loading="searchingPanels"
+                    :parsedGenes="formattedGenes"
+                    :panelSearchResults="panelSearchResults"
+                  />
+                </v-tab-item>
+                <v-tab-item value="compare">
+                  <panel-compare
+                    :help="showHelp"
+                    @help="handleHelp"
+                    :loading="searchingPanels"
+                    :items="compareItems"
+                    :headers="compareHeaders"
+                    :visibleInstitutions="visibleInstitutions"
+                    @toggleInstitution="toggleInstitution"
+                  />
+                </v-tab-item>
+              </v-tabs-items>
+            </v-col>
+          </v-row>
+        </v-container>
+      </template>
+    </main-content-template>
   </div>
 </template>
 
@@ -86,14 +80,26 @@ import UserInput from '@/components/home/UserInput.vue'
 import ParsedInput from '@/components/home/ParsedInput.vue'
 import PanelResult from '@/components/home/PanelResult.vue'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
-import { PanelSearchResult, ParsedGenes } from '@/types/panel-types'
+import {
+  Institution,
+  PanelSearchResult,
+  ParsedGenes,
+} from '@/types/panel-types'
 import PanelCompare from '@/components/home/PanelCompare.vue'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 import { FormatCompareItemsPayload } from '@/types/payload-types'
 import { getCookie, setCookie } from '@/utils/cookies'
+import { ActiveState, TableHeader } from '@/types/ui-types'
+import MainContentTemplate from '@/components/MainContentTemplate.vue'
 
 export default Vue.extend({
-  components: { UserInput, ParsedInput, PanelResult, PanelCompare },
+  components: {
+    UserInput,
+    ParsedInput,
+    PanelResult,
+    PanelCompare,
+    MainContentTemplate,
+  },
   name: 'Home',
   props: {},
   data: () => ({
@@ -104,12 +110,15 @@ export default Vue.extend({
     formattedGenes: new ParsedGenes(),
     panelSearchResults: new Array<PanelSearchResult>(),
     firstTime: false,
-    formattedCompareItems: [],
     compareItems: [],
-    compareHeaders: [],
+    compareHeaders: new Array<TableHeader>(),
+    visibleInstitutions: new Array<ActiveState>(),
   }),
   computed: {
-    ...mapGetters({}),
+    ...mapGetters({
+      institutions: 'getInstitutionsSorted',
+      panelsByInstitution: 'getPanelsByInstitution',
+    }),
     tab: {
       set(tab: string) {
         this.$router.replace({ query: { ...this.$route.query, tab } })
@@ -148,6 +157,34 @@ export default Vue.extend({
         }, 5000) //display 5 sec after loading
       }
     },
+    toggleInstitution(activeState: ActiveState) {
+      activeState.active = !activeState.active
+      this.setInstitutionActiveState(activeState)
+    },
+    setInstitutionActiveState(activeState: ActiveState) {
+      const panels = this.panelsByInstitution.get(activeState.id)
+      if (panels) {
+        const newHeaders = new Array<TableHeader>()
+        for (let i = 0; i < this.compareHeaders.length; i++) {
+          const header = this.compareHeaders[i]
+          if (panels.indexOf(header.text) > -1) {
+            header.visible = activeState.active
+          }
+          newHeaders.push(header)
+        }
+        this.compareHeaders = newHeaders
+      }
+    },
+    initInstitutionVisibleState() {
+      this.visibleInstitutions.forEach((activeState: ActiveState) => {
+        this.setInstitutionActiveState(activeState)
+      })
+    },
+    initVisibleInstitutions() {
+      this.visibleInstitutions = this.institutions.map((i: Institution) => {
+        return { id: i.name, active: true }
+      })
+    },
   },
   mounted() {
     this.handleFirstTime()
@@ -177,8 +214,10 @@ export default Vue.extend({
           'panelCompare.table.headers.gene.text'
         ) //replace placeholder with i18n value
         this.compareHeaders = event.data.headers
+        this.initInstitutionVisibleState()
       }
     }
+    this.initVisibleInstitutions()
   },
 })
 </script>

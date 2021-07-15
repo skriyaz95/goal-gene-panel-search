@@ -352,6 +352,12 @@
         "explanation": {
           "text": "Explanation"
         }
+      },
+      "search": {
+        "text": "Filter by genes"
+      },
+      "institutions": {
+        "text": "Show/Hide Institutions"
       }
     }
   }

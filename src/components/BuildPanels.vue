@@ -1,103 +1,98 @@
 /* eslint-disable vue/html-indent */
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-col cols="12" lg="4">
-        <v-card outlined>
-          <v-card-title>
-            {{ $t('buildPanels.existingPanels.text') }}
-          </v-card-title>
-          <v-card-text>
-            <v-chip
-              :outlined="chipOutlined"
-              v-for="panel in panels"
-              :key="panel.name"
-              text-color="black"
-              class="ma-2 secondary"
-            >
-              {{ panel.name }} ({{ $tc('count.gene', $n(panel.genes.length)) }})
-            </v-chip>
-          </v-card-text>
-          <v-card-title>
-            {{ $t('buildPanels.rawPanels.text') }}
-          </v-card-title>
+  <main-content-template :cols="2" inner>
+    <template v-slot:left-col>
+      <v-card outlined>
+        <v-card-title>
+          {{ $t('buildPanels.existingPanels.text') }}
+        </v-card-title>
+        <v-card-text>
+          <v-chip
+            :outlined="chipOutlined"
+            v-for="panel in panels"
+            :key="panel.name"
+            text-color="black"
+            class="ma-2 secondary"
+          >
+            {{ panel.name }} ({{ $tc('count.gene', $n(panel.genes.length)) }})
+          </v-chip>
+        </v-card-text>
+        <v-card-title>
+          {{ $t('buildPanels.rawPanels.text') }}
+        </v-card-title>
 
-          <v-card-text>
-            <v-chip
-              :outlined="chipOutlined"
-              v-for="panelName in panelFileNames"
-              :key="panelName"
-              class="ma-2 primary"
-            >
-              {{ panelName }}
-            </v-chip>
-          </v-card-text>
-          <v-card-actions>
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  class="primary"
-                  v-on="on"
-                  @click="buildPanels"
-                  :disabled="loading"
-                >
-                  {{ $t('button.buildPanels.text') }}
-                </v-btn>
-              </template>
-              <span>{{ $t('button.buildPanels.tooltip') }}</span>
-            </v-tooltip>
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  class="primary ml-2"
-                  :disabled="isEmptyPanels() || loading"
-                  v-on="on"
-                  @click="downloadAllPanels"
-                >
-                  {{ $t('button.saveAllPanels.text') }}
-                </v-btn>
-              </template>
-              <span>{{ $t('button.saveAllPanels.tooltip') }}</span>
-            </v-tooltip>
-            <v-progress-linear
-              class="ml-2"
-              v-model="progress"
-              :active="loading"
-            >
-            </v-progress-linear>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-      <v-col cols="12" lg="8">
-        <v-card :outlined="chipOutlined" class="mb-2">
-          <v-card-text>
-            <span v-html="$t('buildPanels.help.text')" />
-          </v-card-text>
-        </v-card>
-        <v-card v-if="tempParsedGenes.length > 0" :outlined="chipOutlined">
-          <v-expansion-panels flat focusable>
-            <v-expansion-panel
-              v-for="panelBuilder in tempParsedGenes"
-              :key="panelBuilder.panelName"
-            >
-              <v-expansion-panel-header disable-icon-rotate>
-                <build-panel-header
-                  :parsed-genes="panelBuilder.parsedGenes"
-                  :panel-name="panelBuilder.panelName"
-                  :show-not-found="
-                    showGenes(panelBuilder.parsedGenes.notFoundGenes)
-                  "
-                  :show-synonym="
-                    showGenes(panelBuilder.parsedGenes.synonymFoundGenes)
-                  "
-                  :show-symbol="
-                    showGenes(panelBuilder.parsedGenes.symbolFoundGenes)
-                  "
-                  @update-panel-name="updatePanelName($event, panelBuilder)"
-                />
+        <v-card-text>
+          <v-chip
+            :outlined="chipOutlined"
+            v-for="panelName in panelFileNames"
+            :key="panelName"
+            class="ma-2 primary"
+          >
+            {{ panelName }}
+          </v-chip>
+        </v-card-text>
+        <v-card-actions>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                class="primary"
+                v-on="on"
+                @click="buildPanels"
+                :disabled="loading"
+              >
+                {{ $t('button.buildPanels.text') }}
+              </v-btn>
+            </template>
+            <span>{{ $t('button.buildPanels.tooltip') }}</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                class="primary ml-2"
+                :disabled="isEmptyPanels() || loading"
+                v-on="on"
+                @click="downloadAllPanels"
+              >
+                {{ $t('button.saveAllPanels.text') }}
+              </v-btn>
+            </template>
+            <span>{{ $t('button.saveAllPanels.tooltip') }}</span>
+          </v-tooltip>
+          <v-progress-linear class="ml-2" v-model="progress" :active="loading">
+          </v-progress-linear>
+        </v-card-actions>
+      </v-card>
+    </template>
+    <template v-slot:right-col>
+      <v-card outlined class="mb-2">
+        <v-card-text>
+          <span v-html="$t('buildPanels.help.text')" />
+        </v-card-text>
+      </v-card>
+      <v-card v-if="tempParsedGenes.length > 0" outlined>
+        <v-expansion-panels flat focusable>
+          <v-expansion-panel
+            v-for="panelBuilder in tempParsedGenes"
+            :key="panelBuilder.panelName"
+          >
+            <v-expansion-panel-header disable-icon-rotate>
+              <build-panel-header
+                :parsed-genes="panelBuilder.parsedGenes"
+                :panel-name="panelBuilder.panelName"
+                :show-not-found="
+                  showGenes(panelBuilder.parsedGenes.notFoundGenes)
+                "
+                :show-synonym="
+                  showGenes(panelBuilder.parsedGenes.synonymFoundGenes)
+                "
+                :show-symbol="
+                  showGenes(panelBuilder.parsedGenes.symbolFoundGenes)
+                "
+                @update-panel-name="updatePanelName($event, panelBuilder)"
+              />
 
-                <template v-slot:actions>
-                  <!-- //removed from now
+              <template v-slot:actions>
+                <!-- //removed from now
                   <v-row align="center" justify="end">
                     <v-col class="flex-grow-1 flex-shrink-0">
                       <v-autocomplete
@@ -134,46 +129,43 @@
                       <v-icon> mdi-chevron-down </v-icon>
                     </v-col>
                   </v-row> -->
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on }">
-                      <span v-on="on">
-                        <v-btn icon @click.stop="downloadPanel(panel)">
-                          <v-icon>mdi-content-save</v-icon>
-                        </v-btn>
-                      </span>
-                    </template>
-                    <span
-                      v-if="onlySymbolsOrSynonyms(panelBuilder.parsedGenes)"
-                    >
-                      {{ $t('button.saveOnePanel.tooltip') }}
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <span v-on="on">
+                      <v-btn icon @click.stop="downloadPanel(panel)">
+                        <v-icon>mdi-content-save</v-icon>
+                      </v-btn>
                     </span>
-                    <span v-else>{{ $t('button.saveWarning.tooltip') }}</span>
-                  </v-tooltip>
-                  <v-icon> mdi-chevron-down </v-icon>
-                </template>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <div class="pa-2">
-                  {{ $t('buildPanels.sourceFile.text') }}:
-                  {{ panelBuilder.panelFileName }}
-                </div>
-                <v-fade-transition>
-                  <gene-parsed-content
-                    :show-genes="[
-                      showGenes(panelBuilder.parsedGenes.notFoundGenes),
-                      showGenes(panelBuilder.parsedGenes.synonymFoundGenes),
-                      showGenes(panelBuilder.parsedGenes.symbolFoundGenes),
-                    ]"
-                    :parsed-genes="panelBuilder.parsedGenes"
-                  />
-                </v-fade-transition>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+                  </template>
+                  <span v-if="onlySymbolsOrSynonyms(panelBuilder.parsedGenes)">
+                    {{ $t('button.saveOnePanel.tooltip') }}
+                  </span>
+                  <span v-else>{{ $t('button.saveWarning.tooltip') }}</span>
+                </v-tooltip>
+                <v-icon> mdi-chevron-down </v-icon>
+              </template>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <div class="pa-2">
+                {{ $t('buildPanels.sourceFile.text') }}:
+                {{ panelBuilder.panelFileName }}
+              </div>
+              <v-fade-transition>
+                <gene-parsed-content
+                  :show-genes="[
+                    showGenes(panelBuilder.parsedGenes.notFoundGenes),
+                    showGenes(panelBuilder.parsedGenes.synonymFoundGenes),
+                    showGenes(panelBuilder.parsedGenes.symbolFoundGenes),
+                  ]"
+                  :parsed-genes="panelBuilder.parsedGenes"
+                />
+              </v-fade-transition>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-card>
+    </template>
+  </main-content-template>
 </template>
 
 <script lang="ts">
@@ -193,9 +185,10 @@ import download, { formatObjetToJson } from '@/utils/download'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import BuildPanelHeader from '@/components/BuildPanelHeader.vue'
 import GeneParsedContent from '@/components/GeneParsedContent.vue'
+import MainContentTemplate from '@/components/MainContentTemplate.vue'
 
 export default Vue.extend({
-  components: { BuildPanelHeader, GeneParsedContent },
+  components: { BuildPanelHeader, GeneParsedContent, MainContentTemplate },
   name: 'BuildPanel',
 
   data: () => ({

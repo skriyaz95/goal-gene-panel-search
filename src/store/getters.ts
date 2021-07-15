@@ -1,9 +1,4 @@
-import {
-  FullGene,
-  GenePanelDetails,
-  Institution,
-  SynonymGene,
-} from "@/types/panel-types"
+import { GenePanelDetails, Institution } from "@/types/panel-types"
 
 export default {
   getPanels: (state: any) => {
@@ -65,7 +60,7 @@ export default {
       return 0
     })
   },
-  getInstitutions: (state: any) => {
+  getInstitutions: (state: any): Array<Institution> => {
     return state.institutions
   },
   getPanelsSorted: (state: any) => {
@@ -86,6 +81,11 @@ export default {
   },
   getInputNeedsReload: (state: any) => {
     return state.inputNeedsReload
+  },
+  getPanelsByInstitution: (state: any) => {
+    const panels = new Map<String, String[]>()
+    state.institutions.forEach((i: Institution) => panels.set(i.name, i.panels))
+    return panels
   },
   // getPanelsByName: (state: any) => {
   //   const allPanels = new Map<String, GenePanel>()

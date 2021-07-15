@@ -1,30 +1,28 @@
 /* eslint-disable vue/html-indent */
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-col cols="12" lg="4">
-        <list-template
-          v-model="panelIndex"
-          @change="handleChange($event)"
-          :itemsSorted="panelsSorted"
-        >
-          <template v-slot:title>
-            {{ $t('explore.panels.list.text') }}:
-          </template>
-        </list-template>
-      </v-col>
-      <v-col cols="12" lg="8">
-        <v-card :outlined="chipOutlined" class="mb-2">
-          <v-card-text>
-            <panel-details
-              :panel="getCurrentPanel()"
-              :institution="currentInstitution"
-            />
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+  <main-content-template :cols="2" inner>
+    <template v-slot:left-col>
+      <list-template
+        v-model="panelIndex"
+        @change="handleChange($event)"
+        :itemsSorted="panelsSorted"
+      >
+        <template v-slot:title>
+          {{ $t('explore.panels.list.text') }}:
+        </template>
+      </list-template>
+    </template>
+    <template v-slot:right-col>
+      <v-card outlined class="mb-2">
+        <v-card-text>
+          <panel-details
+            :panel="getCurrentPanel()"
+            :institution="currentInstitution"
+          />
+        </v-card-text>
+      </v-card>
+    </template>
+  </main-content-template>
 </template>
 
 <script lang="ts">
@@ -33,9 +31,10 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import PanelDetails from '@/components/explore/PanelDetails.vue'
 import ListTemplate from '@/components/explore/ListTemplate.vue'
+import MainContentTemplate from '@/components/MainContentTemplate.vue'
 
 export default Vue.extend({
-  components: { PanelDetails, ListTemplate },
+  components: { PanelDetails, ListTemplate, MainContentTemplate },
   name: 'ExplorePanels',
   props: {},
   data: () => ({

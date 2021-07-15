@@ -8,6 +8,7 @@ import {
 
 import allGenesData from "@/assets/all_genes.json"
 import synonymData from "@/assets/synonyms.json"
+import { TableHeader } from "@/types/ui-types"
 
 const ctx = self
 let allGeneMap = new Map()
@@ -179,12 +180,7 @@ function findAllMatches(parsedGenes) {
 
 function buildCompareHeaders(payload) {
   const h = []
-  payload.panelNames.forEach((p) =>
-    h.push({
-      text: p,
-      value: p,
-    }),
-  )
+  payload.panelNames.forEach((p) => h.push(new TableHeader(p, true)))
   h.sort((a, b) => {
     const aUp = a.text.toUpperCase()
     const bUp = b.text.toUpperCase()
@@ -199,6 +195,7 @@ function buildCompareHeaders(payload) {
   h.splice(0, 0, {
     text: "Gene",
     value: "gene",
+    visible: true,
   })
   return h
 }

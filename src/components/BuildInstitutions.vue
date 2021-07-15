@@ -1,57 +1,55 @@
 /* eslint-disable vue/html-indent */
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-col cols="12" lg="4">
-        <list-template
-          v-model="institutionIndex"
-          @change="handleChange($event)"
-          :itemsSorted="tempInstitutionSorted"
-        >
-          <template v-slot:title>
-            {{ $t('buidInstitutions.list.text') }}:
-          </template>
-          <template v-slot:actions v-if="editable">
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn class="primary" v-on="on" @click="addInstitution()">
-                  {{ $t('buidInstitutions.new.text') }}
-                </v-btn>
-              </template>
-              <span>{{ $t('buidInstitutions.new.tooltip') }}</span>
-            </v-tooltip>
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  class="primary ml-2"
-                  :disabled="!validInstitutions()"
-                  v-on="on"
-                  @click="downloadInstitutions()"
-                >
-                  {{ $t('buidInstitutions.saveAll.text') }}
-                </v-btn>
-              </template>
-              <span> {{ $t('buidInstitutions.saveAll.tooltip') }}</span>
-            </v-tooltip>
-          </template>
-        </list-template>
-      </v-col>
-      <v-col cols="12" lg="8">
-        <v-card outlined class="mb-2">
-          <v-card-text>
-            <institution-details
-              :institution="getCurrentInstitution()"
-              :editable="editable"
-              :panels="panelNames"
-              @name-changed="updateTempInstitutions"
-              @delete-institution="deleteInstitution()"
-              :show-read-only-panels="showReadOnlyPanels"
-            />
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+  <main-content-template :cols="2" inner>
+    <template v-slot:left-col>
+      <list-template
+        v-model="institutionIndex"
+        @change="handleChange($event)"
+        :itemsSorted="tempInstitutionSorted"
+      >
+        <template v-slot:title>
+          {{ $t('buidInstitutions.list.text') }}:
+        </template>
+        <template v-slot:actions v-if="editable">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn class="primary" v-on="on" @click="addInstitution()">
+                {{ $t('buidInstitutions.new.text') }}
+              </v-btn>
+            </template>
+            <span>{{ $t('buidInstitutions.new.tooltip') }}</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                class="primary ml-2"
+                :disabled="!validInstitutions()"
+                v-on="on"
+                @click="downloadInstitutions()"
+              >
+                {{ $t('buidInstitutions.saveAll.text') }}
+              </v-btn>
+            </template>
+            <span> {{ $t('buidInstitutions.saveAll.tooltip') }}</span>
+          </v-tooltip>
+        </template>
+      </list-template>
+    </template>
+    <template v-slot:right-col>
+      <v-card outlined class="mb-2">
+        <v-card-text>
+          <institution-details
+            :institution="getCurrentInstitution()"
+            :editable="editable"
+            :panels="panelNames"
+            @name-changed="updateTempInstitutions"
+            @delete-institution="deleteInstitution()"
+            :show-read-only-panels="showReadOnlyPanels"
+          />
+        </v-card-text>
+      </v-card>
+    </template>
+  </main-content-template>
 </template>
 
 <script lang="ts">
@@ -61,9 +59,10 @@ import { mapGetters } from 'vuex'
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import download, { formatObjetToJson } from '@/utils/download'
 import ListTemplate from '@/components/explore/ListTemplate.vue'
+import MainContentTemplate from '@/components/MainContentTemplate.vue'
 
 export default Vue.extend({
-  components: { InstitutionDetails, ListTemplate },
+  components: { InstitutionDetails, ListTemplate, MainContentTemplate },
   name: 'BuildInstitutions',
   props: {
     editable: Boolean,
