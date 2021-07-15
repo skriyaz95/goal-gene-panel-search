@@ -3,10 +3,9 @@ import panels from "@/assets/panels.json"
 
 export default {
   panels: panels,
-  lastSearch: String(),
   institutions: institutionData,
-  lastSearches: new Array<String>(),
   uiProps: {
     chipOutlined: false,
   },
+  inputNeedsReload: false,
 }

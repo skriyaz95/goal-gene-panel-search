@@ -1,64 +1,62 @@
 /* eslint-disable vue/html-indent */
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-col cols="12" lg="4">
-        <v-card>
-          <v-card-title>{{ $t('build-database.title.text') }}:</v-card-title>
-          <v-card-text>
-            <div>
-              {{ $t('build-database.step.text') }} 1:
-              {{ $t('build-database.download.title.text') }}:
-              <v-btn
-                :href="sourceFileUrl"
-                target="_blank"
-                icon
-                class="primary--text"
-              >
-                <v-icon>mdi-open-in-new</v-icon>
-              </v-btn>
-            </div>
-            <v-row align="center">
-              <v-col md="auto"> {{ $t('build-database.step.text') }} 2: </v-col>
-              <v-col>
-                <v-file-input
-                  v-model="geneFile"
-                  accept=".gene_info"
-                  label="Upload Gene Info File"
-                  show-size
-                  @change="handleFileUpload"
-                />
-              </v-col>
-              <v-col md="auto">
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      icon
-                      class="primary--text"
-                      :disabled="allGenes.length == 0"
-                      :loading="loading"
-                      v-on="on"
-                      @click="downloadGenes"
-                    >
-                      <v-icon>mdi-content-save</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>{{ $t('button.saveAllGenes.tootip') }}</span>
-                </v-tooltip>
-              </v-col>
-            </v-row>
-            <div>
-              {{ $t('build-database.step.text') }} 3:
-              {{ $t('build-database.replace.title.text') }}
-              <span v-show="allGenes.length != 0">
-                ({{ $tc('count.gene', $n(allGenes.length)) }})
-              </span>
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+  <main-content-template :cols="2" inner>
+    <template v-slot:left-col>
+      <v-card outlined>
+        <v-card-title>{{ $t('build-database.title.text') }}:</v-card-title>
+        <v-card-text>
+          <div>
+            {{ $t('build-database.step.text') }} 1:
+            {{ $t('build-database.download.title.text') }}:
+            <v-btn
+              :href="sourceFileUrl"
+              target="_blank"
+              icon
+              class="primary--text"
+            >
+              <v-icon>mdi-open-in-new</v-icon>
+            </v-btn>
+          </div>
+          <v-row align="center">
+            <v-col md="auto"> {{ $t('build-database.step.text') }} 2: </v-col>
+            <v-col>
+              <v-file-input
+                v-model="geneFile"
+                accept=".gene_info"
+                label="Upload Gene Info File"
+                show-size
+                @change="handleFileUpload"
+              />
+            </v-col>
+            <v-col md="auto">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    class="primary--text"
+                    :disabled="allGenes.length == 0"
+                    :loading="loading"
+                    v-on="on"
+                    @click="downloadGenes"
+                  >
+                    <v-icon>mdi-content-save</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{ $t('button.saveAllGenes.tootip') }}</span>
+              </v-tooltip>
+            </v-col>
+          </v-row>
+          <div>
+            {{ $t('build-database.step.text') }} 3:
+            {{ $t('build-database.replace.title.text') }}
+            <span v-show="allGenes.length != 0">
+              ({{ $tc('count.gene', $n(allGenes.length)) }})
+            </span>
+          </div>
+        </v-card-text>
+      </v-card>
+    </template>
+  </main-content-template>
 </template>
 
 <script lang="ts">
@@ -67,10 +65,11 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import download, { formatObjetToJson } from '@/utils/download'
 import { NCBI_GENE_INFO_FILE_URL } from '@/utils/apis'
+import MainContentTemplate from '@/components/MainContentTemplate.vue'
 
 export default Vue.extend({
   name: 'BuildDatabase',
-
+  components: { MainContentTemplate },
   data: () => ({
     sourceFileUrl: NCBI_GENE_INFO_FILE_URL,
     rawDir: 'raw_panels/',

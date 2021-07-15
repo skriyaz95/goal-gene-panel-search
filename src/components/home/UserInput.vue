@@ -1,72 +1,80 @@
 <template>
-  <v-card outlined :raised="firstTime">
-    <v-card-title>
-      {{ $t('userInput.gene-list') }}
-      <v-spacer></v-spacer>
-      <v-scroll-x-transition>
-        <v-alert
-          dense
-          text
-          color="primary"
-          class="body-1 ma-0 pt-1 pb-1"
-          v-if="firstTime"
-        >
-          {{ $t('help.geneSearch.firstTime.text') }}
-
-          <v-icon class="primary--text"> mdi-arrow-right-thick </v-icon>
-        </v-alert>
-      </v-scroll-x-transition>
-      <help-button @action="handleHelp()" :active="help">
-        <template v-slot:content>
-          <span>
-            {{ $t('button.showHide.tooltip') }}
-            {{ $t('button.help.text') }}
-          </span>
-        </template>
-      </help-button>
-    </v-card-title>
-    <v-card-text>
-      <info-alert :active="help">
-        <template v-slot:content>
-          <gene-search-help />
-          <v-btn
-            class="mt-2 primary"
-            @click="startDemo()"
-            :loading="demoRunning"
+  <div>
+    <recall-searches
+      :lastSearches="lastSearches"
+      @recallLastSearch="fillLastSearch"
+      @resetLastSearches="resetLastSearches"
+    />
+    <v-card outlined :raised="firstTime">
+      <v-card-title>
+        {{ $t('userInput.gene-list') }}
+        <v-spacer></v-spacer>
+        <v-scroll-x-transition>
+          <v-alert
+            dense
+            text
+            color="primary"
+            class="body-1 ma-0 pt-1 pb-1"
+            v-if="firstTime"
           >
-            {{ $t('button.demo.text') }}
-            <v-icon>mdi-play</v-icon>
+            {{ $t('help.geneSearch.firstTime.text') }}
+
+            <v-icon class="primary--text"> mdi-arrow-right-thick </v-icon>
+          </v-alert>
+        </v-scroll-x-transition>
+        <help-button @action="handleHelp()" :active="help">
+          <template v-slot:content>
+            <span>
+              {{ $t('button.showHide.tooltip') }}
+              {{ $t('button.help.text') }}
+            </span>
+          </template>
+        </help-button>
+      </v-card-title>
+      <v-card-text>
+        <info-alert :active="help">
+          <template v-slot:content>
+            <gene-search-help />
+            <v-btn
+              class="mt-2 primary"
+              @click="startDemo()"
+              :loading="demoRunning"
+            >
+              {{ $t('button.demo.text') }}
+              <v-icon>mdi-play</v-icon>
+            </v-btn>
+          </template>
+        </info-alert>
+        <v-form ref="form" v-model="isFormValid">
+          <v-textarea
+            v-model="geneList"
+            name="gene-list"
+            :label="$t('userInput.label')"
+            :rules="geneListRules"
+            clearable
+            outlined
+            clear-icon="mdi-close-circle"
+            rows="13"
+            @click:clear="clear()"
+            @blur="handleBlur"
+          />
+          <v-btn
+            class="ma-2"
+            large
+            depressed
+            color="primary"
+            :disabled="!geneList || !isFormValid"
+            @click="submitUserInput(geneList, true)"
+          >
+            {{ $t('userInput.button.submit') }}
           </v-btn>
-        </template>
-      </info-alert>
-      <v-form ref="form" v-model="isFormValid">
-        <v-textarea
-          v-model="geneList"
-          name="gene-list"
-          :label="$t('userInput.label')"
-          :rules="geneListRules"
-          clearable
-          outlined
-          clear-icon="mdi-close-circle"
-          rows="13"
-          @click:clear="clear()"
-        />
-        <v-btn
-          class="ma-2"
-          large
-          depressed
-          color="primary"
-          :disabled="!geneList || !isFormValid"
-          @click="submitUserInput(geneList, true)"
-        >
-          {{ $t('userInput.button.submit') }}
-        </v-btn>
-        <v-btn class="ma-2" large depressed @click="clear()">
-          {{ $t('userInput.button.clear') }}
-        </v-btn>
-      </v-form>
-    </v-card-text>
-  </v-card>
+          <v-btn class="ma-2" large depressed @click="clear()">
+            {{ $t('userInput.button.clear') }}
+          </v-btn>
+        </v-form>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script lang="ts">
@@ -78,9 +86,10 @@ import GeneSearchHelp from '@/components/help/GeneSearchHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import { UserInputPayload } from '@/types/payload-types'
+import RecallSearches from './RecallSearches.vue'
 
 export default Vue.extend({
-  components: { GeneSearchHelp, HelpButton, InfoAlert },
+  components: { GeneSearchHelp, HelpButton, InfoAlert, RecallSearches },
   name: 'UserInput',
   props: {
     help: {
@@ -98,11 +107,11 @@ export default Vue.extend({
     validSeparators: /[ ,;\s]+/,
     validCharacters: /^[-,;~\w\s]+$/,
     demoRunning: false,
-    previousInput: '',
+    lastSearches: [],
   }),
   computed: {
     ...mapGetters({
-      lastSearch: 'getLastSearch',
+      inputNeedsReload: 'getInputNeedsReload',
     }),
     geneListRules(): any {
       // const x = this.$t('userInput.validation.list-empty')
@@ -121,13 +130,18 @@ export default Vue.extend({
     }, 500),
   },
   methods: {
-    ...mapActions(['cleanUserInput', 'updateLastSearch']),
+    ...mapActions([
+      'cleanUserInput',
+      'updateLastSearch',
+      'clearLastSearches',
+      'updateInputNeedsReload',
+    ]),
     submitUserInput(userinput: string, withAlert: boolean) {
       // console.log(userinput, withAlert)
       if (!userinput) {
         return
       }
-      if (!this.geneList || !this.isFormValid) {
+      if (!this.geneList || !this.geneList.trim() || !this.isFormValid) {
         if (withAlert) {
           alert('Form is not valid')
         }
@@ -136,7 +150,6 @@ export default Vue.extend({
         this.cleanUserInput(
           new UserInputPayload(userinput, this.validSeparators)
         )
-        this.updateLastSearch(this.geneList)
       }
     },
     clear() {
@@ -162,8 +175,8 @@ export default Vue.extend({
       }
     },
     loadLastInput() {
-      if (this.lastSearch) {
-        this.geneList = this.lastSearch
+      if (this.inputNeedsReload && this.lastSearches.length > 0) {
+        this.geneList = this.lastSearches[this.lastSearches.length - 1]
       }
     },
     handleHelp() {
@@ -194,9 +207,33 @@ export default Vue.extend({
       })
       // this.geneList = 'TP53\nBRCA1,BRCA2\nNOT_A_GENE, ALK_FUSION\nBRAF1'
     },
+    handleBlur() {
+      if (this.geneList && this.geneList.trim() && this.isFormValid) {
+        this.updateLastSearch(this.geneList).then((result: []) => {
+          this.lastSearches = result
+        })
+        this.updateInputNeedsReload(true)
+      } else {
+        this.updateInputNeedsReload(false)
+      }
+    },
+    fillLastSearch(search: string) {
+      this.geneList = search
+    },
+    resetLastSearches() {
+      this.clearLastSearches().then(() => {
+        this.lastSearches = []
+      })
+    },
+    initLastSearches() {
+      this.updateLastSearch('').then((result: []) => {
+        this.lastSearches = result
+        this.loadLastInput()
+      })
+    },
   },
   mounted() {
-    this.loadLastInput()
+    this.initLastSearches()
   },
 })
 </script>
