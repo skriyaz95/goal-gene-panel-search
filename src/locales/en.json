@@ -59,6 +59,12 @@
     "outlined": {
       "text": "Outlined",
       "toolip": "Use filled or outlined mode"
+    },
+    "accept": {
+      "text": "Accept"
+    },
+    "refuse": {
+      "text": "Refuse"
     }
   },
   "count": {
@@ -79,12 +85,12 @@
       "tooltip": "Show/Hide Menu"
     },
     "utils": {
-      "text": "Utils",
+      "text": "Manage",
       "toolbar": {
         "text": "Tools for Admins"
       },
       "title": {
-        "text": "Utils"
+        "text": "Manage"
       }
     },
     "explore": {
@@ -258,7 +264,7 @@
       "part2c": " to get more details.",
       "part3": "Special characters are not allowed.",
       "firstTime": {
-        "text": "Click here for help"
+        "text": "Help"
       }
     },
     "panelResults": {
@@ -360,5 +366,36 @@
         "text": "Show/Hide Institutions"
       }
     }
+  },
+  "gdpr": {
+    "title": "This site uses cookies",
+    "doNotTrack": "We do not track you.",
+    "cookieUsage": "We use cookies to remember you came here and localStorage for your last 3 gene searches.",
+    "learnMore": "Click here to learn more",
+    "catCustomization": "Customization",
+    "catAd": "Advertising cookies and technologies",
+    "source": "Source",
+    "purpose": "Purpose",
+    "validity": "Validity",
+    "customization": {
+      "cookie1": {
+        "source": "Our application",
+        "purpose": "Displaying help panels the first time you use this application.",
+        "validity": "1 year"
+      },
+      "cookie2": {
+        "source": "Our application",
+        "purpose": "Displaying this message only once.",
+        "validity": "1 year"
+      }
+    },
+    "ad": {
+      "cookie1": {
+        "source": "Google",
+        "purpose": "Google uses this domain to off-load static content (JavaScript code, images and CSS) to a different domain name in an effort to reduce bandwidth usage and increase network performance for the end user."
+      }
+    },
+    "agreement": "By using this application, you accept that the cookies above are stored on your computer.",
+    "refusal": "If do not accept, the cookies will be removed and you will be taken to"
   }
 }

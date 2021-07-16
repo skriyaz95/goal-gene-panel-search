@@ -7,25 +7,35 @@
     <v-main>
       <router-view />
     </v-main>
+    <v-snackbar
+      content-class="pa-0"
+      light
+      v-model="gdpr"
+      right
+      timeout="-1"
+      transition="slide-x-reverse-transition"
+    >
+      <gdpr-info @response="handleGDPRResponse"></gdpr-info>
+    </v-snackbar>
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-// import axios from 'axios'
-import { mapGetters } from 'vuex'
 import NavigationMenu from '@/components/NavigationMenu.vue'
-// import { TranslateResult } from 'vue-i18n'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
+import { getCookie } from '@/utils/cookies'
+import GdprInfo from '@/components/GdprInfo.vue'
 
 export default Vue.extend({
   name: 'App',
-  components: { NavigationMenu },
+  components: { NavigationMenu, GdprInfo },
 
   data: () => ({
     sourceDir: 'source_panels/',
     panelNames: new Array<string>(),
     publicPath: process.env.BASE_URL,
+    gdpr: false,
   }),
   methods: {
     getBackgroundStyle(lighten: boolean) {
@@ -58,6 +68,18 @@ export default Vue.extend({
       //   synonymMap: this.synonymMap,
       // })
     },
+    handleGDPR(): any {
+      const cookie = getCookie('GDPR_ACCEPT')
+      if (!cookie) {
+        //cookie doesn't exist
+        setTimeout(() => {
+          this.gdpr = true
+        }, 1000) //display 5 sec after loading
+      }
+    },
+    handleGDPRResponse(response: boolean) {
+      this.gdpr = response
+    },
   },
   computed: {
     theme() {
@@ -67,18 +89,10 @@ export default Vue.extend({
         return 'light'
       }
     },
-    ...mapGetters({
-      panels: 'getPanels',
-    }),
-    // toolbarTitle(): TranslateResult {
-    //   if (this.$route.meta && this.$route.meta.i18n) {
-    //     return this.$t(this.$route.meta.i18n + '.toolbar.text')
-    //   }
-    //   return 'GTI'
-    // },
   },
   mounted() {
     this.initWorkers()
+    this.handleGDPR()
   },
   destroyed() {
     $getFindGenesWorker().terminate()

@@ -3,7 +3,7 @@ export function setCookie(
   cvalue: string | boolean | null,
   exdays: number,
 ) {
-  if (!cvalue) {
+  if (cvalue == null) {
     return
   }
   const d = new Date()

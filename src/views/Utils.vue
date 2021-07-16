@@ -46,6 +46,9 @@
           <v-tab-item value="theme">
             <theme-picker />
           </v-tab-item>
+          <v-tab-item value="cookies">
+            <gdpr-info />
+          </v-tab-item>
         </v-tabs-items>
       </template>
     </main-content-template>
@@ -60,6 +63,7 @@ import BuildDatabase from '@/components/BuildDatabase.vue'
 import BuildInstitutions from '@/components/BuildInstitutions.vue'
 import { TranslateResult } from 'vue-i18n'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
+import GdprInfo from '@/components/GdprInfo.vue'
 
 export default Vue.extend({
   name: 'Utils',
@@ -70,10 +74,11 @@ export default Vue.extend({
     BuildDatabase,
     BuildInstitutions,
     MainContentTemplate,
+    GdprInfo,
   },
   data() {
     return {
-      tabs: ['panels', 'institutions', 'database', 'theme'],
+      tabs: ['panels', 'institutions', 'database', 'theme', 'cookies'],
     }
   },
   methods: {},

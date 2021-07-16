@@ -163,12 +163,12 @@ export default Vue.extend({
     handleHelp(): any {
       this.showHelp = !this.showHelp
       this.firstTime = false
+      setCookie('firstTime', true, 365)
     },
     handleFirstTime(): any {
       const cookie = getCookie('firstTime')
       if (!cookie) {
         //cookie doesn't exist
-        setCookie('firstTime', false, 365)
         setTimeout(() => {
           this.firstTime = true
         }, 5000) //display 5 sec after loading

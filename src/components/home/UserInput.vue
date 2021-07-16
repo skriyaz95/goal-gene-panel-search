@@ -9,7 +9,7 @@
             dense
             text
             color="primary"
-            class="body-1 ma-0 pt-1 pb-1"
+            class="body-1 ma-0 py-1 px-2"
             v-if="firstTime"
           >
             {{ $t('help.geneSearch.firstTime.text') }}
