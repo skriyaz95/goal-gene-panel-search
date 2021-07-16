@@ -70,10 +70,10 @@
                     @click="addPanel"
                     :disabled="loading"
                   >
-                    {{ $t('buildPanels.button.addPanel.text') }}
+                    {{ $t('button.addPanel.text') }}
                   </v-btn>
                 </template>
-                <span>{{ $t('buildPanels.button.addPanel.tooltip') }}</span>
+                <span>{{ $t('button.addPanel.tooltip') }}</span>
               </v-tooltip>
             </v-col>
           </v-row>
