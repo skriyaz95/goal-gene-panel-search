@@ -10,6 +10,9 @@
     "rawPanels": {
       "text": "Raw Panel Files:"
     },
+    "addPanel": {
+      "text": "Add New Panel:"
+    },
     "panelName": {
       "text": "Panel Name"
     },
@@ -21,6 +24,10 @@
     }
   },
   "button": {
+    "addPanel" : {
+      "text" : "Add New Panel",
+      "tooltip" : "Add New Panel"
+    },
     "buildPanels": {
       "text": "Build Panels",
       "tooltip": "Parse CSV Files to JSON Gene Panels"

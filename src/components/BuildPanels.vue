@@ -31,6 +31,53 @@
             {{ panelName }}
           </v-chip>
         </v-card-text>
+
+        <v-card-title>
+          {{ $t('buildPanels.addPanel.text') }}
+        </v-card-title>
+
+        <v-card-text>
+          <v-row>
+            <v-col
+              cols="12"
+              md="8"
+            >
+              <v-file-input
+                v-model="file"
+                label="Upload Panel"
+                prepend-icon="mdi-paperclip"
+              >
+                <template v-slot:selection="{ text }">
+                  <v-chip
+                    small
+                    label
+                    color="primary"
+                  >
+                    {{ text }}
+                  </v-chip>
+                </template>
+              </v-file-input>
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    class="ma-2 primary"
+                    v-on="on"
+                    @click="addPanel"
+                    :disabled="loading"
+                  >
+                    {{ $t('buildPanels.button.addPanel.text') }}
+                  </v-btn>
+                </template>
+                <span>{{ $t('buildPanels.button.addPanel.tooltip') }}</span>
+              </v-tooltip>
+            </v-col>
+          </v-row>
+        </v-card-text>
         <v-card-actions>
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
@@ -196,9 +243,11 @@ export default Vue.extend({
     sourceDir: 'source_panels/',
     panelFileNames: new Array<string>(),
     publicPath: process.env.BASE_URL,
+    tempPanels: new Map<string, PanelBuilder>(),
     tempParsedGenes: new Array<PanelBuilder>(),
     started: false,
     progress: 0,
+    file: null
   }),
   methods: {
     ...mapActions(['updatePanels']),
@@ -207,45 +256,82 @@ export default Vue.extend({
       this.progress = 0
       this.tempParsedGenes = new Array<PanelBuilder>()
       for (var i = 0; i < this.panelFileNames.length; i++) {
-        var path = this.publicPath + this.rawDir + this.panelFileNames[i]
-        axios
-          .get(path, {
-            params: {},
-          })
-          .then((response) => {
-            this.started = false
-            this.progress += 100 / this.panelFileNames.length
-            const responseURLItems = response.request.responseURL.split('/')
-            const panelFileName = responseURLItems[responseURLItems.length - 1]
-            const extension = /\.csv$/.test(panelFileName) ? '.csv' : '.bed'
-            const panelName = panelFileName.replace(extension, '')
-            const allRows = response.data.split(/\r?\n|\r/)
-            //remove dups
-            const uniqueRows =
-              extension == '.csv'
-                ? this.parseCSV(allRows)
-                : this.parseBED(allRows)
-            const uniqueRowsArray = Array.from(uniqueRows)
-            const panelGenes: Gene[] = []
-            for (let j = 0; j < uniqueRowsArray.length; j++) {
-              const geneSymbol = uniqueRowsArray[j]
-              if (
-                !geneSymbol ||
-                geneSymbol.length == 0 ||
-                geneSymbol == 'SNP'
-              ) {
-                continue
-              }
-              panelGenes.push({
-                name: geneSymbol.toUpperCase(),
+        if(this.tempPanels.has(this.panelFileNames[i])) {
+          const tempPanel = this.tempPanels.get(this.panelFileNames[i])
+          if(tempPanel) {
+            this.formatGenes(tempPanel.genes, tempPanel.panelName, tempPanel.panelFileName)
+          }
+        }else {
+          var path = this.publicPath + this.rawDir + this.panelFileNames[i]
+          axios
+              .get(path, {
+                params: {},
               })
-            }
-            this.formatGenes(panelGenes, panelName, panelFileName)
-          })
-          .catch((error) => {
-            alert(error)
-          })
+              .then((response) => {
+                this.started = false
+                this.progress += 100 / this.panelFileNames.length
+                const responseURLItems = response.request.responseURL.split('/')
+                const panelFileName = responseURLItems[responseURLItems.length - 1]
+                const extension = /\.csv$/.test(panelFileName) ? '.csv' : '.bed'
+                const panelName = panelFileName.replace(extension, '')
+                const panelGenes = this.getPanelGenes(response.data, extension)
+                this.formatGenes(panelGenes, panelName, panelFileName)
+              })
+              .catch((error) => {
+                alert(error)
+              })
+        }
       }
+    },
+    addPanel() {
+      if (!this.file) {
+        return
+      }
+      var fr = new FileReader()
+      fr.readAsText(this.file as any)
+      const fileName = (this.file as any).name
+      fr.onload = () => {
+        this.parseContent(fileName, fr.result as string)
+      }
+      this.file = null
+    },
+    parseContent(fileName:string, content: string) {
+      const extension = /\.csv$/.test(fileName) ? '.csv' : '.bed'
+      const panelName = fileName.replace(extension, '')
+
+      const panelBuilder = new PanelBuilder()
+      panelBuilder.panelName = panelName
+      panelBuilder.panelFileName = fileName
+      panelBuilder.genes = this.getPanelGenes(content, extension)
+      this.tempPanels.set(fileName, panelBuilder)
+      this.panelFileNames.push(fileName)
+      if(this.tempParsedGenes.length > 0) {
+        this.formatGenes(panelBuilder.genes, panelBuilder.panelName, panelBuilder.panelFileName)
+      }
+    },
+    getPanelGenes(content: string, extension: string): Gene[] {
+      const allRows = (content).split(/\r?\n|\r/)
+      const uniqueRows =
+          extension == '.csv'
+              ? this.parseCSV(allRows)
+              : this.parseBED(allRows)
+      const uniqueRowsArray = Array.from(uniqueRows)
+      const panelGenes: Gene[] = []
+      for (let j = 0; j < uniqueRowsArray.length; j++) {
+        const geneSymbol = uniqueRowsArray[j]
+        if (
+            !geneSymbol ||
+            geneSymbol.length == 0 ||
+            geneSymbol == 'SNP'
+        ) {
+          continue
+        }
+        panelGenes.push({
+          name: geneSymbol.toUpperCase(),
+        })
+      }
+
+      return panelGenes;
     },
     parseCSV(allRows: string[]) {
       const uniqueRows = new Set<string>()

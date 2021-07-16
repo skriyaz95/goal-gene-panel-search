@@ -193,6 +193,7 @@ export class ParsedGenes {
  */
 export class PanelBuilder {
   panelName!: string
+  genes!: Gene[]
   parsedGenes!: ParsedGenes
   institutionName!: string
   panelFileName!: string
