@@ -21,12 +21,17 @@
     },
     "sourceFile": {
       "text": "Source File"
+    },
+    "validation" : {
+      "accepted-files" : "Only .bed or .csv files are accepted",
+      "csv-file-not-valid": "CSV File is Not valid. Please upload valid file",
+      "bed-file-not-valid": "BED File is Not valid. Please upload valid file"
     }
   },
   "button": {
     "addPanel" : {
       "text" : "Add Panel",
-      "tooltip" : "Add New Panel"
+      "tooltip" : "Add Raw Panel"
     },
     "buildPanels": {
       "text": "Build Panels",

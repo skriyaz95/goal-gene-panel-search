@@ -37,46 +37,45 @@
         </v-card-title>
 
         <v-card-text>
-          <v-row>
-            <v-col
-              cols="12"
-              md="8"
-            >
-              <v-file-input
-                v-model="file"
-                label="Upload Panel"
-                prepend-icon="mdi-paperclip"
+          <v-form
+            ref="form"
+            v-model="validFileUpload"
+            lazy-validation
+          >
+            <v-row>
+              <v-col
+                cols="12"
+                md="8"
               >
-                <template v-slot:selection="{ text }">
-                  <v-chip
-                    small
-                    label
-                    color="primary"
-                  >
-                    {{ text }}
-                  </v-chip>
-                </template>
-              </v-file-input>
-            </v-col>
-            <v-col
-              cols="12"
-              md="4"
-            >
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    class="ma-2 primary"
-                    v-on="on"
-                    @click="addPanel"
-                    :disabled="loading"
-                  >
-                    {{ $t('button.addPanel.text') }}
-                  </v-btn>
-                </template>
-                <span>{{ $t('button.addPanel.tooltip') }}</span>
-              </v-tooltip>
-            </v-col>
-          </v-row>
+                <v-file-input
+                  v-model="panelFile"
+                  :rules="fileUploadRules"
+                  accept=".bed,.csv"
+                  label="Upload Panel"
+                  show-size
+                  prepend-icon="mdi-paperclip"
+                ></v-file-input>
+              </v-col>
+              <v-col
+                cols="12"
+                md="4"
+              >
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      class="ma-2 primary"
+                      v-on="on"
+                      @click="addPanel"
+                      :disabled="loading || !validFileUpload"
+                    >
+                      {{ $t('button.addPanel.text') }}
+                    </v-btn>
+                  </template>
+                  <span>{{ $t('button.addPanel.tooltip') }}</span>
+                </v-tooltip>
+              </v-col>
+            </v-row>
+          </v-form>
         </v-card-text>
         <v-card-actions>
           <v-tooltip bottom>
@@ -247,7 +246,8 @@ export default Vue.extend({
     tempParsedGenes: new Array<PanelBuilder>(),
     started: false,
     progress: 0,
-    file: null
+    panelFile: null,
+    validFileUpload: true
   }),
   methods: {
     ...mapActions(['updatePanels']),
@@ -274,7 +274,8 @@ export default Vue.extend({
                 const panelFileName = responseURLItems[responseURLItems.length - 1]
                 const extension = /\.csv$/.test(panelFileName) ? '.csv' : '.bed'
                 const panelName = panelFileName.replace(extension, '')
-                const panelGenes = this.getPanelGenes(response.data, extension)
+                const allRows = (response.data).split(/\r?\n|\r/)
+                const panelGenes = this.getPanelGenes(allRows, extension)
                 this.formatGenes(panelGenes, panelName, panelFileName)
               })
               .catch((error) => {
@@ -284,33 +285,49 @@ export default Vue.extend({
       }
     },
     addPanel() {
-      if (!this.file) {
+      if (!this.panelFile) {
+        return
+      }
+      const fileName = (this.panelFile as any).name
+      const isFileAlreadyUploaded = this.tempPanels.has(fileName)
+      if(isFileAlreadyUploaded) {
+        alert('File has already been uploaded')
         return
       }
       var fr = new FileReader()
-      fr.readAsText(this.file as any)
-      const fileName = (this.file as any).name
+      fr.readAsText(this.panelFile as any)
       fr.onload = () => {
         this.parseContent(fileName, fr.result as string)
       }
-      this.file = null
+      this.panelFile = null
     },
     parseContent(fileName:string, content: string) {
       const extension = /\.csv$/.test(fileName) ? '.csv' : '.bed'
       const panelName = fileName.replace(extension, '')
-
+      const allRows = (content).split(/\r?\n|\r/)
+      const rowItems = allRows[0].split('\t')
+      if(extension == '.csv') {
+        if(rowItems.length < 1) {
+          alert(this.$t('buildPanels.validation.csv-file-not-valid'))
+          return
+        }
+      }else {
+        if(rowItems.length < 4) {
+          alert(this.$t('buildPanels.validation.bed-file-not-valid'))
+          return
+        }
+      }
       const panelBuilder = new PanelBuilder()
       panelBuilder.panelName = panelName
       panelBuilder.panelFileName = fileName
-      panelBuilder.genes = this.getPanelGenes(content, extension)
+      panelBuilder.genes = this.getPanelGenes(allRows, extension)
       this.tempPanels.set(fileName, panelBuilder)
       this.panelFileNames.push(fileName)
       if(this.tempParsedGenes.length > 0) {
         this.formatGenes(panelBuilder.genes, panelBuilder.panelName, panelBuilder.panelFileName)
       }
     },
-    getPanelGenes(content: string, extension: string): Gene[] {
-      const allRows = (content).split(/\r?\n|\r/)
+    getPanelGenes(allRows: string[], extension: string): Gene[] {
       const uniqueRows =
           extension == '.csv'
               ? this.parseCSV(allRows)
@@ -486,6 +503,12 @@ export default Vue.extend({
         (this.tempParsedGenes.length > 0 &&
           this.tempParsedGenes.length != this.panelFileNames.length)
       )
+    },
+    fileUploadRules(): any {
+      console.log("sample")
+      const z = this.$t('buildPanels.validation.accepted-files')
+      const fileTypeRule = (v: File) => !v || v.name.match(/.(csv|bed)$/i) || z
+      return [fileTypeRule]
     },
   },
   mounted() {
