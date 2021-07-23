@@ -20,9 +20,9 @@
         <v-list>
           <v-list-item v-for="(item, index) in itemsSorted" :key="index">
             <v-list-item-icon>
-              <v-icon>mdi-dna</v-icon>
+              <v-icon :class="{'red--text': !item[fieldValidLabel]}">mdi-dna</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>
+            <v-list-item-content :class="{'red--text': !item[fieldValidLabel]}">
               {{ item[fieldItemLabel] }}
             </v-list-item-content>
           </v-list-item>
@@ -44,6 +44,7 @@ export default Vue.extend({
   props: {
     value: Number,
     fieldItemLabel: { type: String, default: 'name' },
+    fieldValidLabel : { type: String, default: 'valid'  },
     itemsSorted: {
       type: Array,
       default: () => [],
@@ -53,16 +54,17 @@ export default Vue.extend({
   methods: {
     handleEvent($event: any) {
       this.$emit('change', $event)
-    },
+    }
   },
   computed: {
     searchableItems() {
       const items = this.itemsSorted.map((i: any, index: Number) => {
         const text = i[this.fieldItemLabel]
-        return { text: text, value: index }
+        const valid = i[this.fieldValidLabel]
+        return { text: text, value: index, valid: valid }
       })
       return items
-    },
+    }
   },
   mounted() {},
 })

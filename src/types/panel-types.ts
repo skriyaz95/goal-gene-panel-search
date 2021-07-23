@@ -4,6 +4,7 @@ export class Institution {
   email: string
   website: string
   panels: string[]
+  valid: boolean
 
   constructor(
     name: string,
@@ -11,12 +12,14 @@ export class Institution {
     email: string,
     website: string,
     panels: string[],
+    valid: boolean
   ) {
     this.name = name
     this.phone = phone
     this.email = email
     this.website = website
     this.panels = panels
+    this.valid = valid
   }
 }
 

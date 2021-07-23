@@ -23,7 +23,7 @@
             <template v-slot:activator="{ on }">
               <v-btn
                 class="primary ml-2"
-                :disabled="!validInstitutions()"
+                :disabled="!validInstitutions"
                 v-on="on"
                 @click="downloadInstitutions()"
               >
@@ -44,6 +44,7 @@
             :panels="panelNames"
             @name-changed="updateTempInstitutions"
             @delete-institution="deleteInstitution()"
+            @institution-valid="validateInstitutions($event)"
             :show-read-only-panels="showReadOnlyPanels"
           />
         </v-card-text>
@@ -73,17 +74,14 @@ export default Vue.extend({
     institutionIndex: 0,
     previousIndex: 0, //to prevent undefined error when clicking on the same institution twice
     tempInstitutionSorted: new Array<Institution>(),
+    validInstitutions: true
   }),
   methods: {
     addInstitution() {
-      const newInstitution = new Institution('New', '', '', '', [])
+      const newInstitution = new Institution('', '', '', '', [], true)
       this.tempInstitutionSorted.push(newInstitution)
       this.tempInstitutionSorted.sort(this.sortInstitutionsByName)
       this.updateTempInstitutions('New')
-    },
-    validInstitutions() {
-      //TODO validate form
-      return true
     },
     downloadInstitutions() {
       download(
@@ -101,6 +99,7 @@ export default Vue.extend({
     updateTempInstitutionsFromStore() {
       this.tempInstitutionSorted = JSON.parse(JSON.stringify(this.institutions))
       for (let i = 0; i < this.tempInstitutionSorted.length; i++) {
+        this.tempInstitutionSorted[i].valid = true
         for (let j = 0; j < this.tempInstitutionSorted[i].panels.length; j++) {
           if (
             this.panelNames.indexOf(this.tempInstitutionSorted[i].panels[j]) ==
@@ -138,6 +137,16 @@ export default Vue.extend({
         this.institutionIndex = $event
       }
     },
+    validateInstitutions($event: boolean) {
+      this.tempInstitutionSorted[this.institutionIndex].valid = $event
+      for (let i = 0; i < this.tempInstitutionSorted.length; i++) {
+        if (!this.tempInstitutionSorted[i].valid) {
+          this.validInstitutions = false
+          return
+        }
+      }
+      this.validInstitutions = true
+    }
   },
   computed: {
     ...mapGetters({
