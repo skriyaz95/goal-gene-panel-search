@@ -24,7 +24,7 @@
             <v-list-item-icon>
               <v-icon :class="{'red--text': !item[fieldValidLabel]}">mdi-dna</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>
+            <v-list-item-content :class="{'red--text': !item[fieldValidLabel]}">
               {{ item[fieldItemLabel] }}
             </v-list-item-content>
             <v-list-item-action v-if="editable">

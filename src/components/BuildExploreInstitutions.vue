@@ -1,76 +1,97 @@
 /* eslint-disable vue/html-indent */
 <template>
-  <main-content-template inner>
-    <template v-slot:left-col>
-      <list-template
-        :value="value"
-        @input="handleInput($event)"
-        @change="handleChange($event)"
-        :itemsSorted="tempInstitutionSorted"
-        :editable="editable"
-        @delete="deleteInstitution($event)"
-        dropDownLabel="buildPanels.selectInstitution.text"
-      >
-        <template v-slot:title>
-          {{ $t('buidInstitutions.list.text') }}:
-        </template>
-        <template v-slot:actions v-if="editable">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn class="primary" v-on="on" @click="addInstitution()">
-                {{ $t('buidInstitutions.new.text') }}
-              </v-btn>
-            </template>
-            <span>{{ $t('buidInstitutions.new.tooltip') }}</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                class="primary ml-2"
-                :disabled="!validInstitutions()"
-                v-on="on"
-                @click="downloadInstitutions()"
-              >
-                {{ $t('buidInstitutions.saveAll.text') }}
-              </v-btn>
-            </template>
-            <span> {{ $t('buidInstitutions.saveAll.tooltip') }}</span>
-          </v-tooltip>
-        </template>
-      </list-template>
-    </template>
-    <template v-slot:right-col>
-      <v-card outlined class="mb-2">
-        <v-card-text>
-          <institution-details
-            :institution="getCurrentInstitution()"
-            :editable="editable"
-            :panels="panelNames"
-            @name-changed="updateTempInstitutions"
-            :show-read-only-panels="showReadOnlyPanels"
-          />
-        </v-card-text>
-        <v-card-actions v-if="editable">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn color="error" v-on="on" @click="deleteInstitution()">
-                {{ $t('buidInstitutions.delete.text') }}
-                <v-spacer></v-spacer>
-                <v-icon right>mdi-delete</v-icon>
-              </v-btn>
-            </template>
-            <span>{{ $t('buidInstitutions.delete.tooltip') }}</span>
-          </v-tooltip>
-        </v-card-actions>
-      </v-card>
-    </template>
-  </main-content-template>
+  <div>
+    <v-snackbar
+      v-model="snackbar"
+      :multi-line="snackbarMultiLine"
+      :timeout="snackbarTimeout"
+    >
+      {{ $t('buidInstitutions.snackbar.text') }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="red"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+    <main-content-template inner>
+      <template v-slot:left-col>
+        <list-template
+          :value="value"
+          @input="handleInput($event)"
+          @change="handleChange($event)"
+          :itemsSorted="tempInstitutionSorted"
+          :editable="editable"
+          @delete="deleteInstitution($event)"
+          dropDownLabel="buildPanels.selectInstitution.text"
+        >
+          <template v-slot:title>
+            {{ $t('buidInstitutions.list.text') }}:
+          </template>
+          <template v-slot:actions v-if="editable">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn class="primary" v-on="on" @click="addInstitution()">
+                  {{ $t('buidInstitutions.new.text') }}
+                </v-btn>
+              </template>
+              <span>{{ $t('buidInstitutions.new.tooltip') }}</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  class="primary ml-2"
+                  :disabled="!validInstitutions"
+                  v-on="on"
+                  @click="downloadInstitutions()"
+                >
+                  {{ $t('buidInstitutions.saveAll.text') }}
+                </v-btn>
+              </template>
+              <span> {{ $t('buidInstitutions.saveAll.tooltip') }}</span>
+            </v-tooltip>
+          </template>
+        </list-template>
+      </template>
+      <template v-slot:right-col>
+        <v-card outlined class="mb-2">
+          <v-card-text>
+            <institution-details
+              :institution="getCurrentInstitution()"
+              :editable="editable"
+              :panels="panelNames"
+              @name-changed="updateTempInstitutions"
+              @institution-valid="validateInstitutions($event)"
+              :show-read-only-panels="showReadOnlyPanels"
+            />
+          </v-card-text>
+          <v-card-actions v-if="editable">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn color="error" v-on="on" @click="deleteInstitution()">
+                  {{ $t('buidInstitutions.delete.text') }}
+                  <v-spacer></v-spacer>
+                  <v-icon right>mdi-delete</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ $t('buidInstitutions.delete.tooltip') }}</span>
+            </v-tooltip>
+          </v-card-actions>
+        </v-card>
+      </template>
+    </main-content-template>
+  </div>
+
 </template>
 
 <script lang="ts">
 import { GenePanelDetails, Institution } from '@/types/panel-types'
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import download, { formatObjetToJson } from '@/utils/download'
 import ListTemplate from '@/components/explore/ListTemplate.vue'
@@ -90,13 +111,14 @@ export default Vue.extend({
     previousIndex: 0, //to prevent undefined error when clicking on the same institution twice
     tempInstitutionSorted: new Array<Institution>(),
     validInstitutions: true,
-    multiLine: true,
-    snackbar: false
+    snackbar: false,
+    snackbarMultiLine: false,
+    snackbarTimeout: 4000,
   }),
   methods: {
     ...mapActions(['updateInstitutions']),
     addInstitution() {
-      const newInstitution = new Institution('New', '', '', '', [])
+      const newInstitution = new Institution('New', '', '', '', [], true)
       this.tempInstitutionSorted.push(newInstitution)
       this.tempInstitutionSorted.sort(this.sortInstitutionsByName)
       this.updateTempInstitutions('New')
@@ -159,8 +181,9 @@ export default Vue.extend({
     handleInput($event: any) {
       this.$emit('input', $event)
     },
-    validateInstitutions($event: boolean) {
-      this.tempInstitutionSorted[this.institutionIndex].valid = $event
+    validateInstitutions($event: Institution) {
+      console.log('here')
+      this.tempInstitutionSorted[Number.parseInt(this.value)].valid = $event.valid
       for (let i = 0; i < this.tempInstitutionSorted.length; i++) {
         if (!this.tempInstitutionSorted[i].valid) {
           this.validInstitutions = false

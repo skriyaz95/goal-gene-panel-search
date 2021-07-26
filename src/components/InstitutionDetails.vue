@@ -27,6 +27,7 @@
               prepend-icon="mdi-phone-in-talk"
               dense
               required
+              @input="formatNumber"
             ></v-text-field>
           </v-list-item-content>
         </v-list-item>
@@ -200,7 +201,7 @@ export default Vue.extend({
       const webSiteRequired = (v:string) => !!v || this.$t('institutionDetails.website.rules.required')
       const websiteValidate = (v: string) => !v || websitePattern.test(v) || this.$t('institutionDetails.website.rules.valid')
       return [webSiteRequired, websiteValidate]
-    },
+    }
   },
   methods: {
     linkTo(link: string, linkType: string) {
@@ -212,7 +213,11 @@ export default Vue.extend({
     },
     emitInstitutionValid() {
       this.institution.valid = this.institutionValid
-      this.$emit('institution-valid', this.institutionValid)
+      this.$emit('institution-valid', this.institution)
+    },
+    formatNumber() {
+      var x = this.institution.phone.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+      this.institution.phone = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
     }
   },
   mounted() {},

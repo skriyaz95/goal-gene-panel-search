@@ -29,6 +29,9 @@
       "accepted-files" : "Only .bed or .csv files are accepted",
       "csv-file-not-valid": "CSV File is Not valid. Please upload valid file",
       "bed-file-not-valid": "BED File is Not valid. Please upload valid file"
+    },
+    "snackbar": {
+      "text" : "This modification is temporary. The changes will be lost after reload"
     }
   },
   "button": {
@@ -260,6 +263,9 @@
     "delete": {
       "text": "Delete",
       "tooltip": "Remove from the list"
+    },
+    "snackbar": {
+      "text" : "This modification is temporary. The changes will be lost after reload"
     }
   },
   "help": {
