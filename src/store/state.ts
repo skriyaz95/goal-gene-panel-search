@@ -8,4 +8,9 @@ export default {
     chipOutlined: false,
   },
   inputNeedsReload: false,
+  lastTabHome: "panels",
+  lastTabExplore: "",
+  lastTabUtils: "utils",
+  lastItemExplore: -1 as Number,
+  lastItemUtils: -1 as Number,
 }

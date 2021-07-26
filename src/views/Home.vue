@@ -132,10 +132,17 @@ export default Vue.extend({
       institutions: 'getInstitutionsSorted',
       panelsByInstitution: 'getPanelsByInstitution',
       inputNeedsReload: 'getInputNeedsReload',
+      lastTab: 'getLastTabHome',
     }),
     tab: {
       set(tab: string) {
-        this.$router.replace({ query: { ...this.$route.query, tab } })
+        const queryTab = this.$route.query.tab
+        if (tab && tab !== queryTab) {
+          this.$router.replace({ query: { ...this.$route.query, tab } })
+          if (queryTab) {
+            this.updateLastTabHome(tab)
+          }
+        }
       },
       get(): string | (string | null)[] {
         return this.$route.query.tab
@@ -159,6 +166,7 @@ export default Vue.extend({
       'updateLastSearch',
       'clearLastSearches',
       'updateInputNeedsReload',
+      'updateLastTabHome',
     ]),
     handleHelp(): any {
       this.showHelp = !this.showHelp
@@ -267,6 +275,7 @@ export default Vue.extend({
     }
     this.initVisibleInstitutions()
     this.initLastSearches()
+    this.tab = this.lastTab
   },
 })
 </script>

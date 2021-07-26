@@ -3,7 +3,8 @@
   <main-content-template inner>
     <template v-slot:left-col>
       <list-template
-        v-model="institutionIndex"
+        :value="value"
+        @input="handleInput($event)"
         @change="handleChange($event)"
         :itemsSorted="tempInstitutionSorted"
       >
@@ -67,10 +68,11 @@ export default Vue.extend({
   props: {
     editable: Boolean,
     showReadOnlyPanels: Boolean,
+    value: { type: String, default: '0' },
   },
   data: () => ({
     publicPath: process.env.BASE_URL,
-    institutionIndex: 0,
+    // institutionIndex: 0,
     previousIndex: 0, //to prevent undefined error when clicking on the same institution twice
     tempInstitutionSorted: new Array<Institution>(),
   }),
@@ -93,10 +95,7 @@ export default Vue.extend({
       )
     },
     getCurrentInstitution(): Institution | null {
-      if (this.institutionIndex != undefined) {
-        this.previousIndex = this.institutionIndex
-      }
-      return this.tempInstitutionSorted[this.previousIndex]
+      return this.tempInstitutionSorted[Number.parseInt(this.value)]
     },
     updateTempInstitutionsFromStore() {
       this.tempInstitutionSorted = JSON.parse(JSON.stringify(this.institutions))
@@ -116,13 +115,13 @@ export default Vue.extend({
       this.tempInstitutionSorted.sort(this.sortInstitutionsByName)
       for (let i = 0; i < this.tempInstitutionSorted.length; i++) {
         if (this.tempInstitutionSorted[i].name === name) {
-          this.institutionIndex = i
+          this.$emit('update', i)
           break
         }
       }
     },
     deleteInstitution() {
-      this.tempInstitutionSorted.splice(this.institutionIndex, 1)
+      this.tempInstitutionSorted.splice(Number.parseInt(this.value), 1)
     },
     sortInstitutionsByName(a: Institution, b: Institution) {
       if (a.name < b.name) {
@@ -134,15 +133,17 @@ export default Vue.extend({
       return 0
     },
     handleChange($event: any) {
-      if ($event !== undefined) {
-        this.institutionIndex = $event
-      }
+      this.$emit('change', $event)
+    },
+    handleInput($event: any) {
+      this.$emit('input', $event)
     },
   },
   computed: {
     ...mapGetters({
       institutions: 'getInstitutionsSorted',
       panels: 'getPanels',
+      lastItem: 'getLastItemExplore',
     }),
     panelNames(): string[] {
       return this.panels.map((p: GenePanelDetails) => p.name)
@@ -150,6 +151,14 @@ export default Vue.extend({
   },
   mounted() {
     this.updateTempInstitutionsFromStore()
+    // if (this.lastItem < this.tempInstitutionSorted.length) {
+    //   const queryItem = this.$route.query.item
+    //   if (queryItem && queryItem != this.lastItem) {
+    //     this.institutionIndex = Number.parseInt(queryItem as string)
+    //   } else {
+    //     this.institutionIndex = this.lastItem
+    //   }
+    // }
   },
 })
 </script>

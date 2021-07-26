@@ -6,16 +6,18 @@
     </v-card-title>
     <v-card-text>
       <v-autocomplete
-        :value="value"
         :label="$t('input.details.text')"
         clearable
         :items="searchableItems"
-        @change="handleEvent($event)"
+        :value="Number.parseInt(value)"
+        @input="handleInput($event)"
       ></v-autocomplete>
       <v-list-item-group
-        :value="value"
         active-class="primary lighten-2 font-weight-bold"
-        @change="handleEvent($event)"
+        :value="Number.parseInt(value)"
+        @input="handleInput($event)"
+        @change="handleChange($event)"
+        mandatory
       >
         <v-list>
           <v-list-item v-for="(item, index) in itemsSorted" :key="index">
@@ -42,7 +44,7 @@ export default Vue.extend({
   components: {},
   name: 'ListTemplate',
   props: {
-    value: Number,
+    value: { type: String, default: '0' },
     fieldItemLabel: { type: String, default: 'name' },
     itemsSorted: {
       type: Array,
@@ -51,8 +53,11 @@ export default Vue.extend({
   },
   data: () => ({}),
   methods: {
-    handleEvent($event: any) {
+    handleChange($event: any) {
       this.$emit('change', $event)
+    },
+    handleInput($event: any) {
+      this.$emit('input', $event)
     },
   },
   computed: {
