@@ -1,4 +1,4 @@
-import { Gene, GenePanelDetails, ParsedGenes } from "@/types/panel-types"
+import {Gene, GenePanelDetails, Institution, ParsedGenes} from "@/types/panel-types"
 import {
   FormatCompareItemsPayload,
   UserInputPayload,
@@ -60,6 +60,9 @@ export default {
   },
   async updatePanels(context: any, payload: GenePanelDetails[]) {
     context.commit("updatePanels", payload)
+  },
+  async updateInstitutions(context: any, payload: Institution[]) {
+    context.commit("updateInstitutions", payload)
   },
   async formatCompareItems(context: any, payload: FormatCompareItemsPayload) {
     const panelNamesSorted = context.state.panels.map(

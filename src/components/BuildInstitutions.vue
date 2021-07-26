@@ -1,69 +1,81 @@
 /* eslint-disable vue/html-indent */
 <template>
-  <main-content-template inner>
-    <template v-slot:left-col>
-      <list-template
-        v-model="institutionIndex"
-        @change="handleChange($event)"
-        :itemsSorted="tempInstitutionSorted"
-      >
-        <template v-slot:title>
-          {{ $t('buidInstitutions.list.text') }}:
-        </template>
-        <template v-slot:actions v-if="editable">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn class="primary" v-on="on" @click="addInstitution()">
-                {{ $t('buidInstitutions.new.text') }}
-              </v-btn>
-            </template>
-            <span>{{ $t('buidInstitutions.new.tooltip') }}</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                class="primary ml-2"
-                :disabled="!validInstitutions"
-                v-on="on"
-                @click="downloadInstitutions()"
-              >
-                {{ $t('buidInstitutions.saveAll.text') }}
-              </v-btn>
-            </template>
-            <span> {{ $t('buidInstitutions.saveAll.tooltip') }}</span>
-          </v-tooltip>
-        </template>
-      </list-template>
-    </template>
-    <template v-slot:right-col>
-      <v-card outlined class="mb-2">
-        <v-card-text>
-          <institution-details
-            :institution="getCurrentInstitution()"
-            :editable="editable"
-            :panels="panelNames"
-            @name-changed="updateTempInstitutions"
-            @delete-institution="deleteInstitution()"
-            @institution-valid="validateInstitutions($event)"
-            :show-read-only-panels="showReadOnlyPanels"
-          />
-        </v-card-text>
-      </v-card>
-    </template>
-  </main-content-template>
+  <div>
+    <snack-bar-template
+      :multi-line="multiLine"
+      v-model="snackbar"
+      @closing="snackbar = false"
+    >
+      <template v-slot:content>
+        This Update is temporary. Changes will be discarded on reload
+      </template>
+    </snack-bar-template>
+    <main-content-template inner>
+      <template v-slot:left-col>
+        <list-template
+          v-model="institutionIndex"
+          @change="handleChange($event)"
+          :itemsSorted="tempInstitutionSorted"
+        >
+          <template v-slot:title>
+            {{ $t('buidInstitutions.list.text') }}:
+          </template>
+          <template v-slot:actions v-if="editable">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn class="primary" v-on="on" @click="addInstitution()">
+                  {{ $t('buidInstitutions.new.text') }}
+                </v-btn>
+              </template>
+              <span>{{ $t('buidInstitutions.new.tooltip') }}</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  class="primary ml-2"
+                  :disabled="!validInstitutions"
+                  v-on="on"
+                  @click="downloadInstitutions()"
+                >
+                  {{ $t('buidInstitutions.saveAll.text') }}
+                </v-btn>
+              </template>
+              <span> {{ $t('buidInstitutions.saveAll.tooltip') }}</span>
+            </v-tooltip>
+          </template>
+        </list-template>
+      </template>
+      <template v-slot:right-col>
+        <v-card outlined class="mb-2">
+          <v-card-text>
+            <institution-details
+              :institution="getCurrentInstitution()"
+              :editable="editable"
+              :panels="panelNames"
+              @name-changed="updateTempInstitutions"
+              @delete-institution="deleteInstitution()"
+              @institution-valid="validateInstitutions($event)"
+              :show-read-only-panels="showReadOnlyPanels"
+            />
+          </v-card-text>
+        </v-card>
+      </template>
+    </main-content-template>
+  </div>
 </template>
 
 <script lang="ts">
 import { GenePanelDetails, Institution } from '@/types/panel-types'
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import download, { formatObjetToJson } from '@/utils/download'
 import ListTemplate from '@/components/explore/ListTemplate.vue'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
+import SnackBarTemplate from "@/components/SnackbarTemplate.vue";
 
 export default Vue.extend({
-  components: { InstitutionDetails, ListTemplate, MainContentTemplate },
+  components: {SnackBarTemplate, InstitutionDetails, ListTemplate, MainContentTemplate },
   name: 'BuildInstitutions',
   props: {
     editable: Boolean,
@@ -74,9 +86,12 @@ export default Vue.extend({
     institutionIndex: 0,
     previousIndex: 0, //to prevent undefined error when clicking on the same institution twice
     tempInstitutionSorted: new Array<Institution>(),
-    validInstitutions: true
+    validInstitutions: true,
+    multiLine: true,
+    snackbar: false
   }),
   methods: {
+    ...mapActions(['updateInstitutions']),
     addInstitution() {
       const newInstitution = new Institution('', '', '', '', [], true)
       this.tempInstitutionSorted.push(newInstitution)
@@ -84,6 +99,8 @@ export default Vue.extend({
       this.updateTempInstitutions('New')
     },
     downloadInstitutions() {
+      this.snackbar = true
+      this.updateInstitutions(this.tempInstitutionSorted)
       download(
         'institutions.json',
         formatObjetToJson(this.tempInstitutionSorted, false),

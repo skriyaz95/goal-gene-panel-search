@@ -1,4 +1,4 @@
-import { GenePanelDetails, SynonymGene } from "@/types/panel-types"
+import {GenePanelDetails, Institution, SynonymGene} from "@/types/panel-types"
 
 export default {
   resetPanels(state: any) {
@@ -16,4 +16,7 @@ export default {
   updateInputNeedsReload(state: any, payload: boolean) {
     state.inputNeedsReload = payload
   },
+  updateInstitutions(state: any, payload: Institution[]) {
+    state.institutions = payload
+  }
 }

@@ -182,16 +182,16 @@ export default Vue.extend({
     return {
       institutionValid: true,
       nameRules: [
-        (v:string) => !!v || 'Institution Name is required',
-        (v:string) => (v && v.length <= 50) || 'Institution Name must be less than 50 characters',
+        (v:string) => !!v || this.$t('institutionDetails.name.rules.required'),
+        (v:string) => (v && v.length <= 50) || this.$t('institutionDetails.name.rules.length'),
       ],
       emailRules: [
-        (v:string) => !!v || 'Institution E-mail is required',
-        (v:string) => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Institution E-mail must be valid'
+        (v:string) => !!v || this.$t('institutionDetails.email.rules.required'),
+        (v:string) => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || this.$t('institutionDetails.email.rules.valid')
       ],
       phoneRules: [
-        (v:string) => !!v || 'Institution Phone Number is required',
-        (v:string) => !v || /^(1\s|1|)?((\(\d{3}\))|\d{3})(-|\s)?(\d{3})(-|\s)?(\d{4})$/.test(v) || 'Institution Phone Number must be valid'
+        (v:string) => !!v || this.$t('institutionDetails.phone.rules.required'),
+        (v:string) => !v || /^(1\s|1|)?((\(\d{3}\))|\d{3})(-|\s)?(\d{3})(-|\s)?(\d{4})$/.test(v) || this.$t('institutionDetails.phone.rules.valid')
       ],
     }
   },
@@ -203,15 +203,14 @@ export default Vue.extend({
       chipOutlined: 'getChipOutlined',
     }),
     validateWebSite(): any {
-      const z = this.$t('buildPanels.validation.accepted-files')
       var websitePattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
           '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
           '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
           '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
           '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
           '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-      const webSiteRequired = (v:string) => !!v || 'Institution Website is required'
-      const websiteValidate = (v: string) => !v || websitePattern.test(v) || z
+      const webSiteRequired = (v:string) => !!v || this.$t('institutionDetails.website.rules.required')
+      const websiteValidate = (v: string) => !v || websitePattern.test(v) || this.$t('institutionDetails.website.rules.valid')
       return [webSiteRequired, websiteValidate]
     },
   },
