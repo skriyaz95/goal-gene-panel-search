@@ -3,7 +3,8 @@
   <main-content-template inner>
     <template v-slot:left-col>
       <list-template
-        v-model="panelIndex"
+        :value="value"
+        @input="handleInput($event)"
         @change="handleChange($event)"
         :itemsSorted="panelsSorted"
       >
@@ -36,18 +37,14 @@ import MainContentTemplate from '@/components/MainContentTemplate.vue'
 export default Vue.extend({
   components: { PanelDetails, ListTemplate, MainContentTemplate },
   name: 'ExplorePanels',
-  props: {},
+  props: { value: { type: String, default: '0' } },
   data: () => ({
-    panelIndex: 0,
     previousIndex: 0, //to prevent undefined error when clicking on the same panel twice
     currentInstitution: 'test',
   }),
   methods: {
     getCurrentPanel(): GenePanelDetails | null {
-      if (this.panelIndex != undefined) {
-        this.previousIndex = this.panelIndex
-      }
-      const currentPanel = this.panelsSorted[this.previousIndex]
+      const currentPanel = this.panelsSorted[this.value]
       this.currentInstitution = this.getInstitutionfromPanel(currentPanel)
       return currentPanel
     },
@@ -65,9 +62,10 @@ export default Vue.extend({
       return ''
     },
     handleChange($event: any) {
-      if ($event !== undefined) {
-        this.panelIndex = $event
-      }
+      this.$emit('change', $event)
+    },
+    handleInput($event: any) {
+      this.$emit('input', $event)
     },
   },
   computed: {
@@ -75,8 +73,18 @@ export default Vue.extend({
       panelsSorted: 'getPanelsSorted',
       institutions: 'getInstitutions',
       chipOutlined: 'getChipOutlined',
+      lastItem: 'getLastItemExplore',
     }),
   },
-  mounted() {},
+  mounted() {
+    // if (this.lastItem < this.panelsSorted.length) {
+    //   const queryItem = this.$route.query.item
+    //   if (queryItem && queryItem != this.lastItem) {
+    //     this.panelIndex = Number.parseInt(queryItem as string)
+    //   } else {
+    //     this.panelIndex = this.lastItem
+    //   }
+    // }
+  },
 })
 </script>

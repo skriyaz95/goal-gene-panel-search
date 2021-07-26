@@ -38,13 +38,21 @@
             <build-panels />
           </v-tab-item>
           <v-tab-item value="institutions">
-            <build-institutions :editable="true" />
+            <build-institutions
+              :editable="true"
+              v-model="item"
+              @change="handleItemChanged($event)"
+              @update="handleInstitutionUpdate($event)"
+            />
           </v-tab-item>
           <v-tab-item value="database">
             <build-database />
           </v-tab-item>
           <v-tab-item value="theme">
             <theme-picker />
+          </v-tab-item>
+          <v-tab-item value="cookies">
+            <gdpr-info />
           </v-tab-item>
         </v-tabs-items>
       </template>
@@ -60,6 +68,9 @@ import BuildDatabase from '@/components/BuildDatabase.vue'
 import BuildInstitutions from '@/components/BuildInstitutions.vue'
 import { TranslateResult } from 'vue-i18n'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
+import GdprInfo from '@/components/GdprInfo.vue'
+import { mapGetters, mapActions } from 'vuex'
+import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 
 export default Vue.extend({
   name: 'Utils',
@@ -70,25 +81,56 @@ export default Vue.extend({
     BuildDatabase,
     BuildInstitutions,
     MainContentTemplate,
+    GdprInfo,
   },
-  data() {
-    return {
-      tabs: ['panels', 'institutions', 'database', 'theme'],
-    }
+  data: () => ({
+    tabs: ['panels', 'institutions', 'database', 'theme', 'cookies'],
+  }),
+  methods: {
+    ...mapActions(['updateLastItemUtils', 'updateLastTabUtils']),
+    handleItemChanged(item: Number): any {
+      if (item != undefined && item.toString() != this.item) {
+        this.item = item.toString()
+      }
+    },
+    handleInstitutionUpdate(index: Number): any {
+      if (index >= 0) {
+        this.handleItemChanged(index)
+      }
+    },
   },
-  methods: {},
-  mounted() {},
+  mounted() {
+    this.tab = this.lastTab
+  },
   watch: {},
   computed: {
+    ...mapGetters({
+      lastTab: 'getLastTabUtils',
+    }),
     tab: {
       set(tab: string) {
-        this.$router.replace({ query: { ...this.$route.query, tab } })
+        const queryTab = this.$route.query.tab
+        if (tab && tab !== queryTab) {
+          this.$router.replace({ query: { ...this.$route.query, tab } })
+          if (queryTab) {
+            this.updateLastTabUtils(tab)
+          }
+        }
       },
-      get() {
+      get(): string | (string | null)[] {
         return this.$route.query.tab
       },
     },
-    background() {
+    item: {
+      set(item: string) {
+        this.$router.replace({ query: { ...this.$route.query, item } })
+        this.updateLastItemUtils(Number.parseInt(item))
+      },
+      get(): string | (string | null)[] {
+        return this.$route.query.item
+      },
+    },
+    background(): VuetifyThemeItem {
       return this.$vuetify.theme.themes.light.background
     },
     toolbarTitle(): TranslateResult {
