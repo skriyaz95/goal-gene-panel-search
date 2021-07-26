@@ -6,7 +6,7 @@
     </v-card-title>
     <v-card-text>
       <v-autocomplete
-        :label="$t('input.details.text')"
+        :label="$t(dropDownLabel)"
         clearable
         :items="searchableItems"
         :value="Number.parseInt(value)"
@@ -27,6 +27,16 @@
             <v-list-item-content>
               {{ item[fieldItemLabel] }}
             </v-list-item-content>
+            <v-list-item-action v-if="editable">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" icon @click="handleDelete(index)">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{ $t('buidInstitutions.delete.tooltip') }}</span>
+              </v-tooltip>
+            </v-list-item-action>
           </v-list-item>
         </v-list>
       </v-list-item-group>
@@ -46,10 +56,12 @@ export default Vue.extend({
   props: {
     value: { type: String, default: '0' },
     fieldItemLabel: { type: String, default: 'name' },
+    dropDownLabel: { type: String, default: 'input.details.text' },
     itemsSorted: {
       type: Array,
       default: () => [],
     },
+    editable: Boolean,
   },
   data: () => ({}),
   methods: {
@@ -58,6 +70,9 @@ export default Vue.extend({
     },
     handleInput($event: any) {
       this.$emit('input', $event)
+    },
+    handleDelete(index: Number) {
+      this.$emit('delete', index)
     },
   },
   computed: {

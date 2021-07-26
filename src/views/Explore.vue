@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar class="primary" dark flat>
+    <v-toolbar class="primary" dark flat dense>
       <v-toolbar-title>
         <span class="title" v-text="toolbarTitle" />
       </v-toolbar-title>
@@ -26,7 +26,7 @@
             </explore-panels>
           </v-tab-item>
           <v-tab-item value="institutions">
-            <build-institutions
+            <build-explore-institutions
               :editable="false"
               :show-read-only-panels="true"
               v-model="item"
@@ -46,7 +46,7 @@
 import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import { TranslateResult } from 'vue-i18n'
-import BuildInstitutions from '@/components/BuildInstitutions.vue'
+import BuildExploreInstitutions from '@/components/BuildExploreInstitutions.vue'
 import ExplorePanels from '@/components/explore/ExplorePanels.vue'
 import HumanGenomeDetails from '@/components/explore/HumanGenomeDetails.vue'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
@@ -54,7 +54,7 @@ import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 
 export default Vue.extend({
   components: {
-    BuildInstitutions,
+    BuildExploreInstitutions,
     ExplorePanels,
     HumanGenomeDetails,
     MainContentTemplate,
@@ -110,7 +110,7 @@ export default Vue.extend({
   methods: {
     ...mapActions(['updateLastItemExplore', 'updateLastTabExplore']),
     handleItemChanged(item: Number): any {
-      if (item != undefined && item.toString() != this.item) {
+      if (item != undefined && item != null && item.toString() != this.item) {
         this.item = item.toString()
       }
     },
@@ -125,7 +125,9 @@ export default Vue.extend({
     updateLastItem() {
       if (this.lastItem == -1) {
         this.item = this.$route.query.item as string
-        this.updateLastItemExplore(Number.parseInt(this.item))
+        if (this.item != undefined && this.item != null) {
+          this.updateLastItemExplore(Number.parseInt(this.item))
+        }
       } else {
         this.item = this.lastItem
       }

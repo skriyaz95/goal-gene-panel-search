@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar class="primary" dark flat>
+    <v-toolbar class="primary" dark flat dense>
       <v-toolbar-title>
         <span class="title" v-text="toolbarTitle" />
       </v-toolbar-title>

@@ -7,6 +7,7 @@
         @input="handleInput($event)"
         @change="handleChange($event)"
         :itemsSorted="panelsSorted"
+        dropDownLabel="buildPanels.selectPanel.text"
       >
         <template v-slot:title>
           {{ $t('explore.panels.list.text') }}:
