@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar class="primary" dark flat>
+    <v-toolbar class="primary" dark flat dense>
       <v-toolbar-title>
         <span class="title" v-text="toolbarTitle" />
       </v-toolbar-title>
@@ -38,7 +38,7 @@
             <build-panels />
           </v-tab-item>
           <v-tab-item value="institutions">
-            <build-institutions
+            <build-explore-institutions
               :editable="true"
               v-model="item"
               @change="handleItemChanged($event)"
@@ -65,7 +65,7 @@ import Vue from 'vue'
 import BuildPanels from '@/components/BuildPanels.vue'
 import ThemePicker from '@/components/ThemePicker.vue'
 import BuildDatabase from '@/components/BuildDatabase.vue'
-import BuildInstitutions from '@/components/BuildInstitutions.vue'
+import BuildExploreInstitutions from '@/components/BuildExploreInstitutions.vue'
 import { TranslateResult } from 'vue-i18n'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import GdprInfo from '@/components/GdprInfo.vue'
@@ -79,7 +79,7 @@ export default Vue.extend({
     BuildPanels,
     ThemePicker,
     BuildDatabase,
-    BuildInstitutions,
+    BuildExploreInstitutions,
     MainContentTemplate,
     GdprInfo,
   },
@@ -89,7 +89,7 @@ export default Vue.extend({
   methods: {
     ...mapActions(['updateLastItemUtils', 'updateLastTabUtils']),
     handleItemChanged(item: Number): any {
-      if (item != undefined && item.toString() != this.item) {
+      if (item != undefined && item != null && item.toString() != this.item) {
         this.item = item.toString()
       }
     },
@@ -98,14 +98,42 @@ export default Vue.extend({
         this.handleItemChanged(index)
       }
     },
+    updateLastTab() {
+      if (this.lastTab == '') {
+        this.tab = this.$route.query.tab
+        this.updateLastTabUtils(this.tab)
+      } else {
+        this.tab = this.lastTab
+      }
+    },
+    updateLastItem() {
+      if (this.lastItem == -1) {
+        this.item = this.$route.query.item as string
+        if (this.item != undefined && this.item != null) {
+          this.updateLastItemUtils(Number.parseInt(this.item))
+        }
+      } else {
+        this.item = this.lastItem
+      }
+    },
+    /**
+     * Use this on mounted to sync with lastTab and lastItem
+     * also handles loading from full refresh by using the url query
+     */
+    updateLastTabAndItem() {
+      console.log('here')
+      this.updateLastTab()
+      this.updateLastItem()
+    },
   },
   mounted() {
-    this.tab = this.lastTab
+    this.updateLastTabAndItem()
   },
   watch: {},
   computed: {
     ...mapGetters({
       lastTab: 'getLastTabUtils',
+      lastItem: 'getLastItemUtils',
     }),
     tab: {
       set(tab: string) {
@@ -123,8 +151,13 @@ export default Vue.extend({
     },
     item: {
       set(item: string) {
-        this.$router.replace({ query: { ...this.$route.query, item } })
-        this.updateLastItemUtils(Number.parseInt(item))
+        const queryItem = this.$route.query.item
+        if (item && item !== queryItem) {
+          this.$router.replace({ query: { ...this.$route.query, item } })
+          if (queryItem) {
+            this.updateLastItemUtils(Number.parseInt(item))
+          }
+        }
       },
       get(): string | (string | null)[] {
         return this.$route.query.item

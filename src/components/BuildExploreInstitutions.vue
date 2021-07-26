@@ -7,6 +7,9 @@
         @input="handleInput($event)"
         @change="handleChange($event)"
         :itemsSorted="tempInstitutionSorted"
+        :editable="editable"
+        @delete="deleteInstitution($event)"
+        dropDownLabel="buildPanels.selectInstitution.text"
       >
         <template v-slot:title>
           {{ $t('buidInstitutions.list.text') }}:
@@ -44,10 +47,21 @@
             :editable="editable"
             :panels="panelNames"
             @name-changed="updateTempInstitutions"
-            @delete-institution="deleteInstitution()"
             :show-read-only-panels="showReadOnlyPanels"
           />
         </v-card-text>
+        <v-card-actions v-if="editable">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn color="error" v-on="on" @click="deleteInstitution()">
+                {{ $t('buidInstitutions.delete.text') }}
+                <v-spacer></v-spacer>
+                <v-icon right>mdi-delete</v-icon>
+              </v-btn>
+            </template>
+            <span>{{ $t('buidInstitutions.delete.tooltip') }}</span>
+          </v-tooltip>
+        </v-card-actions>
       </v-card>
     </template>
   </main-content-template>
@@ -64,7 +78,7 @@ import MainContentTemplate from '@/components/MainContentTemplate.vue'
 
 export default Vue.extend({
   components: { InstitutionDetails, ListTemplate, MainContentTemplate },
-  name: 'BuildInstitutions',
+  name: 'BuildExploreInstitutions',
   props: {
     editable: Boolean,
     showReadOnlyPanels: Boolean,
@@ -123,8 +137,12 @@ export default Vue.extend({
         }
       }
     },
-    deleteInstitution() {
-      this.tempInstitutionSorted.splice(Number.parseInt(this.value), 1)
+    deleteInstitution(index: number) {
+      if (index != null) {
+        this.tempInstitutionSorted.splice(index, 1)
+      } else {
+        this.tempInstitutionSorted.splice(Number.parseInt(this.value), 1)
+      }
     },
     sortInstitutionsByName(a: Institution, b: Institution) {
       if (a.name < b.name) {

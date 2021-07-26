@@ -24,7 +24,7 @@ or a help card or other tutorial content
 import Vue from 'vue'
 
 export default Vue.extend({
-  name: 'GeneSearchHelp',
+  name: 'DatabaseHelp',
   data: () => ({}),
   computed: {},
   watch: {},

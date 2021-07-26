@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- editable institution -->
     <v-list v-if="editable && institution">
       <v-form
         v-model="institutionValid"
@@ -70,22 +71,9 @@
             ></v-autocomplete>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
-          <v-list-item-content>
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn color="error" v-on="on" @click="deleteInstitution()">
-                  {{ $t('buidInstitutions.delete.text') }}
-                  <v-spacer></v-spacer>
-                  <v-icon right>mdi-delete</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t('buidInstitutions.delete.tooltip') }}</span>
-            </v-tooltip>
-          </v-list-item-content>
-        </v-list-item>
       </v-form>
     </v-list>
+    <!-- read only institution -->
     <v-list v-else>
       <v-list-item>
         <v-list-item-icon>
@@ -221,9 +209,6 @@ export default Vue.extend({
     },
     handleNameChange(event: string[]) {
       this.$emit('name-changed', event)
-    },
-    deleteInstitution() {
-      this.$emit('delete-institution')
     },
     emitInstitutionValid() {
       this.institution.valid = this.institutionValid

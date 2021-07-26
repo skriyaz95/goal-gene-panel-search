@@ -10,7 +10,7 @@ export default {
   inputNeedsReload: false,
   lastTabHome: "panels",
   lastTabExplore: "",
-  lastTabUtils: "utils",
+  lastTabUtils: "",
   lastItemExplore: -1 as Number,
   lastItemUtils: -1 as Number,
 }

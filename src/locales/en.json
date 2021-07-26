@@ -19,6 +19,9 @@
     "selectInstitution": {
       "text": "Select an institution"
     },
+    "selectPanel": {
+      "text": "Select a panel"
+    },
     "sourceFile": {
       "text": "Source File"
     },
@@ -297,6 +300,13 @@
         "synonymMatching": "Synonym matching the ",
         "symbolInput": "Symbol",
         "synonyminput": "Synonym"
+      }
+    },
+    "database": {
+      "purpose": "To know if a search is using symbols or synonyms, GTI uses a gene_info file from NCBI.",
+      "howTo": {
+        "part1": "To use the latest gene_info, download the file (step 1) and open it in the app (step2).",
+        "part2": ""
       }
     }
   },
