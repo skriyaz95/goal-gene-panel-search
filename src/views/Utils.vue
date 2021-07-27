@@ -85,63 +85,18 @@ export default Vue.extend({
   },
   data: () => ({
     tabs: ['panels', 'institutions', 'database', 'theme', 'cookies'],
+    mounting: true, //prevent update of lastPath until both tab and items are updated
   }),
-  methods: {
-    ...mapActions(['updateLastItemUtils', 'updateLastTabUtils']),
-    handleItemChanged(item: Number): any {
-      if (item != undefined && item != null && item.toString() != this.item) {
-        this.item = item.toString()
-      }
-    },
-    handleInstitutionUpdate(index: Number): any {
-      if (index >= 0) {
-        this.handleItemChanged(index)
-      }
-    },
-    updateLastTab() {
-      if (this.lastTab == '') {
-        this.tab = this.$route.query.tab
-        this.updateLastTabUtils(this.tab)
-      } else {
-        this.tab = this.lastTab
-      }
-    },
-    updateLastItem() {
-      if (this.lastItem == -1) {
-        this.item = this.$route.query.item as string
-        if (this.item != undefined && this.item != null) {
-          this.updateLastItemUtils(Number.parseInt(this.item))
-        }
-      } else {
-        this.item = this.lastItem
-      }
-    },
-    /**
-     * Use this on mounted to sync with lastTab and lastItem
-     * also handles loading from full refresh by using the url query
-     */
-    updateLastTabAndItem() {
-      console.log('here')
-      this.updateLastTab()
-      this.updateLastItem()
-    },
-  },
-  mounted() {
-    this.updateLastTabAndItem()
-  },
-  watch: {},
   computed: {
     ...mapGetters({
-      lastTab: 'getLastTabUtils',
-      lastItem: 'getLastItemUtils',
+      lastUtilsPath: 'getLastUtilsPath',
     }),
     tab: {
       set(tab: string) {
-        const queryTab = this.$route.query.tab
-        if (tab && tab !== queryTab) {
+        if (tab != this.$route.query.tab) {
           this.$router.replace({ query: { ...this.$route.query, tab } })
-          if (queryTab) {
-            this.updateLastTabUtils(tab)
+          if (!this.mounting) {
+            this.updateLastUtilsPath(this.$route.query)
           }
         }
       },
@@ -151,12 +106,10 @@ export default Vue.extend({
     },
     item: {
       set(item: string) {
-        const queryItem = this.$route.query.item
-        if (item && item !== queryItem) {
+        if (item != this.$route.query.item) {
           this.$router.replace({ query: { ...this.$route.query, item } })
-          if (queryItem) {
-            this.updateLastItemUtils(Number.parseInt(item))
-          }
+          this.updateLastUtilsPath(this.$route.query)
+          this.mounting = false
         }
       },
       get(): string | (string | null)[] {
@@ -173,5 +126,40 @@ export default Vue.extend({
       return 'GTI'
     },
   },
+  methods: {
+    ...mapActions(['updateLastUtilsPath']),
+    handleItemChanged(item: Number): any {
+      if (item != undefined && item != null && item.toString() != this.item) {
+        this.item = item.toString()
+      }
+    },
+    handleInstitutionUpdate(index: Number): any {
+      if (index >= 0) {
+        this.handleItemChanged(index)
+      }
+    },
+    /**
+     * Use this on mounted to sync with lastTab and lastItem
+     * also handles loading from full refresh by using the url query
+     */
+    updateLastTabAndItem() {
+      if (this.lastUtilsPath) {
+        this.tab = this.lastUtilsPath.tab
+        this.item = this.lastUtilsPath.item
+      } else {
+        if (this.$route.query.tab) {
+          this.tab = this.$route.query.tab
+        }
+        if (this.$route.query.item) {
+          this.item = this.$route.query.item
+        }
+      }
+    },
+  },
+  mounted() {
+    console.log('utils')
+    this.updateLastTabAndItem()
+  },
+  watch: {},
 })
 </script>

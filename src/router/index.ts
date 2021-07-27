@@ -25,7 +25,6 @@ const routes = [
     path: "/explore",
     name: "Explore",
     meta: { i18n: "navigation.explore" },
-
     component: Explore,
   },
 ]

@@ -22,7 +22,10 @@
       <template v-slot:one-col>
         <v-tabs-items v-model="tab" class="background">
           <v-tab-item value="panels">
-            <explore-panels v-model="item" @change="handleItemChanged($event)">
+            <explore-panels
+              v-model="item"
+              @change="handleItemChanged($event, 'panels')"
+            >
             </explore-panels>
           </v-tab-item>
           <v-tab-item value="institutions">
@@ -30,7 +33,7 @@
               :editable="false"
               :show-read-only-panels="true"
               v-model="item"
-              @change="handleItemChanged($event)"
+              @change="handleItemChanged($event, 'institutions')"
             />
           </v-tab-item>
           <v-tab-item value="genome">
@@ -63,19 +66,18 @@ export default Vue.extend({
   props: {},
   data: () => ({
     tabs: ['panels', 'institutions', 'genome'],
+    mounting: true, //prevent update of lastPath until both tab and items are updated
   }),
   computed: {
     ...mapGetters({
-      lastTab: 'getLastTabExplore',
-      lastItem: 'getLastItemExplore',
+      lastExplorePath: 'getLastExplorePath',
     }),
     tab: {
       set(tab: string) {
-        const queryTab = this.$route.query.tab
-        if (tab && tab !== queryTab) {
+        if (tab != this.$route.query.tab) {
           this.$router.replace({ query: { ...this.$route.query, tab } })
-          if (queryTab) {
-            this.updateLastTabExplore(tab)
+          if (!this.mounting) {
+            this.updateLastExplorePath(this.$route.query)
           }
         }
       },
@@ -85,12 +87,10 @@ export default Vue.extend({
     },
     item: {
       set(item: string) {
-        const queryItem = this.$route.query.item
-        if (item && item !== queryItem) {
+        if (item != this.$route.query.item) {
           this.$router.replace({ query: { ...this.$route.query, item } })
-          if (queryItem) {
-            this.updateLastItemExplore(Number.parseInt(item))
-          }
+          this.updateLastExplorePath(this.$route.query)
+          this.mounting = false
         }
       },
       get(): string | (string | null)[] {
@@ -108,28 +108,16 @@ export default Vue.extend({
     },
   },
   methods: {
-    ...mapActions(['updateLastItemExplore', 'updateLastTabExplore']),
-    handleItemChanged(item: Number): any {
-      if (item != undefined && item != null && item.toString() != this.item) {
+    ...mapActions(['updateLastExplorePath']),
+    handleItemChanged(item: Number, tab: String): any {
+      console.log(item, tab)
+      if (
+        item != undefined &&
+        item != null &&
+        item.toString() != this.item &&
+        tab == this.tab
+      ) {
         this.item = item.toString()
-      }
-    },
-    updateLastTab() {
-      if (this.lastTab == '') {
-        this.tab = this.$route.query.tab
-        this.updateLastTabExplore(this.tab)
-      } else {
-        this.tab = this.lastTab
-      }
-    },
-    updateLastItem() {
-      if (this.lastItem == -1) {
-        this.item = this.$route.query.item as string
-        if (this.item != undefined && this.item != null) {
-          this.updateLastItemExplore(Number.parseInt(this.item))
-        }
-      } else {
-        this.item = this.lastItem
       }
     },
     /**
@@ -137,11 +125,21 @@ export default Vue.extend({
      * also handles loading from full refresh by using the url query
      */
     updateLastTabAndItem() {
-      this.updateLastTab()
-      this.updateLastItem()
+      if (this.lastExplorePath) {
+        this.tab = this.lastExplorePath.tab
+        this.item = this.lastExplorePath.item
+      } else {
+        if (this.$route.query.tab) {
+          this.tab = this.$route.query.tab
+        }
+        if (this.$route.query.item) {
+          this.item = this.$route.query.item
+        }
+      }
     },
   },
   mounted() {
+    console.log('explore')
     this.updateLastTabAndItem()
   },
 })

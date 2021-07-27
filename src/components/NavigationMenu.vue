@@ -87,10 +87,13 @@
       </v-list-item>
       <v-list-item
         link
-        :to="{ name: 'Explore', query: { tab: 'panels' } }"
+        :to="{
+          name: 'Explore',
+          query: { tab: 'panels', item: '0' },
+        }"
         active-class="primary lighten-2 font-weight-bold"
-        exact-path
         @click.stop=""
+        exact-path
       >
         <v-list-item-icon>
           <v-icon>mdi-database-search</v-icon>

@@ -15,7 +15,6 @@
       <v-list-item-group
         active-class="primary lighten-2 font-weight-bold"
         :value="Number.parseInt(value)"
-        @input="handleInput($event)"
         @change="handleChange($event)"
         mandatory
       >

@@ -16,19 +16,13 @@ export default {
   updateInputNeedsReload(state: any, payload: boolean) {
     state.inputNeedsReload = payload
   },
-  updateLastItemExplore(state: any, payload: Number) {
-    state.lastItemExplore = payload
-  },
-  updateLastItemUtils(state: any, payload: Number) {
-    state.lastItemUtils = payload
-  },
-  async updateLastTabHome(state: any, payload: string) {
+  updateLastTabHome(state: any, payload: string) {
     state.lastTabHome = payload
   },
-  async updateLastTabExplore(state: any, payload: string) {
-    state.lastTabExplore = payload
+  updateLastExplorePath(state: any, payload: any) {
+    state.lastExplorePath = payload
   },
-  async updateLastTabUtils(state: any, payload: string) {
-    state.lastTabUtils = payload
+  updateLastUtilsPath(state: any, payload: any) {
+    state.lastUtilsPath = payload
   },
 }
