@@ -294,7 +294,7 @@
       "purpose": "To know if a search is using symbols or synonyms, GTI uses a gene_info file from NCBI.",
       "howTo": {
         "part1": "To use the latest gene_info, download the file (step 1) and open it in the app (step2).",
-        "part2": ""
+        "part2": "Replace the downloaded files on your server (step 3)"
       }
     }
   },
