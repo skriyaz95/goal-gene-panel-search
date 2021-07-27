@@ -271,6 +271,10 @@
     "delete": {
       "text": "Delete",
       "tooltip": "Remove from the list"
+    },
+    "info": {
+      "part1": "All changes are temporary. They will be lost after reload.",
+      "part2": "Replace assets/institutions.json on your server to make the changes permanent for all users."
     }
   },
   "help": {

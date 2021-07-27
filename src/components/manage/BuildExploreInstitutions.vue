@@ -14,6 +14,18 @@
         <template v-slot:title>
           {{ $t('buildInstitutions.list.text') }}:
         </template>
+        <template v-slot:info>
+          <info-alert :active="info">
+            <template v-slot:content>
+              <div class="pb-2">
+                {{ $t('buildInstitutions.info.part1') }}
+              </div>
+              <div>
+                {{ $t('buildInstitutions.info.part2') }}
+              </div>
+            </template>
+          </info-alert>
+        </template>
         <template v-slot:actions v-if="editable">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
@@ -29,7 +41,7 @@
                 class="primary ml-2"
                 :disabled="!validInstitutions()"
                 v-on="on"
-                @click="downloadInstitutions()"
+                @click="saveAll()"
               >
                 {{ $t('buildInstitutions.saveAll.text') }}
               </v-btn>
@@ -70,14 +82,20 @@
 <script lang="ts">
 import { GenePanelDetails, Institution } from '@/types/panel-types'
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import download, { formatObjetToJson } from '@/utils/download'
 import ListTemplate from '@/components/explore/ListTemplate.vue'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
+import InfoAlert from '@/components/help/InfoAlert.vue'
 
 export default Vue.extend({
-  components: { InstitutionDetails, ListTemplate, MainContentTemplate },
+  components: {
+    InstitutionDetails,
+    ListTemplate,
+    MainContentTemplate,
+    InfoAlert,
+  },
   name: 'BuildExploreInstitutions',
   props: {
     editable: Boolean,
@@ -89,8 +107,10 @@ export default Vue.extend({
     // institutionIndex: 0,
     previousIndex: 0, //to prevent undefined error when clicking on the same institution twice
     tempInstitutionSorted: new Array<Institution>(),
+    info: false,
   }),
   methods: {
+    ...mapActions(['updateInstitutions']),
     addInstitution() {
       const newInstitution = new Institution('New', '', '', '', [])
       this.tempInstitutionSorted.push(newInstitution)
@@ -101,7 +121,9 @@ export default Vue.extend({
       //TODO validate form
       return true
     },
-    downloadInstitutions() {
+    saveAll() {
+      this.info = true
+      this.updateInstitutions(this.tempInstitutionSorted)
       download(
         'institutions.json',
         formatObjetToJson(this.tempInstitutionSorted, false),
@@ -133,6 +155,7 @@ export default Vue.extend({
           break
         }
       }
+      this.info = true
     },
     deleteInstitution(index: number) {
       if (index != null) {
@@ -140,6 +163,7 @@ export default Vue.extend({
       } else {
         this.tempInstitutionSorted.splice(Number.parseInt(this.value), 1)
       }
+      this.info = true
     },
     sortInstitutionsByName(a: Institution, b: Institution) {
       if (a.name < b.name) {
@@ -161,7 +185,6 @@ export default Vue.extend({
     ...mapGetters({
       institutions: 'getInstitutionsSorted',
       panels: 'getPanels',
-      lastItem: 'getLastItemExplore',
     }),
     panelNames(): string[] {
       return this.panels.map((p: GenePanelDetails) => p.name)
@@ -169,14 +192,6 @@ export default Vue.extend({
   },
   mounted() {
     this.updateTempInstitutionsFromStore()
-    // if (this.lastItem < this.tempInstitutionSorted.length) {
-    //   const queryItem = this.$route.query.item
-    //   if (queryItem && queryItem != this.lastItem) {
-    //     this.institutionIndex = Number.parseInt(queryItem as string)
-    //   } else {
-    //     this.institutionIndex = this.lastItem
-    //   }
-    // }
   },
 })
 </script>

@@ -30,7 +30,7 @@
             <v-list-item-action v-if="editable">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="handleDelete(index)">
+                  <v-btn v-on="on" icon @click.stop="handleDelete(index)">
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
                 </template>

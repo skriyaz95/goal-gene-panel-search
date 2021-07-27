@@ -42,7 +42,7 @@
                   class="primary ml-2"
                   :disabled="!validPanels()"
                   v-on="on"
-                  @click="downloadPanels()"
+                  @click="saveAll()"
                 >
                   {{ $t('buildPanels.saveAll.text') }}
                 </v-btn>
@@ -90,7 +90,7 @@ import {
   ParsedGenes,
 } from '@/types/panel-types'
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import PanelDetails from '@/components/explore/PanelDetails.vue'
 import download, { formatObjetToJson } from '@/utils/download'
 import ListTemplate from '@/components/explore/ListTemplate.vue'
@@ -115,6 +115,7 @@ export default Vue.extend({
     errorMessage: '',
   }),
   methods: {
+    ...mapActions(['updatePanels']),
     handleFileUpload() {
       this.errorMessage = ''
       if (!this.panelFile) {
@@ -143,8 +144,9 @@ export default Vue.extend({
       //TODO validate form
       return true
     },
-    downloadPanels() {
+    saveAll() {
       this.info = true
+      this.updatePanels(this.tempPanelSorted)
       download(
         'panels.json',
         formatObjetToJson(this.tempPanelSorted, false),
