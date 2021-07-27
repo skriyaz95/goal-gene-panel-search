@@ -5,6 +5,7 @@
       <slot name="title"></slot>
     </v-card-title>
     <v-card-text>
+      <slot name="info"></slot>
       <v-autocomplete
         :label="$t(dropDownLabel)"
         clearable
@@ -33,14 +34,14 @@
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
                 </template>
-                <span>{{ $t('buidInstitutions.delete.tooltip') }}</span>
+                <span>{{ $t('buildInstitutions.delete.tooltip') }}</span>
               </v-tooltip>
             </v-list-item-action>
           </v-list-item>
         </v-list>
       </v-list-item-group>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions class="px-4">
       <slot name="actions"></slot>
     </v-card-actions>
   </v-card>

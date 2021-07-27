@@ -12,16 +12,16 @@
         dropDownLabel="buildPanels.selectInstitution.text"
       >
         <template v-slot:title>
-          {{ $t('buidInstitutions.list.text') }}:
+          {{ $t('buildInstitutions.list.text') }}:
         </template>
         <template v-slot:actions v-if="editable">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-btn class="primary" v-on="on" @click="addInstitution()">
-                {{ $t('buidInstitutions.new.text') }}
+                {{ $t('buildInstitutions.new.text') }}
               </v-btn>
             </template>
-            <span>{{ $t('buidInstitutions.new.tooltip') }}</span>
+            <span>{{ $t('buildInstitutions.new.tooltip') }}</span>
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
@@ -31,10 +31,10 @@
                 v-on="on"
                 @click="downloadInstitutions()"
               >
-                {{ $t('buidInstitutions.saveAll.text') }}
+                {{ $t('buildInstitutions.saveAll.text') }}
               </v-btn>
             </template>
-            <span> {{ $t('buidInstitutions.saveAll.tooltip') }}</span>
+            <span> {{ $t('buildInstitutions.saveAll.tooltip') }}</span>
           </v-tooltip>
         </template>
       </list-template>
@@ -54,12 +54,12 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-btn color="error" v-on="on" @click="deleteInstitution()">
-                {{ $t('buidInstitutions.delete.text') }}
+                {{ $t('buildInstitutions.delete.text') }}
                 <v-spacer></v-spacer>
                 <v-icon right>mdi-delete</v-icon>
               </v-btn>
             </template>
-            <span>{{ $t('buidInstitutions.delete.tooltip') }}</span>
+            <span>{{ $t('buildInstitutions.delete.tooltip') }}</span>
           </v-tooltip>
         </v-card-actions>
       </v-card>

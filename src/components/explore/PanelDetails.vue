@@ -1,7 +1,21 @@
 <template>
   <div>
     <v-list>
-      <v-list-item>
+      <v-list-item v-if="editable && panel">
+        <v-list-item-content>
+          <v-text-field
+            v-model="panel.name"
+            :label="$t('institutionDetails.name.text')"
+            dense
+            @change="handleNameChange"
+          >
+            <template v-slot:prepend>
+              <div class="pr-6"><v-icon>mdi-dna</v-icon></div>
+            </template>
+          </v-text-field>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item v-else>
         <v-list-item-icon>
           <v-icon>mdi-dna</v-icon>
         </v-list-item-icon>
@@ -9,16 +23,19 @@
           <v-list-item-title>{{ panel.name }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+
       <v-list-item>
         <v-list-item-icon>
           <v-icon>mdi-bank</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
-            {{ institution }}
+            <span v-if="institution">{{ institution }}</span>
+            <span v-else>{{ $t('buildPanels.noInstitution.text') }}</span>
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+
       <v-list-item>
         <v-list-item-icon>
           <v-icon>mdi-file-document</v-icon>
@@ -136,9 +153,15 @@ export default Vue.extend({
       type: String,
       default: '',
     },
+    editable: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
-    return {}
+    return {
+      selectedInstitution: this.institution,
+    }
   },
   computed: {
     ...mapGetters({
@@ -171,7 +194,11 @@ export default Vue.extend({
       return this.showNotFound || this.showSynonym || this.showSymbol
     },
   },
-  methods: {},
+  methods: {
+    handleNameChange(event: string[]) {
+      this.$emit('name-changed', event)
+    },
+  },
   watch: {},
   mounted() {},
 })

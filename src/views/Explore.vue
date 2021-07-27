@@ -22,11 +22,11 @@
       <template v-slot:one-col>
         <v-tabs-items v-model="tab" class="background">
           <v-tab-item value="panels">
-            <explore-panels
+            <build-explore-panels
               v-model="item"
               @change="handleItemChanged($event, 'panels')"
             >
-            </explore-panels>
+            </build-explore-panels>
           </v-tab-item>
           <v-tab-item value="institutions">
             <build-explore-institutions
@@ -49,8 +49,8 @@
 import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import { TranslateResult } from 'vue-i18n'
-import BuildExploreInstitutions from '@/components/BuildExploreInstitutions.vue'
-import ExplorePanels from '@/components/explore/ExplorePanels.vue'
+import BuildExploreInstitutions from '@/components/manage/BuildExploreInstitutions.vue'
+import BuildExplorePanels from '@/components/explore/BuildExplorePanels.vue'
 import HumanGenomeDetails from '@/components/explore/HumanGenomeDetails.vue'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
@@ -58,7 +58,7 @@ import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 export default Vue.extend({
   components: {
     BuildExploreInstitutions,
-    ExplorePanels,
+    BuildExplorePanels,
     HumanGenomeDetails,
     MainContentTemplate,
   },
@@ -110,7 +110,6 @@ export default Vue.extend({
   methods: {
     ...mapActions(['updateLastExplorePath']),
     handleItemChanged(item: Number, tab: String): any {
-      console.log(item, tab)
       if (
         item != undefined &&
         item != null &&
@@ -139,7 +138,6 @@ export default Vue.extend({
     },
   },
   mounted() {
-    console.log('explore')
     this.updateLastTabAndItem()
   },
 })

@@ -35,13 +35,18 @@
       <template v-slot:one-col>
         <v-tabs-items v-model="tab" class="background">
           <v-tab-item value="panels">
-            <build-panels />
+            <build-explore-panels
+              :editable="true"
+              v-model="item"
+              @change="handleItemChanged($event, 'panels')"
+              @update="handlePanelUpdate($event)"
+            />
           </v-tab-item>
           <v-tab-item value="institutions">
             <build-explore-institutions
               :editable="true"
               v-model="item"
-              @change="handleItemChanged($event)"
+              @change="handleItemChanged($event, 'institutions')"
               @update="handleInstitutionUpdate($event)"
             />
           </v-tab-item>
@@ -62,10 +67,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import BuildPanels from '@/components/BuildPanels.vue'
-import ThemePicker from '@/components/ThemePicker.vue'
-import BuildDatabase from '@/components/BuildDatabase.vue'
-import BuildExploreInstitutions from '@/components/BuildExploreInstitutions.vue'
+import ThemePicker from '@/components/manage/ThemePicker.vue'
+import BuildDatabase from '@/components/manage/BuildDatabase.vue'
+import BuildExploreInstitutions from '@/components/manage/BuildExploreInstitutions.vue'
+import BuildExplorePanels from '@/components/explore/BuildExplorePanels.vue'
 import { TranslateResult } from 'vue-i18n'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import GdprInfo from '@/components/GdprInfo.vue'
@@ -76,7 +81,7 @@ export default Vue.extend({
   name: 'Utils',
 
   components: {
-    BuildPanels,
+    BuildExplorePanels,
     ThemePicker,
     BuildDatabase,
     BuildExploreInstitutions,
@@ -128,14 +133,24 @@ export default Vue.extend({
   },
   methods: {
     ...mapActions(['updateLastUtilsPath']),
-    handleItemChanged(item: Number): any {
-      if (item != undefined && item != null && item.toString() != this.item) {
+    handleItemChanged(item: Number, tab: String): any {
+      if (
+        item != undefined &&
+        item != null &&
+        item.toString() != this.item &&
+        tab == this.tab
+      ) {
         this.item = item.toString()
       }
     },
     handleInstitutionUpdate(index: Number): any {
       if (index >= 0) {
-        this.handleItemChanged(index)
+        this.handleItemChanged(index, 'institutions')
+      }
+    },
+    handlePanelUpdate(index: Number): any {
+      if (index >= 0) {
+        this.handleItemChanged(index, 'panels')
       }
     },
     /**
@@ -157,7 +172,6 @@ export default Vue.extend({
     },
   },
   mounted() {
-    console.log('utils')
     this.updateLastTabAndItem()
   },
   watch: {},
