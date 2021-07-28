@@ -21,6 +21,29 @@
     },
     "sourceFile": {
       "text": "Source File"
+    },
+    "new": {
+      "text": "Add New",
+      "tooltip": "Add a Panel to the List"
+    },
+    "saveAll": {
+      "text": "Save All",
+      "tooltip": "Download a JSON file of the panels"
+    },
+    "noInstitution": {
+      "text": "Select Institution in the Institutions tab after saving"
+    },
+    "validation": {
+      "accepted-files": "Only .bed or .csv files are accepted",
+      "csv-file-not-valid": "CSV File is Not valid. Please upload valid file",
+      "bed-file-not-valid": "BED File is Not valid. Please upload valid file"
+    },
+    "info": {
+      "part1": "All changes are temporary. They will be lost after reload.",
+      "part2": "Replace assets/panels.json on your server to make the changes permanent for all users."
+    },
+    "duplicate": {
+      "text": "File already exists"
     }
   },
   "button": {
@@ -233,7 +256,7 @@
       "text": "Too many to display (> 500)"
     }
   },
-  "buidInstitutions": {
+  "buildInstitutions": {
     "list": {
       "text": "Existing Institutions"
     },
@@ -248,6 +271,10 @@
     "delete": {
       "text": "Delete",
       "tooltip": "Remove from the list"
+    },
+    "info": {
+      "part1": "All changes are temporary. They will be lost after reload.",
+      "part2": "Replace assets/institutions.json on your server to make the changes permanent for all users."
     }
   },
   "help": {

@@ -1,11 +1,14 @@
-import { GenePanelDetails, SynonymGene } from "@/types/panel-types"
+import { GenePanelDetails, Institution, SynonymGene } from "@/types/panel-types"
 
 export default {
   resetPanels(state: any) {
     state.panels = []
   },
   updatePanels(state: any, payload: Array<GenePanelDetails>) {
-    state.panels = payload
+    state.panels = JSON.parse(JSON.stringify(payload))
+  },
+  updateInstitutions(state: any, payload: Array<Institution>) {
+    state.institutions = JSON.parse(JSON.stringify(payload))
   },
   updateSynonyms(state: any, payload: SynonymGene[]) {
     state.synonyms = payload
