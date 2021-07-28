@@ -78,7 +78,8 @@ export default Vue.extend({
       }
     },
     handleGDPRResponse(response: boolean) {
-      this.gdpr = response
+      this.gdpr = !response
+      console.log(this.gdpr)
     },
   },
   computed: {
