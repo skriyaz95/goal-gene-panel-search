@@ -71,7 +71,7 @@
                       }})
                     </v-chip>
                   </template>
-                  <span>{{ $t('parsedInput.notFound.tooltip') }}</span>
+                  <span>{{ $t('explore.panelDetails.notFound.tooltip') }}</span>
                 </v-tooltip>
                 <v-tooltip bottom v-show="showSynonym">
                   <template v-slot:activator="{ on }">
@@ -89,7 +89,7 @@
                       }})
                     </v-chip>
                   </template>
-                  <span>{{ $t('parsedInput.synonyms.tooltip') }}</span>
+                  <span>{{ $t('explore.panelDetails.synonyms.tooltip') }}</span>
                 </v-tooltip>
                 <v-tooltip bottom v-show="showSymbol">
                   <template v-slot:activator="{ on }">
@@ -107,7 +107,7 @@
                       }})
                     </v-chip>
                   </template>
-                  <span>{{ $t('parsedInput.symbols.tooltip') }}</span>
+                  <span>{{ $t('explore.panelDetails.symbols.tooltip') }}</span>
                 </v-tooltip>
               </span>
             </v-fade-transition>

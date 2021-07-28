@@ -22,18 +22,12 @@
       <template v-slot:one-col>
         <v-tabs-items v-model="tab" class="background">
           <v-tab-item value="panels">
-            <build-explore-panels
-              v-model="item"
-              @change="handleItemChanged($event, 'panels')"
-            >
-            </build-explore-panels>
+            <build-explore-panels> </build-explore-panels>
           </v-tab-item>
           <v-tab-item value="institutions">
             <build-explore-institutions
               :editable="false"
               :show-read-only-panels="true"
-              v-model="item"
-              @change="handleItemChanged($event, 'institutions')"
             />
           </v-tab-item>
           <v-tab-item value="genome">
@@ -47,7 +41,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters, mapActions } from 'vuex'
 import { TranslateResult } from 'vue-i18n'
 import BuildExploreInstitutions from '@/components/manage/BuildExploreInstitutions.vue'
 import BuildExplorePanels from '@/components/explore/BuildExplorePanels.vue'
@@ -66,35 +59,18 @@ export default Vue.extend({
   props: {},
   data: () => ({
     tabs: ['panels', 'institutions', 'genome'],
-    mounting: true, //prevent update of lastPath until both tab and items are updated
   }),
   computed: {
-    ...mapGetters({
-      lastExplorePath: 'getLastExplorePath',
-    }),
     tab: {
       set(tab: string) {
-        if (tab != this.$route.query.tab) {
-          this.$router.replace({ query: { ...this.$route.query, tab } })
-          if (!this.mounting) {
-            this.updateLastExplorePath(this.$route.query)
-          }
+        this.$router.replace({ params: { ...this.$route.params, tab } })
+        if (this.$route.params.item !== '0') {
+          const item = '0'
+          this.$router.replace({ params: { ...this.$route.params, item } })
         }
       },
-      get(): string | (string | null)[] {
-        return this.$route.query.tab
-      },
-    },
-    item: {
-      set(item: string) {
-        if (item != this.$route.query.item) {
-          this.$router.replace({ query: { ...this.$route.query, item } })
-          this.updateLastExplorePath(this.$route.query)
-          this.mounting = false
-        }
-      },
-      get(): string | (string | null)[] {
-        return this.$route.query.item
+      get(): string {
+        return this.$route.params.tab ? this.$route.params.tab : 'panels'
       },
     },
     background(): VuetifyThemeItem {
@@ -107,38 +83,7 @@ export default Vue.extend({
       return 'GTI'
     },
   },
-  methods: {
-    ...mapActions(['updateLastExplorePath']),
-    handleItemChanged(item: Number, tab: String): any {
-      if (
-        item != undefined &&
-        item != null &&
-        item.toString() != this.item &&
-        tab == this.tab
-      ) {
-        this.item = item.toString()
-      }
-    },
-    /**
-     * Use this on mounted to sync with lastTab and lastItem
-     * also handles loading from full refresh by using the url query
-     */
-    updateLastTabAndItem() {
-      if (this.lastExplorePath) {
-        this.tab = this.lastExplorePath.tab
-        this.item = this.lastExplorePath.item
-      } else {
-        if (this.$route.query.tab) {
-          this.tab = this.$route.query.tab
-        }
-        if (this.$route.query.item) {
-          this.item = this.$route.query.item
-        }
-      }
-    },
-  },
-  mounted() {
-    this.updateLastTabAndItem()
-  },
+  methods: {},
+  mounted() {},
 })
 </script>

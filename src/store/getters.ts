@@ -103,4 +103,7 @@ export default {
   getLastUtilsPath: (state: any) => {
     return state.lastUtilsPath
   },
+  getLastSelections: (state: any) => {
+    return state.lastSelections
+  },
 }

@@ -8,6 +8,7 @@ import {
   FormatCompareItemsPayload,
   UserInputPayload,
 } from "@/types/payload-types"
+import { LastSelection } from "@/types/ui-types"
 import $getFindGenesWorker from "@/utils/workers/worker-instance"
 
 export default {
@@ -99,5 +100,8 @@ export default {
   },
   async updateLastUtilsPath(context: any, payload: any) {
     context.commit("updateLastUtilsPath", payload)
+  },
+  updateLastSelection(context: any, payload: LastSelection) {
+    context.commit("updateLastSelection", payload)
   },
 }

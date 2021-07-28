@@ -1,4 +1,5 @@
 import { GenePanelDetails, Institution, SynonymGene } from "@/types/panel-types"
+import { LastSelection } from "@/types/ui-types"
 
 export default {
   resetPanels(state: any) {
@@ -27,5 +28,8 @@ export default {
   },
   updateLastUtilsPath(state: any, payload: any) {
     state.lastUtilsPath = payload
+  },
+  updateLastSelection(state: any, payload: LastSelection) {
+    state.lastSelections.set(payload.pageTab, payload)
   },
 }

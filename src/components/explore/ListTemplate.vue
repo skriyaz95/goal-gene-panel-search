@@ -10,12 +10,12 @@
         :label="$t(dropDownLabel)"
         clearable
         :items="searchableItems"
-        :value="Number.parseInt(value)"
+        :value="value"
         @input="handleInput($event)"
       ></v-autocomplete>
       <v-list-item-group
         active-class="primary lighten-2 font-weight-bold"
-        :value="Number.parseInt(value)"
+        :value="value"
         @change="handleChange($event)"
         mandatory
       >
@@ -27,7 +27,7 @@
             <v-list-item-content>
               {{ item[fieldItemLabel] }}
             </v-list-item-content>
-            <v-list-item-action v-if="editable">
+            <v-list-item-action v-if="editable" class="my-0">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click.stop="handleDelete(index)">
@@ -54,7 +54,7 @@ export default Vue.extend({
   components: {},
   name: 'ListTemplate',
   props: {
-    value: { type: String, default: '0' },
+    value: { type: Number, default: 0 },
     fieldItemLabel: { type: String, default: 'name' },
     dropDownLabel: { type: String, default: 'input.details.text' },
     itemsSorted: {

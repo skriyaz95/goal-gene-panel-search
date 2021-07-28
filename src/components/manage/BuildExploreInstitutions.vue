@@ -3,7 +3,7 @@
   <main-content-template inner>
     <template v-slot:left-col>
       <list-template
-        :value="value"
+        :value="item"
         @input="handleInput($event)"
         @change="handleChange($event)"
         :itemsSorted="tempInstitutionSorted"
@@ -13,9 +13,23 @@
       >
         <template v-slot:title>
           {{ $t('buildInstitutions.list.text') }}:
+          <v-spacer></v-spacer>
+          <help-button @action="handleHelp()" :active="help">
+            <template v-slot:content>
+              <span>
+                {{ $t('button.showHide.tooltip') }}
+                {{ $t('button.help.text') }}
+              </span>
+            </template>
+          </help-button>
         </template>
         <template v-slot:info>
-          <info-alert :active="info">
+          <info-alert :active="help">
+            <template v-slot:content>
+              <institution-explore-help :editable="editable" />
+            </template>
+          </info-alert>
+          <info-alert v-if="editable" :active="info || help">
             <template v-slot:content>
               <div class="pb-2">
                 {{ $t('buildInstitutions.info.part1') }}
@@ -88,6 +102,8 @@ import download, { formatObjetToJson } from '@/utils/download'
 import ListTemplate from '@/components/explore/ListTemplate.vue'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
+import HelpButton from '@/components/help/HelpButton.vue'
+import InstitutionExploreHelp from '../help/InstitutionExploreHelp.vue'
 
 export default Vue.extend({
   components: {
@@ -95,12 +111,13 @@ export default Vue.extend({
     ListTemplate,
     MainContentTemplate,
     InfoAlert,
+    InstitutionExploreHelp,
+    HelpButton,
   },
   name: 'BuildExploreInstitutions',
   props: {
     editable: Boolean,
     showReadOnlyPanels: Boolean,
-    value: { type: String, default: '0' },
   },
   data: () => ({
     publicPath: process.env.BASE_URL,
@@ -108,9 +125,14 @@ export default Vue.extend({
     previousIndex: 0, //to prevent undefined error when clicking on the same institution twice
     tempInstitutionSorted: new Array<Institution>(),
     info: false,
+    help: false,
   }),
   methods: {
     ...mapActions(['updateInstitutions']),
+    handleHelp() {
+      this.$emit('help')
+      this.help = !this.help
+    },
     addInstitution() {
       const newInstitution = new Institution('New', '', '', '', [])
       this.tempInstitutionSorted.push(newInstitution)
@@ -131,7 +153,7 @@ export default Vue.extend({
       )
     },
     getCurrentInstitution(): Institution | null {
-      return this.tempInstitutionSorted[Number.parseInt(this.value)]
+      return this.tempInstitutionSorted[this.item]
     },
     updateTempInstitutionsFromStore() {
       this.tempInstitutionSorted = JSON.parse(JSON.stringify(this.institutions))
@@ -161,7 +183,7 @@ export default Vue.extend({
       if (index != null) {
         this.tempInstitutionSorted.splice(index, 1)
       } else {
-        this.tempInstitutionSorted.splice(Number.parseInt(this.value), 1)
+        this.tempInstitutionSorted.splice(this.item, 1)
       }
       this.info = true
     },
@@ -175,10 +197,10 @@ export default Vue.extend({
       return 0
     },
     handleChange($event: any) {
-      this.$emit('change', $event)
+      this.item = $event
     },
     handleInput($event: any) {
-      this.$emit('input', $event)
+      this.item = $event
     },
   },
   computed: {
@@ -186,6 +208,19 @@ export default Vue.extend({
       institutions: 'getInstitutionsSorted',
       panels: 'getPanels',
     }),
+    item: {
+      set(itemNumber: number) {
+        //avoid duplicate navigation
+        if (itemNumber === this.item) {
+          return
+        }
+        const item = itemNumber.toString()
+        this.$router.replace({ params: { ...this.$route.params, item } })
+      },
+      get(): number {
+        return Number.parseInt(this.$route.params.item)
+      },
+    },
     panelNames(): string[] {
       return this.panels.map((p: GenePanelDetails) => p.name)
     },

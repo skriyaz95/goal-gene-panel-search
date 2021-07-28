@@ -136,16 +136,11 @@ export default Vue.extend({
     }),
     tab: {
       set(tab: string) {
-        const queryTab = this.$route.query.tab
-        if (tab && tab !== queryTab) {
-          this.$router.replace({ query: { ...this.$route.query, tab } })
-          if (queryTab) {
-            this.updateLastTabHome(tab)
-          }
-        }
+        this.$router.replace({ params: { ...this.$route.params, tab } })
+        // this.updateLastExplorePath()
       },
       get(): string | (string | null)[] {
-        return this.$route.query.tab
+        return this.$route.params.tab ? this.$route.params.tab : 'results'
       },
     },
     background(): VuetifyThemeItem {
@@ -275,7 +270,6 @@ export default Vue.extend({
     }
     this.initVisibleInstitutions()
     this.initLastSearches()
-    this.tab = this.lastTab
   },
 })
 </script>

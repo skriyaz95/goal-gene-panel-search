@@ -22,3 +22,17 @@ export class TableHeader {
     this.value = text
   }
 }
+
+export class LastSelection {
+  pageTab: string
+  tab: string
+  item: number
+  path: string
+
+  constructor(page: string, tab: string, item: number) {
+    this.pageTab = page + tab
+    this.tab = tab
+    this.item = item
+    this.path = "/" + page + "/" + tab + "/" + item
+  }
+}

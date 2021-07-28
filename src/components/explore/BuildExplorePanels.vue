@@ -4,7 +4,7 @@
     <main-content-template inner>
       <template v-slot:left-col>
         <list-template
-          :value="value"
+          v-model="item"
           @input="handleInput($event)"
           @change="handleChange($event)"
           :itemsSorted="tempPanelSorted"
@@ -14,9 +14,23 @@
         >
           <template v-slot:title>
             {{ $t('explore.panels.list.text') }}:
+            <v-spacer></v-spacer>
+            <help-button @action="handleHelp()" :active="help">
+              <template v-slot:content>
+                <span>
+                  {{ $t('button.showHide.tooltip') }}
+                  {{ $t('button.help.text') }}
+                </span>
+              </template>
+            </help-button>
           </template>
           <template v-slot:info>
-            <info-alert :active="info">
+            <info-alert :active="help">
+              <template v-slot:content>
+                <panel-explore-help :editable="editable" />
+              </template>
+            </info-alert>
+            <info-alert v-if="editable" :active="info || help">
               <template v-slot:content>
                 <div class="pb-2">
                   {{ $t('buildPanels.info.part1') }}
@@ -97,14 +111,22 @@ import ListTemplate from '@/components/explore/ListTemplate.vue'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import InfoAlert from '@/components/help/InfoAlert.vue'
+import HelpButton from '@/components/help/HelpButton.vue'
+import PanelExploreHelp from '../help/PanelExploreHelp.vue'
 
 export default Vue.extend({
-  components: { PanelDetails, ListTemplate, MainContentTemplate, InfoAlert },
+  components: {
+    PanelDetails,
+    ListTemplate,
+    MainContentTemplate,
+    InfoAlert,
+    PanelExploreHelp,
+    HelpButton,
+  },
   name: 'BuildExplorePanels',
   props: {
     editable: Boolean,
     showReadOnlyPanels: Boolean,
-    value: { type: String, default: '0' },
   },
   data: () => ({
     previousIndex: 0, //to prevent undefined error when clicking on the same panel twice
@@ -113,9 +135,14 @@ export default Vue.extend({
     panelFile: null,
     info: false,
     errorMessage: '',
+    help: false,
   }),
   methods: {
     ...mapActions(['updatePanels']),
+    handleHelp() {
+      this.$emit('help')
+      this.help = !this.help
+    },
     handleFileUpload() {
       this.errorMessage = ''
       if (!this.panelFile) {
@@ -154,7 +181,7 @@ export default Vue.extend({
       )
     },
     getCurrentPanel(): GenePanelDetails | null {
-      const currentPanel = this.tempPanelSorted[Number.parseInt(this.value)]
+      const currentPanel = this.tempPanelSorted[this.item]
       this.currentInstitution = this.getInstitutionfromPanel(currentPanel)
       return currentPanel
     },
@@ -175,7 +202,7 @@ export default Vue.extend({
       if (index != null) {
         this.tempPanelSorted.splice(index, 1)
       } else {
-        this.tempPanelSorted.splice(Number.parseInt(this.value), 1)
+        this.tempPanelSorted.splice(this.item, 1)
       }
       this.info = true
     },
@@ -189,10 +216,10 @@ export default Vue.extend({
       return 0
     },
     handleChange($event: any) {
-      this.$emit('change', $event)
+      this.item = $event
     },
     handleInput($event: any) {
-      this.$emit('input', $event)
+      this.item = $event
     },
     getInstitutionfromPanel(panel: GenePanelDetails) {
       if (this.institutions && panel && panel.name) {
@@ -318,6 +345,19 @@ export default Vue.extend({
       lastItem: 'getLastItemExplore',
       institutions: 'getInstitutions',
     }),
+    item: {
+      set(itemNumber: number) {
+        //avoid duplicate navigation
+        if (itemNumber === this.item) {
+          return
+        }
+        const item = itemNumber.toString()
+        this.$router.replace({ params: { ...this.$route.params, item } })
+      },
+      get(): number {
+        return Number.parseInt(this.$route.params.item)
+      },
+    },
   },
   mounted() {
     this.updateTempPanelsFromStore()
