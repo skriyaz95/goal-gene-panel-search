@@ -254,6 +254,9 @@
     },
     "tooMany": {
       "text": "Too many to display (> 500)"
+    },
+    "textOnly": {
+      "tooltip": "Show in text form (slow)"
     }
   },
   "buildInstitutions": {
