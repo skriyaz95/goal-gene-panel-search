@@ -77,6 +77,7 @@
           :headers="tableHeaders"
           :items="panelContent"
           item-key="name"
+          :custom-sort="customSort"
         >
           <template v-slot:[`item.institution`]="{ item }">
             <v-tooltip bottom v-if="!isInstitutionEmpty(item.institution)">
@@ -301,6 +302,30 @@ export default Vue.extend({
     },
     handleHelp() {
       this.$emit('help')
+    },
+    customSort(items: any[], sortBy: string[], sortDesc: boolean[]): any[] {
+      items.sort((a: any, b: any) => {
+        const desc = sortDesc[0]
+        if (sortBy[0] === 'institution') {
+          const aItem = a[sortBy[0]].name
+          const bItem = b[sortBy[0]].name
+          return this.sortString(aItem, bItem, desc)
+        } else {
+          const aItem = a[sortBy[0]]
+          const bItem = b[sortBy[0]]
+          return this.sortString(aItem, bItem, desc)
+        }
+      })
+      return items
+    },
+    sortString(aItem: any, bItem: any, desc: boolean) {
+      if (aItem > bItem) {
+        return desc ? 1 : -1
+      }
+      if (aItem < bItem) {
+        return desc ? -1 : 1
+      }
+      return 0
     },
   },
 })
