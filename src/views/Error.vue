@@ -54,6 +54,8 @@ export default Vue.extend({
     },
   },
   methods: {},
-  mounted() {},
+  mounted() {
+    document.title = 'GTI ' + this.$t('navigation.error.title.text')
+  },
 })
 </script>

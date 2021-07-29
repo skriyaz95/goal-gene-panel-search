@@ -136,6 +136,9 @@
       }
     },
     "error": {
+      "title": {
+        "text": "Error Page"
+      },
       "toolbar": {
         "text": "Oops..."
       },
