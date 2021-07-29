@@ -1,4 +1,5 @@
 import { LastSelection } from "@/types/ui-types"
+import {GenePanelDetails, Institution, SynonymGene} from "@/types/panel-types";
 
 export default {
   resetPanels(state: any) {

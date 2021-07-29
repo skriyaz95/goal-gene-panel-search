@@ -152,7 +152,7 @@ export default Vue.extend({
   props: {
     institution: {
       type: Object,
-      default: () => new Institution('', '', '', '', [], true),
+      default: () => new Institution('', '', '', '', []),
     },
     editable: {
       type: Boolean,

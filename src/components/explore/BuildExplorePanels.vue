@@ -151,6 +151,10 @@ export default Vue.extend({
       var fr = new FileReader()
       // verify that panel doesn't already exist
       const fileName = (this.panelFile as any).name
+      if(!fileName.match(/.(csv|bed)$/i)) {
+        this.errorMessage = this.$t('buildPanels.validation.accepted-files') as string
+        return
+      }
       if (this.fileAlreadyExists(fileName)) {
         this.errorMessage = this.$t('buildPanels.duplicate.text') as string
         return
@@ -269,12 +273,12 @@ export default Vue.extend({
       const rowItems = allRows[0].split('\t')
       if (extension == '.csv') {
         if (rowItems.length < 1) {
-          alert(this.$t('buildPanels.validation.csv-file-not-valid'))
+          this.errorMessage = this.$t('buildPanels.validation.csv-file-not-valid') as string
           return
         }
       } else {
         if (rowItems.length < 4) {
-          alert(this.$t('buildPanels.validation.bed-file-not-valid'))
+          this.errorMessage = this.$t('buildPanels.validation.bed-file-not-valid') as string
           return
         }
       }

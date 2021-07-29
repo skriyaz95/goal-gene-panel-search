@@ -37,7 +37,6 @@
           <v-tab-item value="panels">
             <build-explore-panels
               :editable="true"
-              @update="handlePanelUpdate($event)"
             />
           </v-tab-item>
           <v-tab-item value="institutions">
