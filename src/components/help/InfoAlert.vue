@@ -3,14 +3,7 @@ A v-alert info wrapped in a transition with defualt app colors
  */
 <template>
   <v-fade-transition>
-    <v-alert
-      dense
-      text
-      type="info"
-      color="primary"
-      v-if="active"
-      class="text-left"
-    >
+    <v-alert dense text color="primary" v-if="active" class="text-left">
       <slot name="content"></slot>
     </v-alert>
   </v-fade-transition>

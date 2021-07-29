@@ -52,7 +52,10 @@
         <v-spacer></v-spacer>
         <help-button @action="handleHelp()" :active="help">
           <template v-slot:content>
-            <panel-results-help />
+            <span>
+              {{ $t('button.showHide.tooltip') }}
+              {{ $t('button.help.text') }}
+            </span>
           </template>
         </help-button>
       </v-card-title>
@@ -74,6 +77,7 @@
           :headers="tableHeaders"
           :items="panelContent"
           item-key="name"
+          :custom-sort="customSort"
         >
           <template v-slot:[`item.institution`]="{ item }">
             <v-tooltip bottom v-if="!isInstitutionEmpty(item.institution)">
@@ -94,9 +98,9 @@
             <v-tooltip bottom v-if="item.countGenesInPanel > 0">
               <template v-slot:activator="{ on }">
                 <v-chip
+                  :outlined="chipOutlined"
                   class="ma-2"
                   color="primary"
-                  text-color="white"
                   v-on="on"
                   @click.stop="openDialog(item, 'genesInPanel')"
                 >
@@ -110,6 +114,7 @@
             <v-tooltip bottom v-if="item.countGenesNotInPanel > 0">
               <template v-slot:activator="{ on }">
                 <v-chip
+                  :outlined="chipOutlined"
                   class="ma-2 secondary"
                   text-color="black"
                   v-on="on"
@@ -152,8 +157,8 @@ import {
   ParsedGenes,
   // ParsedGene,
 } from '@/types/panel-types'
-import InstitutionDetails from './InstitutionDetails.vue'
-import DialogTemplate from '../DialogTemplate.vue'
+import InstitutionDetails from '@/components/InstitutionDetails.vue'
+import DialogTemplate from '@/components/DialogTemplate.vue'
 
 export default Vue.extend({
   components: {
@@ -216,6 +221,7 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       institutionsByPanel: 'getInstitutionsByPanel',
+      chipOutlined: 'getChipOutlined',
     }),
     notFoundLength() {
       let length = 0
@@ -296,6 +302,30 @@ export default Vue.extend({
     },
     handleHelp() {
       this.$emit('help')
+    },
+    customSort(items: any[], sortBy: string[], sortDesc: boolean[]): any[] {
+      items.sort((a: any, b: any) => {
+        const desc = sortDesc[0]
+        if (sortBy[0] === 'institution') {
+          const aItem = a[sortBy[0]].name
+          const bItem = b[sortBy[0]].name
+          return this.sortString(aItem, bItem, desc)
+        } else {
+          const aItem = a[sortBy[0]]
+          const bItem = b[sortBy[0]]
+          return this.sortString(aItem, bItem, desc)
+        }
+      })
+      return items
+    },
+    sortString(aItem: any, bItem: any, desc: boolean) {
+      if (aItem > bItem) {
+        return desc ? 1 : -1
+      }
+      if (aItem < bItem) {
+        return desc ? -1 : 1
+      }
+      return 0
     },
   },
 })

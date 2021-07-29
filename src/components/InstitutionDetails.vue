@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- editable institution -->
     <v-list v-if="editable && institution">
       <v-list-item>
         <v-list-item-content>
@@ -60,21 +61,8 @@
           ></v-autocomplete>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item>
-        <v-list-item-content>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn color="error" v-on="on" @click="deleteInstitution()">
-                {{ $t('buidInstitutions.delete.text') }}
-                <v-spacer></v-spacer>
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </template>
-            <span>{{ $t('buidInstitutions.delete.tooltip') }}</span>
-          </v-tooltip>
-        </v-list-item-content>
-      </v-list-item>
     </v-list>
+    <!-- read only institution -->
     <v-list v-else>
       <v-list-item>
         <v-list-item-icon>
@@ -127,6 +115,7 @@
         <v-list-item-content>
           <v-list-item-title>
             <v-chip
+              :outlined="chipOutlined"
               class="mr-2"
               v-for="(panel, index) in institution.panels"
               :key="index"
@@ -143,6 +132,7 @@
 <script lang="ts">
 import { Institution } from '@/types/panel-types'
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
 
 export default Vue.extend({
   components: {},
@@ -168,7 +158,11 @@ export default Vue.extend({
   data() {
     return {}
   },
-  computed: {},
+  computed: {
+    ...mapGetters({
+      chipOutlined: 'getChipOutlined',
+    }),
+  },
   methods: {
     linkTo(link: string, linkType: string) {
       const linkPrefix = linkType == 'phone' ? 'tel:' : 'mailto:'
@@ -177,9 +171,6 @@ export default Vue.extend({
     handleNameChange(event: string[]) {
       this.$emit('name-changed', event)
     },
-    deleteInstitution() {
-      this.$emit('delete-institution')
-    }
   },
   watch: {},
   mounted() {},

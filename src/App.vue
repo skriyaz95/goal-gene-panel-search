@@ -4,52 +4,45 @@
       :hue-rotation="hueRotationFilter()"
       :saturation="saturationFilter()"
     />
-    <!-- <v-app-bar app color="primary" dark flat clipped-left>
-      <div class="d-flex align-center">
-        <span class="title" v-text="toolbarTitle" />
-      </div>
-
-      <v-spacer />
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on }">
-          <v-btn
-            href="https://github.com/skriyaz95/goal-gene-panel-search"
-            target="_blank"
-            text
-            v-on="on"
-          >
-            <span class="mr-2">{{ $t('button.link.repo.text') }}</span>
-            <v-icon>mdi-open-in-new</v-icon>
-          </v-btn>
-        </template>
-        <span>{{ $t('button.link.repo.tooltip') }}</span>
-      </v-tooltip>
-    </v-app-bar> -->
-
     <v-main>
       <router-view />
     </v-main>
+    <v-snackbar
+      content-class="pa-0"
+      light
+      v-model="gdpr"
+      right
+      timeout="-1"
+      transition="slide-x-reverse-transition"
+    >
+      <gdpr-info @response="handleGDPRResponse"></gdpr-info>
+    </v-snackbar>
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-// import axios from 'axios'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import NavigationMenu from '@/components/NavigationMenu.vue'
-// import { TranslateResult } from 'vue-i18n'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
+import { getCookie } from '@/utils/cookies'
+import GdprInfo from '@/components/GdprInfo.vue'
+import { LastSelection } from '@/types/ui-types'
+import i18n from '@/i18n'
+import { Route } from 'vue-router'
 
 export default Vue.extend({
   name: 'App',
-  components: { NavigationMenu },
+  components: { NavigationMenu, GdprInfo },
 
   data: () => ({
     sourceDir: 'source_panels/',
     panelNames: new Array<string>(),
     publicPath: process.env.BASE_URL,
+    gdpr: false,
   }),
   methods: {
+    ...mapActions(['updateLastSelection']),
     getBackgroundStyle(lighten: boolean) {
       var background: any = this.$vuetify.theme.themes[this.theme].background
       var backgroundString = ''
@@ -74,14 +67,44 @@ export default Vue.extend({
      *
      */
     initWorkers() {
-      $getFindGenesWorker().postMessage({
-        init: true,
-        allGeneMap: this.allGeneMap,
-        synonymMap: this.synonymMap,
-      })
+      // $getFindGenesWorker().postMessage({
+      //   init: true,
+      //   allGeneMap: this.allGeneMap,
+      //   synonymMap: this.synonymMap,
+      // })
+    },
+    handleGDPR(): any {
+      const cookie = getCookie('GDPR_ACCEPT')
+      if (!cookie) {
+        //cookie doesn't exist
+        setTimeout(() => {
+          this.gdpr = true
+        }, 1000) //display 5 sec after loading
+      }
+    },
+    handleGDPRResponse(response: boolean) {
+      this.gdpr = !response
+    },
+    recordLastSelection(from: Route) {
+      const lastSelectionForTab = new LastSelection(
+        from.name as string,
+        from.params.tab,
+        Number.parseInt(from.params.item)
+      )
+      this.updateLastSelection(lastSelectionForTab)
+    },
+    fetchLastSelection(to: Route, from: Route) {
+      console.log(to, from)
+      const lastSelectionForTab = this.lastSelections.get(
+        (to.name as string) + to.params.tab
+      )
+      return lastSelectionForTab
     },
   },
   computed: {
+    ...mapGetters({
+      lastSelections: 'getLastSelections',
+    }),
     theme() {
       if (this.$vuetify.theme.dark) {
         return 'dark'
@@ -89,21 +112,17 @@ export default Vue.extend({
         return 'light'
       }
     },
-    ...mapGetters({
-      panels: 'getPanels',
-      allGenes: 'getAllGenes',
-      allGeneMap: 'getAllGeneMap',
-      synonymMap: 'getSynonymMap',
-    }),
-    // toolbarTitle(): TranslateResult {
-    //   if (this.$route.meta && this.$route.meta.i18n) {
-    //     return this.$t(this.$route.meta.i18n + '.toolbar.text')
-    //   }
-    //   return 'GTI'
-    // },
   },
   mounted() {
     this.initWorkers()
+    this.handleGDPR()
+    this.$router.beforeEach((to, _from, next) => {
+      document.title = 'GTI ' + (i18n.t(to.meta.i18n + '.title.text') || '')
+      next()
+    })
+    this.$router.afterEach((to) => {
+      this.recordLastSelection(to)
+    })
   },
   destroyed() {
     $getFindGenesWorker().terminate()

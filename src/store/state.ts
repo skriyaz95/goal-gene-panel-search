@@ -1,12 +1,16 @@
-import allGenesData from "@/assets/all_genes.json"
-import synonymData from "@/assets/synonyms.json"
 import institutionData from "@/assets/institutions.json"
 import panels from "@/assets/panels.json"
+import { LastSelection } from "@/types/ui-types"
 
 export default {
   panels: panels,
-  allGenes: allGenesData,
-  synonyms: synonymData,
-  lastSearch: String(),
   institutions: institutionData,
+  uiProps: {
+    chipOutlined: false,
+  },
+  inputNeedsReload: false,
+  lastTabHome: "panels",
+  lastExplorePath: null,
+  lastUtilsPath: null,
+  lastSelections: new Map<String, LastSelection>(),
 }

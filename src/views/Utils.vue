@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar class="primary" dark flat>
+    <v-toolbar class="primary" dark flat dense>
       <v-toolbar-title>
         <span class="title" v-text="toolbarTitle" />
       </v-toolbar-title>
@@ -20,65 +20,83 @@
         <span>{{ $t('button.link.repo.tooltip') }}</span>
       </v-tooltip>
     </v-toolbar>
-    <v-container class="pa-0">
-      <v-tabs centered v-model="tab" :background-color="background">
-        <v-tab :href="'#' + tabTitle" v-for="tabTitle in tabs" :key="tabTitle">
-          {{ tabTitle }}
-        </v-tab>
-      </v-tabs>
-      <v-tabs-items v-model="tab" class="background">
-        <v-tab-item value="panels">
-          <build-panels />
-        </v-tab-item>
-        <v-tab-item value="institutions">
-          <build-institutions :editable="true" />
-        </v-tab-item>
-        <v-tab-item value="database">
-          <build-database />
-        </v-tab-item>
-        <v-tab-item value="theme">
-          <theme-picker />
-        </v-tab-item>
-      </v-tabs-items>
-    </v-container>
+    <main-content-template :twoCols="false" header outter>
+      <template v-slot:header>
+        <v-tabs centered v-model="tab" :background-color="background">
+          <v-tab
+            :href="'#' + tabTitle"
+            v-for="tabTitle in tabs"
+            :key="tabTitle"
+          >
+            {{ tabTitle }}
+          </v-tab>
+        </v-tabs>
+      </template>
+      <template v-slot:one-col>
+        <v-tabs-items v-model="tab" class="background">
+          <v-tab-item value="panels">
+            <build-explore-panels
+              :editable="true"
+              @update="handlePanelUpdate($event)"
+            />
+          </v-tab-item>
+          <v-tab-item value="institutions">
+            <build-explore-institutions :editable="true" />
+          </v-tab-item>
+          <v-tab-item value="database">
+            <build-database />
+          </v-tab-item>
+          <v-tab-item value="theme">
+            <theme-picker />
+          </v-tab-item>
+          <v-tab-item value="cookies">
+            <gdpr-info />
+          </v-tab-item>
+        </v-tabs-items>
+      </template>
+    </main-content-template>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import BuildPanels from '../components/BuildPanels.vue'
-import ThemePicker from '../components/ThemePicker.vue'
-import BuildDatabase from '../components/BuildDatabase.vue'
-import BuildInstitutions from '../components/BuildInstitutions.vue'
+import ThemePicker from '@/components/manage/ThemePicker.vue'
+import BuildDatabase from '@/components/manage/BuildDatabase.vue'
+import BuildExploreInstitutions from '@/components/manage/BuildExploreInstitutions.vue'
+import BuildExplorePanels from '@/components/explore/BuildExplorePanels.vue'
 import { TranslateResult } from 'vue-i18n'
+import MainContentTemplate from '@/components/MainContentTemplate.vue'
+import GdprInfo from '@/components/GdprInfo.vue'
+import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 
 export default Vue.extend({
   name: 'Utils',
 
   components: {
-    BuildPanels,
+    BuildExplorePanels,
     ThemePicker,
     BuildDatabase,
-    BuildInstitutions,
+    BuildExploreInstitutions,
+    MainContentTemplate,
+    GdprInfo,
   },
-  data() {
-    return {
-      tabs: ['panels', 'institutions', 'database', 'theme'],
-    }
-  },
-  methods: {},
-  mounted() {},
-  watch: {},
+  data: () => ({
+    tabs: ['panels', 'institutions', 'database', 'theme', 'cookies'],
+  }),
   computed: {
     tab: {
       set(tab: string) {
-        this.$router.replace({ query: { ...this.$route.query, tab } })
+        this.$router.replace({ params: { ...this.$route.params, tab } })
+        if (this.$route.params.item !== '0') {
+          const item = '0'
+          this.$router.replace({ params: { ...this.$route.params, item } })
+        }
       },
-      get() {
-        return this.$route.query.tab
+      get(): string | (string | null)[] {
+        return this.$route.params.tab ? this.$route.params.tab : 'panels'
       },
     },
-    background() {
+    background(): VuetifyThemeItem {
       return this.$vuetify.theme.themes.light.background
     },
     toolbarTitle(): TranslateResult {
@@ -88,5 +106,8 @@ export default Vue.extend({
       return 'GTI'
     },
   },
+  methods: {},
+  mounted() {},
+  watch: {},
 })
 </script>
