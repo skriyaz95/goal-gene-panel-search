@@ -8,14 +8,14 @@
       :style="hueRotationFilter"
     >
       <v-img
-        src="../assets/gti/gti_logo_nolabel_128.png"
+        src="@/assets/gti/gti_logo_nolabel_128.png"
         alt="GTI Logo"
         width="80%"
         class="mt-2"
         :style="imageStyle"
       />
       <v-img
-        src="../assets/gti/gti_acronym_orig.png"
+        src="@/assets/gti/gti_acronym_orig.png"
         alt="GTI Logo"
         class="mt-10"
         :style="imageStyle"
@@ -29,14 +29,14 @@
       :style="hueRotationFilter"
     >
       <v-img
-        src="../assets/gti/gti_logo_256.png"
+        src="@/assets/gti/gti_logo_256.png"
         alt="GTI Logo"
         width="70%"
         class="mt-2 mb-4"
         :style="imageStyle"
       />
       <v-img
-        src="../assets/gti/gti_label_512.png"
+        src="@/assets/gti/gti_label_512.png"
         alt="GTI Title"
         width="225px"
         :style="imageStyle"
@@ -46,14 +46,14 @@
       <v-row align="center">
         <v-col cols="3">
           <v-img
-            src="../assets/gti/gti_logo_64.png"
+            src="@/assets/gti/gti_logo_64.png"
             alt="GTI Logo"
             :style="imageStyle"
           />
         </v-col>
         <v-col cols="8">
           <v-img
-            src="../assets/gti/gti_label_256.png"
+            src="@/assets/gti/gti_label_256.png"
             alt="GTI Title"
             :content-class="imageStyle"
           />
@@ -74,10 +74,9 @@
         <v-list-item-title>{{ $t('navigation.mini.text') }}</v-list-item-title>
       </v-list-item>
       <v-list-item
-        link
-        :to="{ name: 'Home' }"
-        active-class="primary lighten-2"
-        exact
+        :to="{ name: 'Home', params: { tab: 'results' } }"
+        active-class="primary lighten-2 font-weight-bold"
+        exact-path
         @click.stop=""
       >
         <v-list-item-icon>
@@ -86,11 +85,14 @@
         <v-list-item-title>{{ $t('navigation.home.text') }}</v-list-item-title>
       </v-list-item>
       <v-list-item
-        link
-        :to="{ name: 'Explore', query: { tab: 'panels' } }"
-        active-class="primary lighten-2"
-        exact-path
+        :to="{
+          name: 'explore',
+          params: { tab: 'panels', item: '0' },
+        }"
+        :active-class="activeClassExact"
+        :class="isActiveExplore ? activeClass : ''"
         @click.stop=""
+        exact-path
       >
         <v-list-item-icon>
           <v-icon>mdi-database-search</v-icon>
@@ -100,9 +102,9 @@
         </v-list-item-title>
       </v-list-item>
       <v-list-item
-        link
-        :to="{ name: 'Utils', query: { tab: 'panels' } }"
-        active-class="primary lighten-2"
+        :to="{ name: 'utils', params: { tab: 'panels', item: '0' } }"
+        :active-class="activeClassExact"
+        :class="isActiveUtils ? activeClass : ''"
         exact-path
         @click.stop=""
       >
@@ -132,6 +134,8 @@ export default Vue.extend({
   },
   data: () => ({
     mini: false,
+    activeClass: 'primary lighten-1 font-weight-bold',
+    activeClassExact: 'primary lighten-2 font-weight-bold',
   }),
   computed: {
     iconRotation() {
@@ -145,6 +149,28 @@ export default Vue.extend({
     },
     imageStyle() {
       return 'margin: auto; filter: saturate(' + this.saturation + ')'
+    },
+    isActiveExplore() {
+      const route = this.$route as any
+      //skip default route which is handled by VueRouter
+      if (route.name !== 'explore') {
+        return false
+      }
+      if (route.params.tab === 'panels' && route.params.item === '0') {
+        return false
+      }
+      return route.name === 'explore'
+    },
+    isActiveUtils() {
+      const route = this.$route as any
+      if (route.name !== 'utils') {
+        return false
+      }
+      //skip default route which is handled by VueRouter
+      if (route.params.tab === 'panels' && route.params.item === '0') {
+        return false
+      }
+      return route.name === 'utils'
     },
   },
   mounted() {},

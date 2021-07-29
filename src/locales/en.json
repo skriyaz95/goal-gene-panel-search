@@ -15,6 +15,35 @@
     },
     "selectInstitution": {
       "text": "Select an institution"
+    },
+    "selectPanel": {
+      "text": "Select a panel"
+    },
+    "sourceFile": {
+      "text": "Source File"
+    },
+    "new": {
+      "text": "Add New",
+      "tooltip": "Add a Panel to the List"
+    },
+    "saveAll": {
+      "text": "Save All",
+      "tooltip": "Download a JSON file of the panels"
+    },
+    "noInstitution": {
+      "text": "Select Institution in the Institutions tab after saving"
+    },
+    "validation": {
+      "accepted-files": "Only .bed or .csv files are accepted",
+      "csv-file-not-valid": "CSV File is Not valid. Please upload valid file",
+      "bed-file-not-valid": "BED File is Not valid. Please upload valid file"
+    },
+    "info": {
+      "part1": "All changes are temporary. They will be lost after reload.",
+      "part2": "Replace assets/panels.json on your server to make the changes permanent for all users."
+    },
+    "duplicate": {
+      "text": "File already exists"
     }
   },
   "button": {
@@ -49,6 +78,19 @@
     },
     "demo": {
       "text": "Demo"
+    },
+    "help": {
+      "text": "Help"
+    },
+    "outlined": {
+      "text": "Outlined",
+      "toolip": "Use filled or outlined mode"
+    },
+    "accept": {
+      "text": "Accept"
+    },
+    "refuse": {
+      "text": "Refuse"
     }
   },
   "count": {
@@ -69,12 +111,12 @@
       "tooltip": "Show/Hide Menu"
     },
     "utils": {
-      "text": "Utils",
+      "text": "Manage",
       "toolbar": {
         "text": "Tools for Admins"
       },
       "title": {
-        "text": "Utils"
+        "text": "Manage"
       }
     },
     "explore": {
@@ -124,6 +166,17 @@
       "list-empty": "Gene List must not be empty",
       "list-min-characters": "Gene List must be at least 2 characters",
       "list-regex": "Remove special characters ($%^&<> etc.)"
+    },
+    "recall": {
+      "title": {
+        "text": "Last Searches"
+      },
+      "clear": {
+        "text": "Clear Saved Searches"
+      },
+      "empty": {
+        "text": "The last 3 searches will be displayed here"
+      }
     }
   },
   "panel-result": {
@@ -201,9 +254,12 @@
     },
     "tooMany": {
       "text": "Too many to display (> 500)"
+    },
+    "textOnly": {
+      "tooltip": "Show in text form (slow)"
     }
   },
-  "buidInstitutions": {
+  "buildInstitutions": {
     "list": {
       "text": "Existing Institutions"
     },
@@ -218,6 +274,10 @@
     "delete": {
       "text": "Delete",
       "tooltip": "Remove from the list"
+    },
+    "info": {
+      "part1": "All changes are temporary. They will be lost after reload.",
+      "part2": "Replace assets/institutions.json on your server to make the changes permanent for all users."
     }
   },
   "help": {
@@ -237,13 +297,43 @@
       "part2c": " to get more details.",
       "part3": "Special characters are not allowed.",
       "firstTime": {
-        "text": "Click here for help"
+        "text": "Help"
       }
     },
     "panelResults": {
       "part1a": " shows the panels containing genes",
       "part1b": " from the items in ",
       "part2a": "Click on a cell to get more information about each value"
+    },
+    "panelCompare": {
+      "example": "Here is an example",
+      "part1a": " shows each Symbol and Synonym from ",
+      "part1b": "and which panel has those genes.",
+      "part2": "A gene (each row in leftmost column) may match a gene symbol or a synonym in each panel (column)",
+      "part3": {
+        "exactMatch": "has the exact ",
+        "anyMatch": "has a ",
+        "noMatch": "does not have a Symbol (or Synonym) for the",
+        "symbolMatching": "Symbol matching the ",
+        "synonymMatching": "Synonym matching the ",
+        "symbolInput": "Symbol",
+        "synonyminput": "Synonym"
+      }
+    },
+    "database": {
+      "purpose": "To know if a search is using symbols or synonyms, GTI uses a gene_info file from NCBI.",
+      "howTo": {
+        "part1": "To use the latest gene_info, download the file (step 1) and open it in the app (step2).",
+        "part2": "Replace the downloaded files on your server (step 3)"
+      }
+    },
+    "panelExplore": {
+      "purpose": "Click on a gene panel below to see the genes it contains and to download its source file (.bed or .csv)",
+      "edit": "Here you can edit or delete existing panels and create new ones by importing a .bed or .csv file."
+    },
+    "institutionExplore": {
+      "purpose": "Click on an institution below to see its contact information",
+      "edit": "Here you can edit or delete existing institutions and create new ones."
     }
   },
   "institutionDetails": {
@@ -289,6 +379,80 @@
         "text": "Gene Info File",
         "tooltip": "Download gene_info file from NCBI Gene Database"
       }
+    },
+    "panelDetails": {
+      "genesInPanel": {
+        "text": "Genes in Panel"
+      },
+      "symbols": {
+        "tooltip": "Symbols: The panel contains an exact match to a gene symbol."
+      },
+      "synonyms": {
+        "tooltip": "Synonyms: The panel contains synonym(s) with corresponding symbol(s)."
+      },
+      "notFound": {
+        "tooltip": "Not Found: The panel contains genes not recognized (and ignored during search)"
+      }
     }
+  },
+  "input": {
+    "details": {
+      "text": "Open Details"
+    }
+  },
+  "panelCompare": {
+    "title": {
+      "text": "Compare Panels"
+    },
+    "table": {
+      "headers": {
+        "gene": {
+          "text": "Gene"
+        },
+        "panel": {
+          "text": "My Panel"
+        },
+        "explanation": {
+          "text": "Explanation"
+        }
+      },
+      "search": {
+        "text": "Filter by genes"
+      },
+      "institutions": {
+        "text": "Show/Hide Institutions"
+      }
+    }
+  },
+  "gdpr": {
+    "title": "This site uses cookies",
+    "doNotTrack": "We do not track you.",
+    "cookieUsage": "We use cookies to remember you came here and localStorage for your last 3 gene searches.",
+    "learnMore": "Click here to learn more",
+    "catCustomization": "Customization",
+    "catAd": "Advertising cookies and technologies",
+    "source": "Source",
+    "purpose": "Purpose",
+    "validity": "Validity",
+    "customization": {
+      "cookie1": {
+        "source": "Our application",
+        "purpose": "Displaying help panels the first time you use this application.",
+        "validity": "1 year"
+      },
+      "cookie2": {
+        "source": "Our application",
+        "purpose": "Displaying this message only once.",
+        "validity": "1 year"
+      }
+    },
+    "ad": {
+      "cookie1": {
+        "source": "Google",
+        "purpose": "Google uses this domain to off-load static content (JavaScript code, images and CSS) to a different domain name in an effort to reduce bandwidth usage and increase network performance for the end user."
+      }
+    },
+    "agreement": "By using this application, you accept that the cookies above are stored on your computer.",
+    "refusal": "If do not accept, the cookies will be removed and you will be taken to"
   }
 }

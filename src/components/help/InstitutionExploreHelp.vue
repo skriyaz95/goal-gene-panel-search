@@ -5,18 +5,12 @@ or a help card or other tutorial content
  */
 <template>
   <div>
-    <div class="pb-2">
-      <b>{{ $t('userInput.gene-list') }}</b>
-      {{ $t('help.geneSearch.part1a') }}
-      {{ $t('help.geneSearch.part1b') }}
-    </div>
     <div>
-      {{ $t('help.geneSearch.part2a') }}
-      {{ $t('help.geneSearch.part2b') }}
-      <b>{{ $t('parsedInput.title.text') }}</b>
-      {{ $t('help.geneSearch.part2c') }}
+      {{ $t('help.institutionExplore.purpose') }}
     </div>
-    <div class="pt-2">{{ $t('help.geneSearch.part3') }}</div>
+    <div class="pt-2" v-if="editable">
+      {{ $t('help.institutionExplore.edit') }}
+    </div>
   </div>
 </template>
 
@@ -24,7 +18,10 @@ or a help card or other tutorial content
 import Vue from 'vue'
 
 export default Vue.extend({
-  name: 'GeneSearchHelp',
+  name: 'InstitutionExploreHelp',
+  props: {
+    editable: { type: Boolean, default: false },
+  },
   data: () => ({}),
   computed: {},
   watch: {},

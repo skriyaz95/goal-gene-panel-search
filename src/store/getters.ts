@@ -1,9 +1,4 @@
-import {
-  FullGene,
-  GenePanel,
-  Institution,
-  SynonymGene,
-} from "@/types/panel-types"
+import { GenePanelDetails, Institution } from "@/types/panel-types"
 
 export default {
   getPanels: (state: any) => {
@@ -12,9 +7,9 @@ export default {
   getUserGenes: (state: any) => {
     return state.userGenes
   },
-  getParsedGenes: (state: any) => {
-    return state.parsedGenes
-  },
+  // getParsedGenes: (state: any) => {
+  //   return state.parsedGenes
+  // },
   // getUserGenesSorted: (state: any) => {
   //   return [...state.userGenes].sort((a: Gene, b: Gene) => {
   //     if (a.name < b.name) {
@@ -28,26 +23,6 @@ export default {
   // },
   getPanelSearchResult: (state: any) => {
     return state.panelSearchResult
-  },
-  getAllGenes: (state: any) => {
-    return state.allGenes
-  },
-  getAllGeneMap: (state: any) => {
-    const allGeneMap = new Map<String, FullGene>()
-    state.allGenes.forEach((gene: FullGene) => {
-      allGeneMap.set(gene.symbol, gene)
-    })
-    return allGeneMap
-  },
-  getSynonyms: (state: any) => {
-    return state.synonyms
-  },
-  getSynonymMap: (state: any) => {
-    const allSynonymMap = new Map<String, SynonymGene>()
-    state.synonyms.forEach((synonym: SynonymGene) => {
-      allSynonymMap.set(synonym.synonym, synonym)
-    })
-    return allSynonymMap
   },
   getInstitutionsByPanel: (state: any) => {
     const allInstitutions = new Map<String, Institution>()
@@ -66,9 +41,6 @@ export default {
   //   })
   //   return allInstitutions
   // },
-  getLastSearch: (state: any) => {
-    return state.lastSearch
-  },
   //not use for now
   // getInstitutionDropDownItems: (state: any) => {
   //   const institutionDropDownItems = new Array<{}>()
@@ -88,19 +60,35 @@ export default {
       return 0
     })
   },
-  getInstitutions: (state: any) => {
+  getInstitutions: (state: any): Array<Institution> => {
     return state.institutions
   },
   getPanelsSorted: (state: any) => {
-    return [...state.panels].sort((a: GenePanel, b: GenePanel) => {
-      if (a.name < b.name) {
-        return -1
-      }
-      if (a.name > b.name) {
-        return 1
-      }
-      return 0
-    })
+    return [...state.panels].sort(
+      (a: GenePanelDetails, b: GenePanelDetails) => {
+        if (a.name < b.name) {
+          return -1
+        }
+        if (a.name > b.name) {
+          return 1
+        }
+        return 0
+      },
+    )
+  },
+  getChipOutlined: (state: any) => {
+    return state.uiProps.chipOutlined
+  },
+  getInputNeedsReload: (state: any) => {
+    return state.inputNeedsReload
+  },
+  getPanelsByInstitution: (state: any) => {
+    const panels = new Map<String, String[]>()
+    state.institutions.forEach((i: Institution) => panels.set(i.name, i.panels))
+    return panels
+  },
+  getLastTabHome: (state: any): string => {
+    return state.lastTabHome
   },
   // getPanelsByName: (state: any) => {
   //   const allPanels = new Map<String, GenePanel>()
@@ -109,4 +97,13 @@ export default {
   //   })
   //   return allPanels
   // },
+  getLastExplorePath: (state: any) => {
+    return state.lastExplorePath
+  },
+  getLastUtilsPath: (state: any) => {
+    return state.lastUtilsPath
+  },
+  getLastSelections: (state: any) => {
+    return state.lastSelections
+  },
 }

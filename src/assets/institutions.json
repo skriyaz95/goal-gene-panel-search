@@ -21,14 +21,21 @@
     "panels": []
   },
   {
-    "name": "UT SouthWestern",
+    "name": "UTSW",
     "phone": "(214)-648-3111",
     "email": "abc@utsouthwestern.edu",
     "website": "https://www.utsouthwestern.edu/departments/bioinformatics/",
     "panels": ["UTSW_V4_HEME", "UTSW_V4_PANCANCER", "UTSW_V4_RNASEQ"]
   },
   {
-    "name": "University of Florida",
+    "name": "UCLA",
+    "phone": "310-206-2292",
+    "email": "cprs@mednet.ucla.edu",
+    "website": "https://www.uclahealth.org/pathology/default.cfm",
+    "panels": ["ucla_mdl_cancer.grch38"]
+  },
+  {
+    "name": "UF",
     "phone": "(123)-456-789",
     "email": "abc@pathology.ufl.edu",
     "website": "https://pathology.ufl.edu/",
