@@ -7,7 +7,7 @@
           <v-text-field
             v-model="institution.name"
             :label="$t('institutionDetails.name.text')"
-            prepend-icon="mdi-bank"
+            prepend-icon="mdi-bank-outline"
             dense
             @change="handleNameChange"
           >
@@ -66,7 +66,7 @@
     <v-list v-else>
       <v-list-item>
         <v-list-item-icon>
-          <v-icon>mdi-bank</v-icon>
+          <v-icon>mdi-bank-outline</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>{{ institution.name }}</v-list-item-title>

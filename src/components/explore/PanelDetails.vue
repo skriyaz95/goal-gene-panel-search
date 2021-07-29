@@ -26,7 +26,7 @@
 
       <v-list-item>
         <v-list-item-icon>
-          <v-icon>mdi-bank</v-icon>
+          <v-icon>mdi-bank-outline</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>

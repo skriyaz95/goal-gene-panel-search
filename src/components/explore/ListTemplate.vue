@@ -22,7 +22,7 @@
         <v-list>
           <v-list-item v-for="(item, index) in itemsSorted" :key="index">
             <v-list-item-icon>
-              <v-icon>mdi-dna</v-icon>
+              <v-icon>{{ icon }}</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               {{ item[fieldItemLabel] }}
@@ -62,6 +62,7 @@ export default Vue.extend({
       default: () => [],
     },
     editable: Boolean,
+    icon: { type: String, default: 'mdi-dna' },
   },
   data: () => ({}),
   methods: {
