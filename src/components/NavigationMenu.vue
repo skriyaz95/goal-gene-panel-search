@@ -74,8 +74,9 @@
         <v-list-item-title>{{ $t('navigation.mini.text') }}</v-list-item-title>
       </v-list-item>
       <v-list-item
-        :to="{ name: 'Home', params: { tab: 'results' } }"
-        active-class="primary lighten-2 font-weight-bold"
+        :to="{ name: 'home', params: { tab: 'results' } }"
+        :active-class="activeClassExact"
+        :class="isActiveHome ? activeClass : ''"
         exact-path
         @click.stop=""
       >
@@ -149,6 +150,14 @@ export default Vue.extend({
     },
     imageStyle() {
       return 'margin: auto; filter: saturate(' + this.saturation + ')'
+    },
+    isActiveHome() {
+      const route = this.$route as any
+      //skip default route which is handled by VueRouter
+      if (route.name !== 'home' || route.params.tab === 'results') {
+        return false
+      }
+      return route.name === 'home'
     },
     isActiveExplore() {
       const route = this.$route as any

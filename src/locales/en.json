@@ -134,6 +134,17 @@
       "title": {
         "text": "Explore"
       }
+    },
+    "error": {
+      "toolbar": {
+        "text": "Oops..."
+      },
+      "content": {
+        "text": {
+          "part1": "The page you are trying to reach does not exist.",
+          "part2": "Take me home"
+        }
+      }
     }
   },
   "themePicker": {
