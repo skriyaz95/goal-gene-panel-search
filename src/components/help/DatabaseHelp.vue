@@ -6,17 +6,10 @@ or a help card or other tutorial content
 <template>
   <div>
     <div class="pb-2">
-      <b>{{ $t('userInput.gene-list') }}</b>
-      {{ $t('help.geneSearch.part1a') }}
-      {{ $t('help.geneSearch.part1b') }}
+      {{ $t('help.database.purpose') }}
     </div>
-    <div>{{ $t('help.geneSearch.part2a') }}</div>
-    <div>
-      {{ $t('help.geneSearch.part2b') }}
-      <b>{{ $t('parsedInput.title.text') }}</b>
-      {{ $t('help.geneSearch.part2c') }}
-    </div>
-    <div class="pt-2">{{ $t('help.geneSearch.part3') }}</div>
+    <div class="pb-2">{{ $t('help.database.howTo.part1') }}</div>
+    <div>{{ $t('help.database.howTo.part2') }}</div>
   </div>
 </template>
 

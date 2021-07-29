@@ -10,9 +10,6 @@
     "rawPanels": {
       "text": "Raw Panel Files:"
     },
-    "addPanel": {
-      "text": "Add New Panel:"
-    },
     "panelName": {
       "text": "Panel Name"
     },
@@ -25,20 +22,31 @@
     "sourceFile": {
       "text": "Source File"
     },
-    "validation" : {
-      "accepted-files" : "Only .bed or .csv files are accepted",
+    "new": {
+      "text": "Add New",
+      "tooltip": "Add a Panel to the List"
+    },
+    "saveAll": {
+      "text": "Save All",
+      "tooltip": "Download a JSON file of the panels"
+    },
+    "noInstitution": {
+      "text": "Select Institution in the Institutions tab after saving"
+    },
+    "validation": {
+      "accepted-files": "Only .bed or .csv files are accepted",
       "csv-file-not-valid": "CSV File is Not valid. Please upload valid file",
       "bed-file-not-valid": "BED File is Not valid. Please upload valid file"
     },
-    "snackbar": {
-      "text" : "This modification is temporary. The changes will be lost after reload"
+    "info": {
+      "part1": "All changes are temporary. They will be lost after reload.",
+      "part2": "Replace assets/panels.json on your server to make the changes permanent for all users."
+    },
+    "duplicate": {
+      "text": "File already exists"
     }
   },
   "button": {
-    "addPanel" : {
-      "text" : "Add Panel",
-      "tooltip" : "Add Raw Panel"
-    },
     "buildPanels": {
       "text": "Build Panels",
       "tooltip": "Parse CSV Files to JSON Gene Panels"
@@ -246,9 +254,12 @@
     },
     "tooMany": {
       "text": "Too many to display (> 500)"
+    },
+    "textOnly": {
+      "tooltip": "Show in text form (slow)"
     }
   },
-  "buidInstitutions": {
+  "buildInstitutions": {
     "list": {
       "text": "Existing Institutions"
     },
@@ -264,8 +275,9 @@
       "text": "Delete",
       "tooltip": "Remove from the list"
     },
-    "snackbar": {
-      "text" : "This modification is temporary. The changes will be lost after reload"
+    "info": {
+      "part1": "All changes are temporary. They will be lost after reload.",
+      "part2": "Replace assets/institutions.json on your server to make the changes permanent for all users."
     }
   },
   "help": {
@@ -312,8 +324,16 @@
       "purpose": "To know if a search is using symbols or synonyms, GTI uses a gene_info file from NCBI.",
       "howTo": {
         "part1": "To use the latest gene_info, download the file (step 1) and open it in the app (step2).",
-        "part2": ""
+        "part2": "Replace the downloaded files on your server (step 3)"
       }
+    },
+    "panelExplore": {
+      "purpose": "Click on a gene panel below to see the genes it contains and to download its source file (.bed or .csv)",
+      "edit": "Here you can edit or delete existing panels and create new ones by importing a .bed or .csv file."
+    },
+    "institutionExplore": {
+      "purpose": "Click on an institution below to see its contact information",
+      "edit": "Here you can edit or delete existing institutions and create new ones."
     }
   },
   "institutionDetails": {
@@ -379,6 +399,15 @@
     "panelDetails": {
       "genesInPanel": {
         "text": "Genes in Panel"
+      },
+      "symbols": {
+        "tooltip": "Symbols: The panel contains an exact match to a gene symbol."
+      },
+      "synonyms": {
+        "tooltip": "Synonyms: The panel contains synonym(s) with corresponding symbol(s)."
+      },
+      "notFound": {
+        "tooltip": "Not Found: The panel contains genes not recognized (and ignored during search)"
       }
     }
   },

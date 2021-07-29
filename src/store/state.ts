@@ -1,5 +1,6 @@
 import institutionData from "@/assets/institutions.json"
 import panels from "@/assets/panels.json"
+import { LastSelection } from "@/types/ui-types"
 
 export default {
   panels: panels,
@@ -9,8 +10,7 @@ export default {
   },
   inputNeedsReload: false,
   lastTabHome: "panels",
-  lastTabExplore: "",
-  lastTabUtils: "",
-  lastItemExplore: -1 as Number,
-  lastItemUtils: -1 as Number,
+  lastExplorePath: null,
+  lastUtilsPath: null,
+  lastSelections: new Map<String, LastSelection>(),
 }

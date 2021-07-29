@@ -22,10 +22,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapGetters, mapActions } from 'vuex'
 import NavigationMenu from '@/components/NavigationMenu.vue'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import { getCookie } from '@/utils/cookies'
 import GdprInfo from '@/components/GdprInfo.vue'
+import { LastSelection } from '@/types/ui-types'
+import i18n from '@/i18n'
+import { Route } from 'vue-router'
 
 export default Vue.extend({
   name: 'App',
@@ -38,6 +42,7 @@ export default Vue.extend({
     gdpr: false,
   }),
   methods: {
+    ...mapActions(['updateLastSelection']),
     getBackgroundStyle(lighten: boolean) {
       var background: any = this.$vuetify.theme.themes[this.theme].background
       var backgroundString = ''
@@ -78,10 +83,28 @@ export default Vue.extend({
       }
     },
     handleGDPRResponse(response: boolean) {
-      this.gdpr = response
+      this.gdpr = !response
+    },
+    recordLastSelection(from: Route) {
+      const lastSelectionForTab = new LastSelection(
+        from.name as string,
+        from.params.tab,
+        Number.parseInt(from.params.item)
+      )
+      this.updateLastSelection(lastSelectionForTab)
+    },
+    fetchLastSelection(to: Route, from: Route) {
+      console.log(to, from)
+      const lastSelectionForTab = this.lastSelections.get(
+        (to.name as string) + to.params.tab
+      )
+      return lastSelectionForTab
     },
   },
   computed: {
+    ...mapGetters({
+      lastSelections: 'getLastSelections',
+    }),
     theme() {
       if (this.$vuetify.theme.dark) {
         return 'dark'
@@ -93,6 +116,13 @@ export default Vue.extend({
   mounted() {
     this.initWorkers()
     this.handleGDPR()
+    this.$router.beforeEach((to, _from, next) => {
+      document.title = 'GTI ' + (i18n.t(to.meta.i18n + '.title.text') || '')
+      next()
+    })
+    this.$router.afterEach((to) => {
+      this.recordLastSelection(to)
+    })
   },
   destroyed() {
     $getFindGenesWorker().terminate()

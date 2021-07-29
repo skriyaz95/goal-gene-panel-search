@@ -87,20 +87,8 @@ export default {
     state.institutions.forEach((i: Institution) => panels.set(i.name, i.panels))
     return panels
   },
-  getLastItemExplore: (state: any): number => {
-    return state.lastItemExplore
-  },
-  getLastItemUtils: (state: any): number => {
-    return state.lastItemUtils
-  },
   getLastTabHome: (state: any): string => {
     return state.lastTabHome
-  },
-  getLastTabExplore: (state: any): string => {
-    return state.lastTabExplore
-  },
-  getLastTabUtils: (state: any): string => {
-    return state.lastTabUtils
   },
   // getPanelsByName: (state: any) => {
   //   const allPanels = new Map<String, GenePanel>()
@@ -109,4 +97,13 @@ export default {
   //   })
   //   return allPanels
   // },
+  getLastExplorePath: (state: any) => {
+    return state.lastExplorePath
+  },
+  getLastUtilsPath: (state: any) => {
+    return state.lastUtilsPath
+  },
+  getLastSelections: (state: any) => {
+    return state.lastSelections
+  },
 }

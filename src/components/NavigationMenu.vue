@@ -74,8 +74,7 @@
         <v-list-item-title>{{ $t('navigation.mini.text') }}</v-list-item-title>
       </v-list-item>
       <v-list-item
-        link
-        :to="{ name: 'Home' }"
+        :to="{ name: 'Home', params: { tab: 'results' } }"
         active-class="primary lighten-2 font-weight-bold"
         exact-path
         @click.stop=""
@@ -86,11 +85,14 @@
         <v-list-item-title>{{ $t('navigation.home.text') }}</v-list-item-title>
       </v-list-item>
       <v-list-item
-        link
-        :to="{ name: 'Explore', query: { tab: 'panels' } }"
-        active-class="primary lighten-2 font-weight-bold"
-        exact-path
+        :to="{
+          name: 'explore',
+          params: { tab: 'panels', item: '0' },
+        }"
+        :active-class="activeClassExact"
+        :class="isActiveExplore ? activeClass : ''"
         @click.stop=""
+        exact-path
       >
         <v-list-item-icon>
           <v-icon>mdi-database-search</v-icon>
@@ -100,9 +102,9 @@
         </v-list-item-title>
       </v-list-item>
       <v-list-item
-        link
-        :to="{ name: 'Utils', query: { tab: 'panels' } }"
-        active-class="primary lighten-2 font-weight-bold"
+        :to="{ name: 'utils', params: { tab: 'panels', item: '0' } }"
+        :active-class="activeClassExact"
+        :class="isActiveUtils ? activeClass : ''"
         exact-path
         @click.stop=""
       >
@@ -132,6 +134,8 @@ export default Vue.extend({
   },
   data: () => ({
     mini: false,
+    activeClass: 'primary lighten-1 font-weight-bold',
+    activeClassExact: 'primary lighten-2 font-weight-bold',
   }),
   computed: {
     iconRotation() {
@@ -145,6 +149,28 @@ export default Vue.extend({
     },
     imageStyle() {
       return 'margin: auto; filter: saturate(' + this.saturation + ')'
+    },
+    isActiveExplore() {
+      const route = this.$route as any
+      //skip default route which is handled by VueRouter
+      if (route.name !== 'explore') {
+        return false
+      }
+      if (route.params.tab === 'panels' && route.params.item === '0') {
+        return false
+      }
+      return route.name === 'explore'
+    },
+    isActiveUtils() {
+      const route = this.$route as any
+      if (route.name !== 'utils') {
+        return false
+      }
+      //skip default route which is handled by VueRouter
+      if (route.params.tab === 'panels' && route.params.item === '0') {
+        return false
+      }
+      return route.name === 'utils'
     },
   },
   mounted() {},

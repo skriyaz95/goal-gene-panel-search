@@ -26,7 +26,7 @@
             @click="resetLastSearches"
             class="primary--text"
           >
-            <v-icon>mdi-close-circle</v-icon>
+            <v-icon>mdi-close-circle-outline</v-icon>
           </v-btn>
         </template>
         <span>

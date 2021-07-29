@@ -35,15 +35,13 @@
       <template v-slot:one-col>
         <v-tabs-items v-model="tab" class="background">
           <v-tab-item value="panels">
-            <build-panels />
+            <build-explore-panels
+              :editable="true"
+              @update="handlePanelUpdate($event)"
+            />
           </v-tab-item>
           <v-tab-item value="institutions">
-            <build-explore-institutions
-              :editable="true"
-              v-model="item"
-              @change="handleItemChanged($event)"
-              @update="handleInstitutionUpdate($event)"
-            />
+            <build-explore-institutions :editable="true" />
           </v-tab-item>
           <v-tab-item value="database">
             <build-database />
@@ -62,21 +60,20 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import BuildPanels from '@/components/BuildPanels.vue'
-import ThemePicker from '@/components/ThemePicker.vue'
-import BuildDatabase from '@/components/BuildDatabase.vue'
-import BuildExploreInstitutions from '@/components/BuildExploreInstitutions.vue'
+import ThemePicker from '@/components/manage/ThemePicker.vue'
+import BuildDatabase from '@/components/manage/BuildDatabase.vue'
+import BuildExploreInstitutions from '@/components/manage/BuildExploreInstitutions.vue'
+import BuildExplorePanels from '@/components/explore/BuildExplorePanels.vue'
 import { TranslateResult } from 'vue-i18n'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import GdprInfo from '@/components/GdprInfo.vue'
-import { mapGetters, mapActions } from 'vuex'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 
 export default Vue.extend({
   name: 'Utils',
 
   components: {
-    BuildPanels,
+    BuildExplorePanels,
     ThemePicker,
     BuildDatabase,
     BuildExploreInstitutions,
@@ -86,81 +83,17 @@ export default Vue.extend({
   data: () => ({
     tabs: ['panels', 'institutions', 'database', 'theme', 'cookies'],
   }),
-  methods: {
-    ...mapActions(['updateLastItemUtils', 'updateLastTabUtils']),
-    handleItemChanged(item: Number): any {
-      if (item != undefined && item != null && item.toString() != this.item) {
-        this.item = item.toString()
-      }
-    },
-    handleInstitutionUpdate(index: Number): any {
-      if (index >= 0) {
-        this.handleItemChanged(index)
-      }
-    },
-    updateLastTab() {
-      if (this.lastTab == '') {
-        this.tab = this.$route.query.tab
-        this.updateLastTabUtils(this.tab)
-      } else {
-        this.tab = this.lastTab
-      }
-    },
-    updateLastItem() {
-      if (this.lastItem == -1) {
-        this.item = this.$route.query.item as string
-        if (this.item != undefined && this.item != null) {
-          this.updateLastItemUtils(Number.parseInt(this.item))
-        }
-      } else {
-        this.item = this.lastItem
-      }
-    },
-    /**
-     * Use this on mounted to sync with lastTab and lastItem
-     * also handles loading from full refresh by using the url query
-     */
-    updateLastTabAndItem() {
-      console.log('here')
-      this.updateLastTab()
-      this.updateLastItem()
-    },
-  },
-  mounted() {
-    this.updateLastTabAndItem()
-  },
-  watch: {},
   computed: {
-    ...mapGetters({
-      lastTab: 'getLastTabUtils',
-      lastItem: 'getLastItemUtils',
-    }),
     tab: {
       set(tab: string) {
-        const queryTab = this.$route.query.tab
-        if (tab && tab !== queryTab) {
-          this.$router.replace({ query: { ...this.$route.query, tab } })
-          if (queryTab) {
-            this.updateLastTabUtils(tab)
-          }
+        this.$router.replace({ params: { ...this.$route.params, tab } })
+        if (this.$route.params.item !== '0') {
+          const item = '0'
+          this.$router.replace({ params: { ...this.$route.params, item } })
         }
       },
       get(): string | (string | null)[] {
-        return this.$route.query.tab
-      },
-    },
-    item: {
-      set(item: string) {
-        const queryItem = this.$route.query.item
-        if (item && item !== queryItem) {
-          this.$router.replace({ query: { ...this.$route.query, item } })
-          if (queryItem) {
-            this.updateLastItemUtils(Number.parseInt(item))
-          }
-        }
-      },
-      get(): string | (string | null)[] {
-        return this.$route.query.item
+        return this.$route.params.tab ? this.$route.params.tab : 'panels'
       },
     },
     background(): VuetifyThemeItem {
@@ -173,5 +106,8 @@ export default Vue.extend({
       return 'GTI'
     },
   },
+  methods: {},
+  mounted() {},
+  watch: {},
 })
 </script>

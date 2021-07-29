@@ -3,6 +3,7 @@ import {
   FormatCompareItemsPayload,
   UserInputPayload,
 } from "@/types/payload-types"
+import { LastSelection } from "@/types/ui-types"
 import $getFindGenesWorker from "@/utils/workers/worker-instance"
 
 export default {
@@ -86,19 +87,16 @@ export default {
   async updateInputNeedsReload(context: any, payload: boolean) {
     context.commit("updateInputNeedsReload", payload)
   },
-  async updateLastItemExplore(context: any, payload: Number) {
-    context.commit("updateLastItemExplore", payload)
-  },
-  async updateLastItemUtils(context: any, payload: Number) {
-    context.commit("updateLastItemUtils", payload)
-  },
   async updateLastTabHome(context: any, payload: string) {
     context.commit("updateLastTabHome", payload)
   },
-  async updateLastTabExplore(context: any, payload: string) {
-    context.commit("updateLastTabExplore", payload)
+  async updateLastExplorePath(context: any, payload: any) {
+    context.commit("updateLastExplorePath", payload)
   },
-  async updateLastTabUtils(context: any, payload: string) {
-    context.commit("updateLastTabUtils", payload)
+  async updateLastUtilsPath(context: any, payload: any) {
+    context.commit("updateLastUtilsPath", payload)
+  },
+  updateLastSelection(context: any, payload: LastSelection) {
+    context.commit("updateLastSelection", payload)
   },
 }

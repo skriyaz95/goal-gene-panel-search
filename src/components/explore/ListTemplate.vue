@@ -5,17 +5,17 @@
       <slot name="title"></slot>
     </v-card-title>
     <v-card-text>
+      <slot name="info"></slot>
       <v-autocomplete
         :label="$t(dropDownLabel)"
         clearable
         :items="searchableItems"
-        :value="Number.parseInt(value)"
+        :value="value"
         @input="handleInput($event)"
       ></v-autocomplete>
       <v-list-item-group
         active-class="primary lighten-2 font-weight-bold"
-        :value="Number.parseInt(value)"
-        @input="handleInput($event)"
+        :value="value"
         @change="handleChange($event)"
         mandatory
       >
@@ -27,21 +27,21 @@
             <v-list-item-content :class="{'red--text': !item[fieldValidLabel]}">
               {{ item[fieldItemLabel] }}
             </v-list-item-content>
-            <v-list-item-action v-if="editable">
+            <v-list-item-action v-if="editable" class="my-0">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="handleDelete(index)">
+                  <v-btn v-on="on" icon @click.stop="handleDelete(index)">
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
                 </template>
-                <span>{{ $t('buidInstitutions.delete.tooltip') }}</span>
+                <span>{{ $t('buildInstitutions.delete.tooltip') }}</span>
               </v-tooltip>
             </v-list-item-action>
           </v-list-item>
         </v-list>
       </v-list-item-group>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions class="px-4">
       <slot name="actions"></slot>
     </v-card-actions>
   </v-card>
@@ -54,7 +54,7 @@ export default Vue.extend({
   components: {},
   name: 'ListTemplate',
   props: {
-    value: { type: String, default: '0' },
+    value: { type: Number, default: 0 },
     fieldItemLabel: { type: String, default: 'name' },
     fieldValidLabel : { type: String, default: 'valid'  },
     dropDownLabel: { type: String, default: 'input.details.text' },

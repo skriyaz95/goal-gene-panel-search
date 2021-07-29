@@ -48,7 +48,7 @@
             :rules="geneListRules"
             clearable
             outlined
-            clear-icon="mdi-close-circle"
+            clear-icon="mdi-close-circle-outline"
             rows="13"
             @click:clear="clear()"
             @blur="handleBlur"
