@@ -25,7 +25,7 @@
               <v-icon :class="{'red--text': !item[fieldValidLabel]}">mdi-dna</v-icon>
             </v-list-item-icon>
             <v-list-item-content :class="{'red--text': !item[fieldValidLabel]}">
-              {{ item[fieldItemLabel] }}
+              {{ item[fieldItemLabel][fieldNameLabel] }}
             </v-list-item-content>
             <v-list-item-action v-if="editable" class="my-0">
               <v-tooltip bottom>
@@ -55,7 +55,8 @@ export default Vue.extend({
   name: 'ListTemplate',
   props: {
     value: { type: Number, default: 0 },
-    fieldItemLabel: { type: String, default: 'name' },
+    fieldItemLabel: { type: String, default: 'item' },
+    fieldNameLabel: { type: String, default: 'name' },
     fieldValidLabel : { type: String, default: 'valid'  },
     dropDownLabel: { type: String, default: 'input.details.text' },
     itemsSorted: {
@@ -79,9 +80,8 @@ export default Vue.extend({
   computed: {
     searchableItems() {
       const items = this.itemsSorted.map((i: any, index: Number) => {
-        const text = i[this.fieldItemLabel]
-        const valid = i[this.fieldValidLabel]
-        return { text: text, value: index, valid: valid }
+        const text = i[this.fieldItemLabel][this.fieldNameLabel]
+        return { text: text, value: index }
       })
       return items
     }

@@ -113,6 +113,7 @@ import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import PanelExploreHelp from '../help/PanelExploreHelp.vue'
+import {ListItem} from "@/types/ui-types";
 
 export default Vue.extend({
   components: {
@@ -130,7 +131,7 @@ export default Vue.extend({
   },
   data: () => ({
     previousIndex: 0, //to prevent undefined error when clicking on the same panel twice
-    tempPanelSorted: new Array<GenePanelDetails>(),
+    tempPanelSorted: new Array<ListItem>(),
     currentInstitution: 'test',
     panelFile: null,
     info: false,
@@ -167,7 +168,7 @@ export default Vue.extend({
     fileAlreadyExists(fileName: string) {
       return (
         this.tempPanelSorted
-          .map((panel: GenePanelDetails) => panel.sourceFile)
+          .map((panel: ListItem) => (panel.item as GenePanelDetails).sourceFile)
           .indexOf(fileName) > -1
       )
     },
@@ -177,25 +178,27 @@ export default Vue.extend({
     },
     saveAll() {
       this.info = true
-      this.updatePanels(this.tempPanelSorted)
+      const panels = this.tempPanelSorted.map((listItem: ListItem) => listItem.item)
+      this.updatePanels(panels)
       download(
         'panels.json',
-        formatObjetToJson(this.tempPanelSorted, false),
+        formatObjetToJson(panels, false),
         'text/json'
       )
     },
-    getCurrentPanel(): GenePanelDetails | null {
+    getCurrentPanel(): ListItem | null {
       const currentPanel = this.tempPanelSorted[this.item]
       this.currentInstitution = this.getInstitutionfromPanel(currentPanel)
       return currentPanel
     },
     updateTempPanelsFromStore() {
-      this.tempPanelSorted = JSON.parse(JSON.stringify(this.panels))
+      this.tempPanelSorted = JSON.parse(JSON.stringify(this.panels)).map((panel : GenePanelDetails) => new ListItem(panel, true))
     },
     updateTempPanels(name: string) {
       this.tempPanelSorted.sort(this.sortPanelsByName)
       for (let i = 0; i < this.tempPanelSorted.length; i++) {
-        if (this.tempPanelSorted[i].name === name) {
+        if ((this.tempPanelSorted[i].item as GenePanelDetails).name === name) {
+          this.item = i
           this.$emit('update', i)
           break
         }
@@ -210,11 +213,11 @@ export default Vue.extend({
       }
       this.info = true
     },
-    sortPanelsByName(a: GenePanelDetails, b: GenePanelDetails) {
-      if (a.name < b.name) {
+    sortPanelsByName(a: ListItem, b: ListItem) {
+      if (a.item.name < b.item.name) {
         return -1
       }
-      if (a.name > b.name) {
+      if (a.item.name > b.item.name) {
         return 1
       }
       return 0
@@ -225,12 +228,12 @@ export default Vue.extend({
     handleInput($event: any) {
       this.item = $event
     },
-    getInstitutionfromPanel(panel: GenePanelDetails) {
-      if (this.institutions && panel && panel.name) {
+    getInstitutionfromPanel(panel: ListItem) {
+      if (this.institutions && panel && panel.item && (panel.item as GenePanelDetails).name) {
         for (let i = 0; i < this.institutions.length; i++) {
           if (
             this.institutions[i].panels &&
-            this.institutions[i].panels.indexOf(panel.name) > -1
+            this.institutions[i].panels.indexOf((panel.item as GenePanelDetails).name) > -1
           ) {
             return this.institutions[i].name
           }
@@ -376,7 +379,7 @@ export default Vue.extend({
           (panelBuilder.parsedGenes = parsedGenes),
           (panelBuilder.panelFileName = event.data.panelFileName)
         const panel = this.buildGenePanelObject(panelBuilder)
-        this.tempPanelSorted.push(panel)
+        this.tempPanelSorted.push(new ListItem(panel, true))
         this.updateTempPanels(panel.name)
         this.panelFile = null
         this.info = true

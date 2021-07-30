@@ -4,11 +4,12 @@
     <v-list v-if="editable && institution">
       <v-form
         v-model="institutionValid"
+        ref="institutionForm"
       >
         <v-list-item>
           <v-list-item-content>
             <v-text-field
-              v-model="institution.name"
+              v-model="institution.item.name"
               :label="$t('institutionDetails.name.text')"
               :rules="nameRules"
               dense
@@ -22,7 +23,7 @@
           <v-list-item-content>
             <v-text-field
               :rules="phoneRules"
-              v-model="institution.phone"
+              v-model="institution.item.phone"
               :label="$t('institutionDetails.phone.text')"
               prepend-icon="mdi-phone-in-talk"
               dense
@@ -34,7 +35,7 @@
         <v-list-item>
           <v-list-item-content>
             <v-text-field
-              v-model="institution.email"
+              v-model="institution.item.email"
               :rules = "emailRules"
               :label="$t('institutionDetails.email.text')"
               prepend-icon="mdi-email"
@@ -47,7 +48,7 @@
         <v-list-item>
           <v-list-item-content>
             <v-text-field
-              v-model="institution.website"
+              v-model="institution.item.website"
               :rules="validateWebSite"
               :label="$t('institutionDetails.website.text')"
               prepend-icon="mdi-earth"
@@ -63,7 +64,7 @@
               chips
               deletable-chips
               multiple
-              v-model="institution.panels"
+              v-model="institution.item.panels"
               :items="panels"
               :label="$t('institutionDetails.panels.text')"
               hide-details
@@ -81,7 +82,7 @@
           <v-icon>mdi-bank</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ institution.name }}</v-list-item-title>
+          <v-list-item-title>{{ institution.item.name }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item>
@@ -90,8 +91,8 @@
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
-            <a :href="linkTo(institution.phone, 'phone')">
-              {{ institution.phone }}
+            <a :href="linkTo(institution.item.phone, 'phone')">
+              {{ institution.item.phone }}
             </a>
           </v-list-item-title>
         </v-list-item-content>
@@ -102,8 +103,8 @@
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
-            <a :href="linkTo(institution.email, 'email')">
-              {{ institution.email }}
+            <a :href="linkTo(institution.item.email, 'email')">
+              {{ institution.item.email }}
             </a>
           </v-list-item-title>
         </v-list-item-content>
@@ -114,8 +115,8 @@
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
-            <a :href="institution.website" target="_blank">
-              {{ institution.website }}
+            <a :href="institution.item.website" target="_blank">
+              {{ institution.item.website }}
             </a>
           </v-list-item-title>
         </v-list-item-content>
@@ -129,7 +130,7 @@
             <v-chip
               :outlined="chipOutlined"
               class="mr-2"
-              v-for="(panel, index) in institution.panels"
+              v-for="(panel, index) in institution.item.panels"
               :key="index"
             >
               {{ panel }}
@@ -145,6 +146,7 @@
 import { Institution } from '@/types/panel-types'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
+import {ListItem} from "@/types/ui-types";
 
 export default Vue.extend({
   components: {},
@@ -152,7 +154,7 @@ export default Vue.extend({
   props: {
     institution: {
       type: Object,
-      default: () => new Institution('', '', '', '', []),
+      default: () => new ListItem(new Institution('', '', '', '', []), true),
     },
     editable: {
       type: Boolean,
@@ -216,8 +218,8 @@ export default Vue.extend({
       this.$emit('institution-valid', this.institution)
     },
     formatNumber() {
-      var x = this.institution.phone.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-      this.institution.phone = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+      var x = this.institution.item.phone.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+      this.institution.item.phone = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
     }
   },
   mounted() {},

@@ -8,6 +8,7 @@
         @change="handleChange($event)"
         :itemsSorted="tempInstitutionSorted"
         :editable="editable"
+        @institution-valid="validateInstitutions()"
         @delete="deleteInstitution($event)"
         dropDownLabel="buildPanels.selectInstitution.text"
       >
@@ -53,7 +54,7 @@
             <template v-slot:activator="{ on }">
               <v-btn
                 class="primary ml-2"
-                :disabled="!validInstitutions()"
+                :disabled="!validInstitutions"
                 v-on="on"
                 @click="saveAll()"
               >
@@ -104,6 +105,7 @@ import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InstitutionExploreHelp from '../help/InstitutionExploreHelp.vue'
+import {ListItem} from "@/types/ui-types";
 
 export default Vue.extend({
   components: {
@@ -123,9 +125,10 @@ export default Vue.extend({
     publicPath: process.env.BASE_URL,
     // institutionIndex: 0,
     previousIndex: 0, //to prevent undefined error when clicking on the same institution twice
-    tempInstitutionSorted: new Array<Institution>(),
+    tempInstitutionSorted: new Array<ListItem>(),
     info: false,
     help: false,
+    validInstitutions: true,
   }),
   methods: {
     ...mapActions(['updateInstitutions']),
@@ -135,35 +138,44 @@ export default Vue.extend({
     },
     addInstitution() {
       const newInstitution = new Institution('New', '', '', '', [])
-      this.tempInstitutionSorted.push(newInstitution)
+      const newItem = new ListItem(newInstitution, true)
+      this.tempInstitutionSorted.push(newItem)
       this.tempInstitutionSorted.sort(this.sortInstitutionsByName)
       this.updateTempInstitutions('New')
     },
-    validInstitutions() {
-      //TODO validate form
-      return true
+    validateInstitutions($event: ListItem) {
+      this.tempInstitutionSorted[this.item] = $event
+      for (let i = 0; i < this.tempInstitutionSorted.length; i++) {
+        if(!this.tempInstitutionSorted[i].valid){
+          this.validInstitutions = false
+          return
+        }
+      }
+      this.validInstitutions = true
     },
     saveAll() {
       this.info = true
-      this.updateInstitutions(this.tempInstitutionSorted)
+      const institutions = this.tempInstitutionSorted.map((listItem: ListItem) => listItem.item)
+      this.updateInstitutions(institutions)
       download(
         'institutions.json',
-        formatObjetToJson(this.tempInstitutionSorted, false),
+        formatObjetToJson(institutions, false),
         'text/json'
       )
     },
-    getCurrentInstitution(): Institution | null {
+    getCurrentInstitution(): ListItem | null {
       return this.tempInstitutionSorted[this.item]
     },
     updateTempInstitutionsFromStore() {
-      this.tempInstitutionSorted = JSON.parse(JSON.stringify(this.institutions))
+      this.tempInstitutionSorted = JSON.parse(JSON.stringify(this.institutions)).map((institution:Institution) => new ListItem(institution, true))
       for (let i = 0; i < this.tempInstitutionSorted.length; i++) {
-        for (let j = 0; j < this.tempInstitutionSorted[i].panels.length; j++) {
+        const item = this.tempInstitutionSorted[i].item as Institution
+        for (let j = 0; j < item.panels.length; j++) {
           if (
-            this.panelNames.indexOf(this.tempInstitutionSorted[i].panels[j]) ==
+            this.panelNames.indexOf(item.panels[j]) ==
             -1
           ) {
-            this.tempInstitutionSorted[i].panels = []
+            (this.tempInstitutionSorted[i].item as Institution).panels = []
             break
           }
         }
@@ -172,7 +184,8 @@ export default Vue.extend({
     updateTempInstitutions(name: string) {
       this.tempInstitutionSorted.sort(this.sortInstitutionsByName)
       for (let i = 0; i < this.tempInstitutionSorted.length; i++) {
-        if (this.tempInstitutionSorted[i].name === name) {
+        if (this.tempInstitutionSorted[i].item.name === name) {
+          this.item = i;
           this.$emit('update', i)
           break
         }
@@ -187,11 +200,11 @@ export default Vue.extend({
       }
       this.info = true
     },
-    sortInstitutionsByName(a: Institution, b: Institution) {
-      if (a.name < b.name) {
+    sortInstitutionsByName(a: ListItem, b: ListItem) {
+      if (a.item.name < b.item.name) {
         return -1
       }
-      if (a.name > b.name) {
+      if (a.item.name > b.item.name) {
         return 1
       }
       return 0
