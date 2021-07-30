@@ -22,16 +22,16 @@
         <v-list>
           <v-list-item v-for="(item, index) in itemsSorted" :key="index">
             <v-list-item-icon>
-              <v-icon :class="{'red--text': !item[fieldValidLabel]}">{{ icon }}</v-icon>
+              <v-icon :class="ToggleTextColor(item.valid)">{{ icon }}</v-icon>
             </v-list-item-icon>
-            <v-list-item-content :class="{'red--text': !item[fieldValidLabel]}">
+            <v-list-item-content :class="ToggleTextColor(item.valid)">
               {{ item[fieldItemLabel][fieldNameLabel] }}
             </v-list-item-content>
             <v-list-item-action v-if="editable" class="my-0">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click.stop="handleDelete(index)">
-                    <v-icon :class="{'red--text': !item[fieldValidLabel]}">mdi-delete</v-icon>
+                    <v-icon :class="ToggleTextColor(item.valid)">mdi-delete</v-icon>
                   </v-btn>
                 </template>
                 <span>{{ $t('buildInstitutions.delete.tooltip') }}</span>
@@ -57,7 +57,6 @@ export default Vue.extend({
     value: { type: Number, default: 0 },
     fieldItemLabel: { type: String, default: 'item' },
     fieldNameLabel: { type: String, default: 'name' },
-    fieldValidLabel : { type: String, default: 'valid'  },
     dropDownLabel: { type: String, default: 'input.details.text' },
     itemsSorted: {
       type: Array,
@@ -77,6 +76,9 @@ export default Vue.extend({
     handleDelete(index: Number) {
       this.$emit('delete', index)
     },
+    ToggleTextColor(valid: boolean) {
+      return !valid ? 'red--text' : ''
+    }
   },
   computed: {
     searchableItems() {
