@@ -117,7 +117,7 @@
       <v-list-item
         :to="{ name: 'help', params: { tab: 'files' } }"
         :active-class="activeClassExact"
-        :class="isActiveUtils ? activeClass : ''"
+        :class="isActiveHelp ? activeClass : ''"
         exact-path
         @click.stop=""
       >

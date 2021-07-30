@@ -6,18 +6,17 @@
           <span class="mr-2"> {{ $t('help.fileFormats.title.text') }} </span>
         </v-card-title>
         <v-card-text>
-          <div>
-            GTI accepts two file formats to import new panels: .csv and .bed.
+          <div class="pb-2">
+            {{ $t('help.fileFormats.part1') }}
           </div>
           <v-row>
             <v-col>
-              <div>CSV</div>
-              <div>
-                It's a simple text file: one column with a list of genes.
+              <div class="title">CSV</div>
+              <div class="pb-2">
+                {{ $t('help.fileFormats.csv.part1') }}
               </div>
-              <div>
-                The first row needs to be the column header (the label doesn't
-                matter). Other columns are ignored.
+              <div class="pb-2">
+                {{ $t('help.fileFormats.csv.part2') }}
               </div>
               <div class="grey lighten-4 code pa-2">
                 <div v-for="(line, index) in csvContent" :key="index">
@@ -26,15 +25,13 @@
               </div>
             </v-col>
             <v-col>
-              <div>BED</div>
-              <div>
-                Bed files have at least 4 columns, separated by tabs (no
-                header):
+              <div class="title">BED</div>
+              <div class="pb-2">
+                {{ $t('help.fileFormats.bed.part1') }}
                 <span class="grey lighten-4 code"> CHR START END NAME </span>
               </div>
-              <div>
-                At the moment, only the NAME column is parsed. The gene name is
-                extracted by taking the first term before
+              <div class="pb-2">
+                {{ $t('help.fileFormats.bed.part2') }}
                 <span class="grey lighten-4 code">:</span>
               </div>
               <div class="grey lighten-4 code pa-2">
@@ -42,12 +39,12 @@
                   {{ line.line[0] }} {{ line.line[1] }}{{ line.line[2] }}
                 </div>
               </div>
-              <div>
+              <div class="pt-2">
                 <table>
                   <thead>
                     <tr>
-                      <th>Bed File Content</th>
-                      <th>Gene Extracted</th>
+                      <th>{{ $t('help.fileFormats.bed.header1') }}</th>
+                      <th>{{ $t('help.fileFormats.bed.header2') }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -56,7 +53,7 @@
                         {{ line.line[0] }} <b>{{ line.line[1] }}</b
                         >{{ line.line[2] }}
                       </td>
-                      <td>
+                      <td class="text-no-wrap">
                         {{ line.validation }}
                       </td>
                     </tr>
@@ -65,10 +62,13 @@
               </div>
             </v-col>
           </v-row>
-          <div>
-            When parsing a file, GTI only uses the gene name, it could be a
-            symbol or a synonym. If it cannot find a matching term, the gene is
-            considered 'Not Found' and ignored during searches.
+          <div class="pt-2">
+            <div>
+              {{ $t('help.fileFormats.part2') }}
+            </div>
+            <div>
+              {{ $t('help.fileFormats.part3') }}
+            </div>
           </div>
         </v-card-text>
       </v-card>
@@ -98,11 +98,11 @@ export default Vue.extend({
         },
         {
           line: ['chr1	3345058	3345178	', 'SNP', ':rs4415513'],
-          validation: 'SNP is not a valid gene',
+          validation: 'SNP ' + this.$t('help.fileFormats.notValid'),
         },
         {
           line: ['chr8	127730434	127736593	', 'MYC_upstream', ''],
-          validation: 'MYC_upstream is not a valid gene',
+          validation: 'MYC_upstream ' + this.$t('help.fileFormats.notValid'),
         },
         {
           line: [
@@ -118,7 +118,7 @@ export default Vue.extend({
             'ETV6_Fusion',
             ':ETV6:278717_15649951_ETV6_5',
           ],
-          validation: 'ETV6_Fusion is not a valid gene',
+          validation: 'ETV6_Fusion' + this.$t('help.fileFormats.notValid'),
         },
         {
           line: [

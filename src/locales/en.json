@@ -358,7 +358,21 @@
     "fileFormats": {
       "title": {
         "text": "File Formats"
-      }
+      },
+      "part1": "GTI accepts two file formats to import new panels: .csv and .bed.",
+      "part2": "When parsing a file, GTI only uses the gene name, it could be a symbol or a synonym.",
+      "part3": "If it cannot find a matching term, the gene is considered 'Not Found' and ignored during searches.",
+      "csv": {
+        "part1": "It's a simple text file: one column with a list of genes.",
+        "part2": "The first row needs to be the column header (the label doesn't matter). Other columns are ignored."
+      },
+      "bed": {
+        "part1": "Bed files have at least 4 columns, separated by tabs (no header):",
+        "part2": "At the moment, only the NAME column is parsed. The gene name is extracted by taking the first term before",
+        "header1": "Bed File Content",
+        "header2": "Gene Extracted"
+      },
+      "notValid": " is not a valid gene"
     }
   },
   "institutionDetails": {
