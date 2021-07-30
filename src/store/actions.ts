@@ -1,9 +1,4 @@
-import {
-  Gene,
-  GenePanelDetails,
-  Institution,
-  ParsedGenes,
-} from "@/types/panel-types"
+import {Gene, GenePanelDetails, Institution, ParsedGenes} from "@/types/panel-types"
 import {
   FormatCompareItemsPayload,
   UserInputPayload,

@@ -22,16 +22,16 @@
         <v-list>
           <v-list-item v-for="(item, index) in itemsSorted" :key="index">
             <v-list-item-icon>
-              <v-icon>{{ icon }}</v-icon>
+              <v-icon :class="textColor(item.valid)">{{ icon }}</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>
-              {{ item[fieldItemLabel] }}
+            <v-list-item-content :class="textColor(item.valid)">
+              {{ item[fieldItemLabel][fieldNameLabel] }}
             </v-list-item-content>
             <v-list-item-action v-if="editable" class="my-0">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click.stop="handleDelete(index)">
-                    <v-icon>mdi-delete</v-icon>
+                    <v-icon :class="textColor(item.valid)">mdi-delete</v-icon>
                   </v-btn>
                 </template>
                 <span>{{ $t('buildInstitutions.delete.tooltip') }}</span>
@@ -55,7 +55,8 @@ export default Vue.extend({
   name: 'ListTemplate',
   props: {
     value: { type: Number, default: 0 },
-    fieldItemLabel: { type: String, default: 'name' },
+    fieldItemLabel: { type: String, default: 'item' },
+    fieldNameLabel: { type: String, default: 'name' },
     dropDownLabel: { type: String, default: 'input.details.text' },
     itemsSorted: {
       type: Array,
@@ -75,11 +76,14 @@ export default Vue.extend({
     handleDelete(index: Number) {
       this.$emit('delete', index)
     },
+    textColor(valid: boolean) {
+      return !valid ? 'red--text' : ''
+    }
   },
   computed: {
     searchableItems() {
       const items = this.itemsSorted.map((i: any, index: Number) => {
-        const text = i[this.fieldItemLabel]
+        const text = i[this.fieldItemLabel][this.fieldNameLabel]
         return { text: text, value: index }
       })
       return items

@@ -367,19 +367,33 @@
   "institutionDetails": {
     "name": {
       "text": "Name",
-      "tooltip": "Institution Name"
+      "tooltip": "Institution Name",
+      "rules": {
+        "required": "Institution Name is required",
+        "length": "Institution Name must be less than 50 characters",
+        "valid": "Invalid Institution Name"
+      }
     },
     "phone": {
       "text": "Phone",
-      "tooltip": "Institution Phone"
+      "tooltip": "Institution Phone",
+      "rules": {
+        "valid": "Invalid Institution Phone Number"
+      }
     },
     "email": {
       "text": "Email",
-      "tooltip": "Primary Contact Email"
+      "tooltip": "Primary Contact Email",
+      "rules": {
+        "valid": "Invalid Institution E-mail"
+      }
     },
     "website": {
       "text": "Website",
-      "tooltip": "Institution Website"
+      "tooltip": "Institution Website",
+      "rules": {
+        "valid": "Institution Website is not in proper format"
+      }
     },
     "panels": {
       "text": "Panels",

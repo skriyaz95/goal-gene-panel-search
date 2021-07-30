@@ -1,5 +1,5 @@
-import { GenePanelDetails, Institution, SynonymGene } from "@/types/panel-types"
 import { LastSelection } from "@/types/ui-types"
+import {GenePanelDetails, Institution, SynonymGene} from "@/types/panel-types";
 
 export default {
   updatePanels(state: any, payload: Array<GenePanelDetails>) {
