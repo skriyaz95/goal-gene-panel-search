@@ -127,6 +127,26 @@
       "title": {
         "text": "Explore"
       }
+    },
+    "error": {
+      "title": {
+        "text": "Error Page"
+      },
+      "toolbar": {
+        "text": "Oops..."
+      },
+      "content": {
+        "text": {
+          "part1": "The page you are trying to reach does not exist.",
+          "part2": "Take me home"
+        }
+      }
+    },
+    "help": {
+      "text": "Help",
+      "toolbar": {
+        "text": "Help Section"
+      }
     }
   },
   "themePicker": {
@@ -334,6 +354,11 @@
     "institutionExplore": {
       "purpose": "Click on an institution below to see its contact information",
       "edit": "Here you can edit or delete existing institutions and create new ones."
+    },
+    "fileFormats": {
+      "title": {
+        "text": "File Formats"
+      }
     }
   },
   "institutionDetails": {

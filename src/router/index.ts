@@ -25,6 +25,20 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "explore" */ "@/views/Explore.vue"),
   },
+  {
+    path: "/help/:tab?",
+    name: "help",
+    meta: { i18n: "navigation.help" },
+    component: () =>
+      import(/* webpackChunkName: "explore" */ "@/views/Help.vue"),
+  },
+  {
+    path: "*",
+    name: "error",
+    meta: { i18n: "navigation.error" },
+    component: () =>
+      import(/* webpackChunkName: "explore" */ "@/views/Error.vue"),
+  },
 ]
 
 const router = new VueRouter({
