@@ -370,30 +370,28 @@
       "tooltip": "Institution Name",
       "rules": {
         "required": "Institution Name is required",
-        "length": "Institution Name must be less than 50 characters"
+        "length": "Institution Name must be less than 50 characters",
+        "valid": "Invalid Institution Name"
       }
     },
     "phone": {
       "text": "Phone",
       "tooltip": "Institution Phone",
       "rules": {
-        "required": "Institution Phone Number is required",
-        "valid": "Institution Phone Number must be valid"
+        "valid": "Invalid Institution Phone Number"
       }
     },
     "email": {
       "text": "Email",
       "tooltip": "Primary Contact Email",
       "rules": {
-        "required": "Institution E-mail is required",
-        "valid": "Institution E-mail must be valid"
+        "valid": "Invalid Institution E-mail"
       }
     },
     "website": {
       "text": "Website",
       "tooltip": "Institution Website",
       "rules": {
-        "required": "Institution Website is required",
         "valid": "Institution Website is not in proper format"
       }
     },

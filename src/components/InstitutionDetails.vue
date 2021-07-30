@@ -175,6 +175,7 @@ export default Vue.extend({
       nameRules: [
         (v:string) => !!v || this.$t('institutionDetails.name.rules.required'),
         (v:string) => (v && v.length <= 50) || this.$t('institutionDetails.name.rules.length'),
+        (v:string) => !v || /^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/.test(v) || this.$t('institutionDetails.name.rules.valid')
       ],
       emailRules: [
         (v:string) => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || this.$t('institutionDetails.email.rules.valid')

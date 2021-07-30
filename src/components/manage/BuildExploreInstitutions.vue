@@ -146,7 +146,7 @@ export default Vue.extend({
     validInstitutions: true,
   }),
   methods: {
-    ...mapActions(['updateInstitutions', 'resetPanels']),
+    ...mapActions(['updateInstitutions', 'resetInstitutions']),
     handleHelp() {
       this.$emit('help')
       this.help = !this.help
@@ -195,6 +195,7 @@ export default Vue.extend({
           }
         }
       }
+      this.panels.map((p: GenePanelDetails) => p.name)
     },
     updateTempInstitutions(name: string) {
       this.tempInstitutionSorted.sort(this.sortInstitutionsByName)
@@ -231,7 +232,7 @@ export default Vue.extend({
       this.item = $event
     },
     resetAll() {
-      this.resetPanels().then(() => {
+      this.resetInstitutions().then(() => {
         this.updateTempInstitutionsFromStore()
       })
     },
