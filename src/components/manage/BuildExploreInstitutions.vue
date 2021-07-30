@@ -10,6 +10,7 @@
         :editable="editable"
         @delete="deleteInstitution($event)"
         dropDownLabel="buildPanels.selectInstitution.text"
+        icon="mdi-bank-outline"
       >
         <template v-slot:title>
           {{ $t('buildInstitutions.list.text') }}:
@@ -45,6 +46,7 @@
             <template v-slot:activator="{ on }">
               <v-btn class="primary" v-on="on" @click="addInstitution()">
                 {{ $t('buildInstitutions.new.text') }}
+                <v-icon right>mdi-bank-plus</v-icon>
               </v-btn>
             </template>
             <span>{{ $t('buildInstitutions.new.tooltip') }}</span>
@@ -58,9 +60,22 @@
                 @click="saveAll()"
               >
                 {{ $t('buildInstitutions.saveAll.text') }}
+                <v-icon right>mdi-content-save</v-icon>
               </v-btn>
             </template>
             <span> {{ $t('buildInstitutions.saveAll.tooltip') }}</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn class="warning ml-2" v-on="on" @click="resetAll()">
+                {{ $t('buildPanels.resetAll.text') }}
+                <v-icon right>mdi-reload</v-icon>
+              </v-btn>
+            </template>
+            <span>
+              {{ $t('buildPanels.resetAll.tooltip.part1') }}<br />
+              {{ $t('buildPanels.resetAll.tooltip.part2') }}</span
+            >
           </v-tooltip>
         </template>
       </list-template>
@@ -131,7 +146,7 @@ export default Vue.extend({
     validInstitutions: true,
   }),
   methods: {
-    ...mapActions(['updateInstitutions']),
+    ...mapActions(['updateInstitutions', 'resetPanels']),
     handleHelp() {
       this.$emit('help')
       this.help = !this.help
@@ -214,6 +229,11 @@ export default Vue.extend({
     },
     handleInput($event: any) {
       this.item = $event
+    },
+    resetAll() {
+      this.resetPanels().then(() => {
+        this.updateTempInstitutionsFromStore()
+      })
     },
   },
   computed: {

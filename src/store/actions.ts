@@ -99,4 +99,16 @@ export default {
   updateLastSelection(context: any, payload: LastSelection) {
     context.commit("updateLastSelection", payload)
   },
+  async resetPanels(context: any) {
+    return new Promise((resolve) => {
+      context.commit("resetPanels")
+      resolve("success")
+    })
+  },
+  async resetInstitutions(context: any) {
+    return new Promise((resolve) => {
+      context.commit("resetInstitutions")
+      resolve("success")
+    })
+  },
 }

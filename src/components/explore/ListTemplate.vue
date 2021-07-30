@@ -22,7 +22,7 @@
         <v-list>
           <v-list-item v-for="(item, index) in itemsSorted" :key="index">
             <v-list-item-icon>
-              <v-icon :class="{'red--text': !item[fieldValidLabel]}">mdi-dna</v-icon>
+              <v-icon :class="{'red--text': !item[fieldValidLabel]}">{{ icon }}</v-icon>
             </v-list-item-icon>
             <v-list-item-content :class="{'red--text': !item[fieldValidLabel]}">
               {{ item[fieldItemLabel][fieldNameLabel] }}
@@ -64,6 +64,7 @@ export default Vue.extend({
       default: () => [],
     },
     editable: Boolean,
+    icon: { type: String, default: 'mdi-dna' },
   },
   data: () => ({}),
   methods: {
@@ -84,7 +85,7 @@ export default Vue.extend({
         return { text: text, value: index }
       })
       return items
-    }
+    },
   },
   mounted() {},
 })

@@ -14,7 +14,7 @@
               :rules="nameRules"
               dense
               required
-              prepend-icon="mdi-bank"
+              prepend-icon="mdi-bank-outline"
               @change="handleNameChange"
             ></v-text-field>
           </v-list-item-content>
@@ -79,7 +79,7 @@
     <v-list v-else>
       <v-list-item>
         <v-list-item-icon>
-          <v-icon>mdi-bank</v-icon>
+          <v-icon>mdi-bank-outline</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>{{ institution.item.name }}</v-list-item-title>

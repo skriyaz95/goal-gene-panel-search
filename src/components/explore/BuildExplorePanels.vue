@@ -11,6 +11,7 @@
           :editable="editable"
           @delete="deletePanel($event)"
           dropDownLabel="buildPanels.selectPanel.text"
+          icon="mdi-dna"
         >
           <template v-slot:title>
             {{ $t('explore.panels.list.text') }}:
@@ -59,9 +60,22 @@
                   @click="saveAll()"
                 >
                   {{ $t('buildPanels.saveAll.text') }}
+                  <v-icon right>mdi-content-save</v-icon>
                 </v-btn>
               </template>
               <span> {{ $t('buildPanels.saveAll.tooltip') }}</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn class="warning ml-2" v-on="on" @click="resetAll()">
+                  {{ $t('buildPanels.resetAll.text') }}
+                  <v-icon right>mdi-reload</v-icon>
+                </v-btn>
+              </template>
+              <span>
+                {{ $t('buildPanels.resetAll.tooltip.part1') }}<br />
+                {{ $t('buildPanels.resetAll.tooltip.part2') }}</span
+              >
             </v-tooltip>
           </template>
         </list-template>
@@ -82,7 +96,6 @@
               <template v-slot:activator="{ on }">
                 <v-btn color="error" v-on="on" @click="deletePanel()">
                   {{ $t('buildInstitutions.delete.text') }}
-                  <v-spacer></v-spacer>
                   <v-icon right>mdi-delete</v-icon>
                 </v-btn>
               </template>
@@ -139,7 +152,7 @@ export default Vue.extend({
     help: false,
   }),
   methods: {
-    ...mapActions(['updatePanels']),
+    ...mapActions(['updatePanels', 'resetPanels']),
     handleHelp() {
       this.$emit('help')
       this.help = !this.help
@@ -344,6 +357,11 @@ export default Vue.extend({
         }
       }
       return uniqueRows
+    },
+    resetAll() {
+      this.resetPanels().then(() => {
+        this.updateTempPanelsFromStore()
+      })
     },
   },
   computed: {

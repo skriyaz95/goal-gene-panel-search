@@ -4,8 +4,14 @@
       {{ title }}:
       <v-tooltip bottom v-if="!hidable">
         <template v-slot:activator="{ on }">
-          <v-btn @click="visible = !visible" icon v-on="on">
-            <v-icon>mdi-eye</v-icon>
+          <v-btn
+            @click="visible = !visible"
+            icon
+            v-on="on"
+            :class="visible ? 'primary--text' : ''"
+          >
+            <v-icon v-if="visible">mdi-eye</v-icon>
+            <v-icon v-else>mdi-eye-off</v-icon>
           </v-btn>
         </template>
         <span>{{ $t('button.showHide.tooltip') }}</span>

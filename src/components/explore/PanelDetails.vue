@@ -26,7 +26,7 @@
 
       <v-list-item>
         <v-list-item-icon>
-          <v-icon>mdi-bank</v-icon>
+          <v-icon>mdi-bank-outline</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
@@ -43,6 +43,9 @@
         <v-list-item-content>
           <v-list-item-title>
             {{ panel.item.sourceFile }}
+            <v-btn icon :href="rawPanels + panel.sourceFile" target="_blank">
+              <v-icon>mdi-download</v-icon>
+            </v-btn>
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
@@ -162,6 +165,7 @@ export default Vue.extend({
   data() {
     return {
       selectedInstitution: this.institution,
+      rawPanels: process.env.BASE_URL + 'raw_panels/',
     }
   },
   computed: {
