@@ -8,7 +8,6 @@
         @change="handleChange($event)"
         :itemsSorted="tempInstitutionSorted"
         :editable="editable"
-        @institution-valid="validateInstitutions()"
         @delete="deleteInstitution($event)"
         dropDownLabel="buildPanels.selectInstitution.text"
       >
@@ -73,6 +72,7 @@
             :institution="getCurrentInstitution()"
             :editable="editable"
             :panels="panelNames"
+            @institution-valid="validateInstitutions($event)"
             @name-changed="updateTempInstitutions"
             :show-read-only-panels="showReadOnlyPanels"
           />

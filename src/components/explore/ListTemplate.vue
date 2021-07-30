@@ -31,7 +31,7 @@
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click.stop="handleDelete(index)">
-                    <v-icon>mdi-delete</v-icon>
+                    <v-icon :class="{'red--text': !item[fieldValidLabel]}">mdi-delete</v-icon>
                   </v-btn>
                 </template>
                 <span>{{ $t('buildInstitutions.delete.tooltip') }}</span>
