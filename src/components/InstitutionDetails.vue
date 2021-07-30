@@ -177,11 +177,9 @@ export default Vue.extend({
         (v:string) => (v && v.length <= 50) || this.$t('institutionDetails.name.rules.length'),
       ],
       emailRules: [
-        (v:string) => !!v || this.$t('institutionDetails.email.rules.required'),
         (v:string) => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || this.$t('institutionDetails.email.rules.valid')
       ],
       phoneRules: [
-        (v:string) => !!v || this.$t('institutionDetails.phone.rules.required'),
         (v:string) => !v || /^(1\s|1|)?((\(\d{3}\))|\d{3})(-|\s)?(\d{3})(-|\s)?(\d{4})$/.test(v) || this.$t('institutionDetails.phone.rules.valid')
       ],
     }
@@ -200,9 +198,8 @@ export default Vue.extend({
           '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
           '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
           '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-      const webSiteRequired = (v:string) => !!v || this.$t('institutionDetails.website.rules.required')
       const websiteValidate = (v: string) => !v || websitePattern.test(v) || this.$t('institutionDetails.website.rules.valid')
-      return [webSiteRequired, websiteValidate]
+      return [websiteValidate]
     }
   },
   methods: {
