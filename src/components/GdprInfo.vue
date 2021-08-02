@@ -11,8 +11,8 @@
           {{ $t('gdpr.learnMore') }}:
           <v-btn
             icon
-            @click="detailsVisible = !detailsVisible"
             :class="detailsVisible ? 'primary--text' : ''"
+            @click="detailsVisible = !detailsVisible"
           >
             <v-icon>mdi-eye</v-icon>
           </v-btn>
