@@ -151,6 +151,9 @@
     },
     "help": {
       "text": "Help",
+      "title": {
+        "text": "Help"
+      },
       "toolbar": {
         "text": "Help Section"
       }

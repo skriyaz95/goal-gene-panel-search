@@ -64,13 +64,12 @@ export default Vue.extend({
       return this.$vuetify.theme.themes.light.background
     },
     toolbarTitle(): TranslateResult {
-      if (this.$route.meta && this.$route.meta.i18n) {
-        return this.$t(this.$route.meta.i18n + '.toolbar.text')
-      }
-      return 'GTI'
+      return this.$t('navigation.help.toolbar.text')
     },
   },
   methods: {},
-  mounted() {},
+  mounted() {
+    document.title = 'GTI ' + this.$t('navigation.help.title.text')
+  },
 })
 </script>

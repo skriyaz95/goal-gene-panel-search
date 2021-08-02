@@ -146,10 +146,7 @@ export default Vue.extend({
       return this.$vuetify.theme.themes.light.background
     },
     toolbarTitle(): TranslateResult {
-      if (this.$route.meta && this.$route.meta.i18n) {
-        return this.$t(this.$route.meta.i18n + '.toolbar.text')
-      }
-      return 'GTI'
+      return this.$t('navigation.home.toolbar.text')
     },
   },
   methods: {
@@ -237,6 +234,7 @@ export default Vue.extend({
     },
   },
   mounted() {
+    document.title = 'GTI ' + this.$t('navigation.home.title.text')
     this.handleFirstTime()
     $getFindGenesWorker().onmessage = (event: any) => {
       if (event.data.todo == 'parseUserGenes') {

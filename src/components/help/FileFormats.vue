@@ -10,7 +10,7 @@
             {{ $t('help.fileFormats.part1') }}
           </div>
           <v-row>
-            <v-col>
+            <v-col cols="12" md="6">
               <div class="title">CSV</div>
               <div class="pb-2">
                 {{ $t('help.fileFormats.csv.part1') }}
@@ -24,7 +24,7 @@
                 </div>
               </div>
             </v-col>
-            <v-col>
+            <v-col cols="12" md="6">
               <div class="title">BED</div>
               <div class="pb-2">
                 {{ $t('help.fileFormats.bed.part1') }}

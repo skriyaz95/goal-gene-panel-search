@@ -47,10 +47,7 @@ export default Vue.extend({
   data: () => ({}),
   computed: {
     toolbarTitle(): TranslateResult {
-      if (this.$route.meta && this.$route.meta.i18n) {
-        return this.$t(this.$route.meta.i18n + '.toolbar.text')
-      }
-      return 'GTI'
+      return this.$t('navigation.error.toolbar.text')
     },
   },
   methods: {},
