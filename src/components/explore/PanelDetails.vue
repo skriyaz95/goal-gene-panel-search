@@ -4,7 +4,7 @@
       <v-list-item v-if="editable && panel">
         <v-list-item-content>
           <v-text-field
-            v-model="panel.name"
+            v-model="panel.item.name"
             :label="$t('institutionDetails.name.text')"
             dense
             @change="handleNameChange"
@@ -20,13 +20,13 @@
           <v-icon>mdi-dna</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ panel.name }}</v-list-item-title>
+          <v-list-item-title>{{ panel.item.name }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
       <v-list-item>
         <v-list-item-icon>
-          <v-icon>mdi-bank</v-icon>
+          <v-icon>mdi-bank-outline</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
@@ -42,7 +42,10 @@
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
-            {{ panel.sourceFile }}
+            {{ panel.item.sourceFile }}
+            <v-btn icon :href="rawPanels + panel.sourceFile" target="_blank">
+              <v-icon>mdi-download</v-icon>
+            </v-btn>
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
@@ -140,6 +143,7 @@ import {
 import Vue from 'vue'
 import GeneParsedContent from '@/components/GeneParsedContent.vue'
 import { mapGetters } from 'vuex'
+import {ListItem} from "@/types/ui-types";
 
 export default Vue.extend({
   components: { GeneParsedContent },
@@ -147,7 +151,7 @@ export default Vue.extend({
   props: {
     panel: {
       type: Object,
-      default: () => new GenePanelDetails('', [], new ParsedGenes(), ''),
+      default: () => new ListItem(new GenePanelDetails('', [], new ParsedGenes(), ''), true),
     },
     institution: {
       type: String,
@@ -161,6 +165,7 @@ export default Vue.extend({
   data() {
     return {
       selectedInstitution: this.institution,
+      rawPanels: process.env.BASE_URL + 'raw_panels/',
     }
   },
   computed: {
@@ -169,14 +174,14 @@ export default Vue.extend({
     }),
     formattedGenes() {
       const parsedGenes = new ParsedGenes()
-      parsedGenes.symbolFoundGenes = this.panel.symbolsOnly.map(
+      parsedGenes.symbolFoundGenes = this.panel.item.symbolsOnly.map(
         (g: Gene) => new ParsedGene(g, 'symbol')
       )
-      parsedGenes.synonymFoundGenes = this.panel.synonymsOnly.map(
+      parsedGenes.synonymFoundGenes = this.panel.item.synonymsOnly.map(
         (sg: SynonymGene) =>
           new ParsedGene(new Gene(sg.synonym), 'synonym', sg.gene as FullGene)
       )
-      parsedGenes.notFoundGenes = this.panel.notFound.map(
+      parsedGenes.notFoundGenes = this.panel.item.notFound.map(
         (g: Gene) => new ParsedGene(g, 'notFound')
       )
       return parsedGenes
@@ -200,6 +205,8 @@ export default Vue.extend({
     },
   },
   watch: {},
-  mounted() {},
+  mounted() {
+
+  },
 })
 </script>

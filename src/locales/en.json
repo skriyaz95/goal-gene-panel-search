@@ -30,6 +30,13 @@
       "text": "Save All",
       "tooltip": "Download a JSON file of the panels"
     },
+    "resetAll": {
+      "text": "Reset",
+      "tooltip": {
+        "part1": "Reset panels. All changes will be lost",
+        "part2": "(including saved data)."
+      }
+    },
     "noInstitution": {
       "text": "Select Institution in the Institutions tab after saving"
     },
@@ -298,6 +305,13 @@
     "info": {
       "part1": "All changes are temporary. They will be lost after reload.",
       "part2": "Replace assets/institutions.json on your server to make the changes permanent for all users."
+    },
+    "resetAll": {
+      "text": "Reset",
+      "tooltip": {
+        "part1": "Reset institutions. All changes will be lost",
+        "part2": "(including saved data)."
+      }
     }
   },
   "help": {
@@ -378,19 +392,33 @@
   "institutionDetails": {
     "name": {
       "text": "Name",
-      "tooltip": "Institution Name"
+      "tooltip": "Institution Name",
+      "rules": {
+        "required": "Institution Name is required",
+        "length": "Institution Name must be less than 50 characters",
+        "valid": "Invalid Institution Name"
+      }
     },
     "phone": {
       "text": "Phone",
-      "tooltip": "Institution Phone"
+      "tooltip": "Institution Phone",
+      "rules": {
+        "valid": "Invalid Institution Phone Number"
+      }
     },
     "email": {
       "text": "Email",
-      "tooltip": "Primary Contact Email"
+      "tooltip": "Primary Contact Email",
+      "rules": {
+        "valid": "Invalid Institution E-mail"
+      }
     },
     "website": {
       "text": "Website",
-      "tooltip": "Institution Website"
+      "tooltip": "Institution Website",
+      "rules": {
+        "valid": "Institution Website is not in proper format"
+      }
     },
     "panels": {
       "text": "Panels",

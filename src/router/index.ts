@@ -6,7 +6,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: "/:tab?",
-    name: "Home",
+    name: "home",
     meta: { i18n: "navigation.home" }, //useful to retrieve locale text in en.json for example
 
     component: Home,
@@ -45,11 +45,5 @@ const router = new VueRouter({
   routes: routes,
   mode: "history",
 })
-
-// router.beforeEach((to, from, next) => {
-//   console.log(to, from)
-//   document.title = "GTI " + (i18n.t(to.meta.i18n + ".title.text") || "")
-//   next()
-// })
 
 export default router

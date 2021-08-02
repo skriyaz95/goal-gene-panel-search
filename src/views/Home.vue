@@ -137,7 +137,6 @@ export default Vue.extend({
     tab: {
       set(tab: string) {
         this.$router.replace({ params: { ...this.$route.params, tab } })
-        // this.updateLastExplorePath()
       },
       get(): string | (string | null)[] {
         return this.$route.params.tab ? this.$route.params.tab : 'results'

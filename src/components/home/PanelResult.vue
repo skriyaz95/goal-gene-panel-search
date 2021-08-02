@@ -150,11 +150,12 @@ import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import {
+  FullGene,
   Gene,
   Institution,
   PanelResultFormattedRow,
   PanelSearchResult,
-  ParsedGenes,
+  ParsedGenes, SynonymGene,
   // ParsedGene,
 } from '@/types/panel-types'
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
@@ -245,11 +246,16 @@ export default Vue.extend({
     panelContent(): Array<PanelResultFormattedRow> {
       return (this.panelSearchResults as Array<PanelSearchResult>).map(
         (panel: PanelSearchResult) => {
-          const genesInPanel = panel.genesInPanel.map((gene: Gene) =>
-            gene.name.toUpperCase()
+          const panelSymbolToSymbolMatchSet = new Set(panel.panelSymbolToSymbolMatch)
+          const panelSynonymToSynonymMatchSet = new Set(panel.panelSynonymToSynonymMatch)
+          const panelSymbolToSynonymMatchMap = new Map(panel.panelSymbolToSynonymMatch.map((item: SynonymGene) => [(item.gene as FullGene).symbol, item]))
+          const panelSynonymToSymbolMatchMap = new Map(panel.panelSynonymToSymbolMatch.map((item: SynonymGene) => [item.synonym, item]))
+
+          const genesInPanel = panel.genesInPanel.filter(gene => gene && gene.name).map((gene: Gene) =>
+            this.formatGeneInfo(gene, panelSymbolToSymbolMatchSet, panelSynonymToSynonymMatchSet, panelSymbolToSynonymMatchMap, panelSynonymToSymbolMatchMap)
           )
           const genesNotInPanel = panel.genesNotInPanel.map((gene: Gene) =>
-            gene.name.toUpperCase()
+            this.formatGeneInfo(gene, panelSymbolToSymbolMatchSet, panelSynonymToSynonymMatchSet, panelSymbolToSynonymMatchMap, panelSynonymToSymbolMatchMap)
           )
           let institution = this.institutionsByPanel.get(panel.name)
           if (!institution) {
@@ -327,6 +333,23 @@ export default Vue.extend({
       }
       return 0
     },
+    formatGeneInfo(gene:Gene, symbolToSymbolMatchSet: Set<string>, synonymToSynonymMatchSet: Set<string>,
+                   symbolToSynonymMatchMap: Map<string, SynonymGene>, synonymToSymbolMatchMap: Map<String, SynonymGene>): string {
+      const geneName = gene.name
+
+      let geneInfo = "Matched Symbol: " + geneName.toUpperCase()
+      if(synonymToSynonymMatchSet.has(geneName)) {
+        geneInfo = "Matched Synonym: " + geneName.toUpperCase()
+      } else if(symbolToSynonymMatchMap.has(geneName)) {
+        const symbolToSynonymMatch = symbolToSynonymMatchMap.get(geneName)
+        geneInfo = "Found Symbol: " + geneName.toUpperCase() + " ; Matched Synonym: " + (symbolToSynonymMatch as SynonymGene).synonym.toUpperCase()
+      } else if(synonymToSymbolMatchMap.has(geneName)) {
+        const synonymToSymbolMatch = synonymToSymbolMatchMap.get(geneName)
+        geneInfo = "Found Symbol: " + geneName.toUpperCase() + " ; Matched Synonym: " + ((synonymToSymbolMatch as SynonymGene).gene as string).toUpperCase()
+      }
+
+      return geneInfo;
+    }
   },
 })
 </script>

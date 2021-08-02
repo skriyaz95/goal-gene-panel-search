@@ -93,8 +93,7 @@ export default Vue.extend({
       )
       this.updateLastSelection(lastSelectionForTab)
     },
-    fetchLastSelection(to: Route, from: Route) {
-      console.log(to, from)
+    fetchLastSelection(to: Route) {
       const lastSelectionForTab = this.lastSelections.get(
         (to.name as string) + to.params.tab
       )
