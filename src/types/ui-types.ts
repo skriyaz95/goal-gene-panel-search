@@ -1,7 +1,7 @@
 /**
  * Used in PanelCompare v-chip active state
  */
-import {GenePanelDetails, Institution} from "@/types/panel-types";
+import { GenePanelDetails, Institution } from "@/types/panel-types"
 
 export class ActiveState {
   active: boolean
@@ -44,7 +44,7 @@ export class ListItem {
   valid: boolean
 
   constructor(item: Institution | GenePanelDetails, valid: boolean) {
-    this.item = item;
-    this.valid = valid;
+    this.item = item
+    this.valid = valid
   }
 }

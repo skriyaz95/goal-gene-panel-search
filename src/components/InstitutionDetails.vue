@@ -2,10 +2,7 @@
   <div>
     <!-- editable institution -->
     <v-list v-if="editable && institution">
-      <v-form
-        v-model="institutionValid"
-        ref="institutionForm"
-      >
+      <v-form v-model="institutionValid" ref="institutionForm">
         <v-list-item>
           <v-list-item-content>
             <v-text-field
@@ -36,7 +33,7 @@
           <v-list-item-content>
             <v-text-field
               v-model="institution.item.email"
-              :rules = "emailRules"
+              :rules="emailRules"
               :label="$t('institutionDetails.email.text')"
               prepend-icon="mdi-email"
               dense
@@ -146,7 +143,7 @@
 import { Institution } from '@/types/panel-types'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
-import {ListItem} from "@/types/ui-types";
+import { ListItem } from '@/types/ui-types'
 
 export default Vue.extend({
   components: {},
@@ -173,35 +170,54 @@ export default Vue.extend({
     return {
       institutionValid: true,
       nameRules: [
-        (v:string) => !!v || this.$t('institutionDetails.name.rules.required'),
-        (v:string) => (v && v.length <= 50) || this.$t('institutionDetails.name.rules.length'),
-        (v:string) => !v || /^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/.test(v) || this.$t('institutionDetails.name.rules.valid')
+        (v: string) => !!v || this.$t('institutionDetails.name.rules.required'),
+        (v: string) =>
+          (v && v.length <= 50) ||
+          this.$t('institutionDetails.name.rules.length'),
+        (v: string) =>
+          !v ||
+          /^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/.test(v) ||
+          this.$t('institutionDetails.name.rules.valid'),
       ],
       emailRules: [
-        (v:string) => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || this.$t('institutionDetails.email.rules.valid')
+        (v: string) =>
+          !v ||
+          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+          this.$t('institutionDetails.email.rules.valid'),
       ],
       phoneRules: [
-        (v:string) => !v || /^(1\s|1|)?((\(\d{3}\))|\d{3})(-|\s)?(\d{3})(-|\s)?(\d{4})$/.test(v) || this.$t('institutionDetails.phone.rules.valid')
+        (v: string) =>
+          !v ||
+          /^(1\s|1|)?((\(\d{3}\))|\d{3})(-|\s)?(\d{3})(-|\s)?(\d{4})$/.test(
+            v
+          ) ||
+          this.$t('institutionDetails.phone.rules.valid'),
       ],
     }
   },
   watch: {
-    institutionValid: 'emitInstitutionValid'
+    institutionValid: 'emitInstitutionValid',
   },
   computed: {
     ...mapGetters({
       chipOutlined: 'getChipOutlined',
     }),
     validateWebSite(): any {
-      var websitePattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-          '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-          '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-          '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-      const websiteValidate = (v: string) => !v || websitePattern.test(v) || this.$t('institutionDetails.website.rules.valid')
+      var websitePattern = new RegExp(
+        '^(https?:\\/\\/)?' + // protocol
+          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+          '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+          '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+          '(\\#[-a-z\\d_]*)?$',
+        'i'
+      ) // fragment locator
+      const websiteValidate = (v: string) =>
+        !v ||
+        websitePattern.test(v) ||
+        this.$t('institutionDetails.website.rules.valid')
       return [websiteValidate]
-    }
+    },
   },
   methods: {
     linkTo(link: string, linkType: string) {
@@ -212,13 +228,19 @@ export default Vue.extend({
       this.$emit('name-changed', event)
     },
     emitInstitutionValid() {
-      this.institution.valid = this.institutionValid
-      this.$emit('institution-valid', this.institution)
+      if (this.institution) {
+        this.institution.valid = this.institutionValid
+        this.$emit('institution-valid', this.institution)
+      }
     },
     formatNumber() {
-      var x = this.institution.item.phone.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-      this.institution.item.phone = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-    }
+      var x = this.institution.item.phone
+        .replace(/\D/g, '')
+        .match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
+      this.institution.item.phone = !x[2]
+        ? x[1]
+        : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '')
+    },
   },
   mounted() {},
 })

@@ -4,9 +4,6 @@
     <main-content-template inner>
       <template v-slot:left-col>
         <list-template
-          v-model="item"
-          @input="handleInput($event)"
-          @change="handleChange($event)"
           :itemsSorted="tempPanelSorted"
           :editable="editable"
           @delete="deletePanel($event)"
@@ -126,7 +123,8 @@ import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import PanelExploreHelp from '../help/PanelExploreHelp.vue'
-import {ListItem} from "@/types/ui-types";
+import { ListItem } from '@/types/ui-types'
+import { listItemSorter } from '@/utils/arrays'
 
 export default Vue.extend({
   components: {
@@ -165,8 +163,10 @@ export default Vue.extend({
       var fr = new FileReader()
       // verify that panel doesn't already exist
       const fileName = (this.panelFile as any).name
-      if(!fileName.match(/.(csv|bed)$/i)) {
-        this.errorMessage = this.$t('buildPanels.validation.accepted-files') as string
+      if (!fileName.match(/.(csv|bed)$/i)) {
+        this.errorMessage = this.$t(
+          'buildPanels.validation.accepted-files'
+        ) as string
         return
       }
       if (this.fileAlreadyExists(fileName)) {
@@ -191,13 +191,11 @@ export default Vue.extend({
     },
     saveAll() {
       this.info = true
-      const panels = this.tempPanelSorted.map((listItem: ListItem) => listItem.item)
-      this.updatePanels(panels)
-      download(
-        'panels.json',
-        formatObjetToJson(panels, false),
-        'text/json'
+      const panels = this.tempPanelSorted.map(
+        (listItem: ListItem) => listItem.item
       )
+      this.updatePanels(panels)
+      download('panels.json', formatObjetToJson(panels, false), 'text/json')
     },
     getCurrentPanel(): ListItem | null {
       const currentPanel = this.tempPanelSorted[this.item]
@@ -205,20 +203,24 @@ export default Vue.extend({
       return currentPanel
     },
     updateTempPanelsFromStore() {
-      this.tempPanelSorted = JSON.parse(JSON.stringify(this.panels)).map((panel : GenePanelDetails) => new ListItem(panel, true))
+      this.tempPanelSorted = JSON.parse(JSON.stringify(this.panels)).map(
+        (panel: GenePanelDetails) => new ListItem(panel, true)
+      )
+      this.tempPanelSorted.sort(listItemSorter)
     },
     updateTempPanels(name: string) {
-      this.tempPanelSorted.sort(this.sortPanelsByName)
+      this.tempPanelSorted.sort(listItemSorter)
       for (let i = 0; i < this.tempPanelSorted.length; i++) {
         if ((this.tempPanelSorted[i].item as GenePanelDetails).name === name) {
-          this.item = i
-          this.$emit('update', i)
+          const item = i.toString()
+          this.$router.replace({ params: { ...this.$route.params, item } })
           break
         }
       }
       this.info = true
     },
     deletePanel(index: number) {
+      console.log('deleting panel')
       if (index != null) {
         this.tempPanelSorted.splice(index, 1)
       } else {
@@ -226,27 +228,19 @@ export default Vue.extend({
       }
       this.info = true
     },
-    sortPanelsByName(a: ListItem, b: ListItem) {
-      if (a.item.name < b.item.name) {
-        return -1
-      }
-      if (a.item.name > b.item.name) {
-        return 1
-      }
-      return 0
-    },
-    handleChange($event: any) {
-      this.item = $event
-    },
-    handleInput($event: any) {
-      this.item = $event
-    },
     getInstitutionfromPanel(panel: ListItem) {
-      if (this.institutions && panel && panel.item && (panel.item as GenePanelDetails).name) {
+      if (
+        this.institutions &&
+        panel &&
+        panel.item &&
+        (panel.item as GenePanelDetails).name
+      ) {
         for (let i = 0; i < this.institutions.length; i++) {
           if (
             this.institutions[i].panels &&
-            this.institutions[i].panels.indexOf((panel.item as GenePanelDetails).name) > -1
+            this.institutions[i].panels.indexOf(
+              (panel.item as GenePanelDetails).name
+            ) > -1
           ) {
             return this.institutions[i].name
           }
@@ -289,12 +283,16 @@ export default Vue.extend({
       const rowItems = allRows[0].split('\t')
       if (extension == '.csv') {
         if (rowItems.length < 1) {
-          this.errorMessage = this.$t('buildPanels.validation.csv-file-not-valid') as string
+          this.errorMessage = this.$t(
+            'buildPanels.validation.csv-file-not-valid'
+          ) as string
           return
         }
       } else {
         if (rowItems.length < 4) {
-          this.errorMessage = this.$t('buildPanels.validation.bed-file-not-valid') as string
+          this.errorMessage = this.$t(
+            'buildPanels.validation.bed-file-not-valid'
+          ) as string
           return
         }
       }
@@ -367,21 +365,10 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       panels: 'getPanels',
-      lastItem: 'getLastItemExplore',
       institutions: 'getInstitutions',
     }),
-    item: {
-      set(itemNumber: number) {
-        //avoid duplicate navigation
-        if (itemNumber === this.item) {
-          return
-        }
-        const item = itemNumber.toString()
-        this.$router.replace({ params: { ...this.$route.params, item } })
-      },
-      get(): number {
-        return Number.parseInt(this.$route.params.item)
-      },
+    item(): number {
+      return Number.parseInt(this.$route.params.item)
     },
   },
   mounted() {

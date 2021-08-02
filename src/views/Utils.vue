@@ -35,9 +35,7 @@
       <template v-slot:one-col>
         <v-tabs-items v-model="tab" class="background">
           <v-tab-item value="panels">
-            <build-explore-panels
-              :editable="true"
-            />
+            <build-explore-panels :editable="true" />
           </v-tab-item>
           <v-tab-item value="institutions">
             <build-explore-institutions :editable="true" />
@@ -85,11 +83,8 @@ export default Vue.extend({
   computed: {
     tab: {
       set(tab: string) {
-        this.$router.replace({ params: { ...this.$route.params, tab } })
-        if (this.$route.params.item !== '0') {
-          const item = '0'
-          this.$router.replace({ params: { ...this.$route.params, item } })
-        }
+        const item = '0'
+        this.$router.replace({ params: { ...this.$route.params, tab, item } })
       },
       get(): string | (string | null)[] {
         return this.$route.params.tab ? this.$route.params.tab : 'panels'

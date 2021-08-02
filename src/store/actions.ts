@@ -1,9 +1,14 @@
-import {Gene, GenePanelDetails, Institution, ParsedGenes} from "@/types/panel-types"
+import {
+  Gene,
+  GenePanelDetails,
+  Institution,
+  ParsedGenes,
+} from "@/types/panel-types"
 import {
   FormatCompareItemsPayload,
   UserInputPayload,
 } from "@/types/payload-types"
-import { LastSelection } from "@/types/ui-types"
+import { LastSelection, ListItem } from "@/types/ui-types"
 import $getFindGenesWorker from "@/utils/workers/worker-instance"
 
 export default {
