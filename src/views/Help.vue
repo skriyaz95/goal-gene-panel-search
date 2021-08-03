@@ -27,6 +27,9 @@
           <v-tab-item value="install">
             <install-app> </install-app>
           </v-tab-item>
+          <v-tab-item value="manage">
+            <manage-app> </manage-app>
+          </v-tab-item>
         </v-tabs-items>
       </template>
     </main-content-template>
@@ -40,26 +43,24 @@ import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import FileFormats from '@/components/help/FileFormats.vue'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 import InstallApp from '@/components/help/InstallApp.vue'
+import ManageApp from '@/components/help/ManageApp.vue'
 
 export default Vue.extend({
   components: {
     MainContentTemplate,
     FileFormats,
     InstallApp,
+    ManageApp,
   },
   name: 'Help',
   props: {},
   data: () => ({
-    tabs: ['files', 'install'],
+    tabs: ['files', 'install', 'manage'],
   }),
   computed: {
     tab: {
       set(tab: string) {
         this.$router.replace({ params: { ...this.$route.params, tab } })
-        if (this.$route.params.item !== '0') {
-          const item = '0'
-          this.$router.replace({ params: { ...this.$route.params, item } })
-        }
       },
       get(): string {
         return this.$route.params.tab ? this.$route.params.tab : 'files'
