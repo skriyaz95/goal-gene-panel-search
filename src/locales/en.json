@@ -390,6 +390,26 @@
         "header2": "Gene Extracted"
       },
       "notValid": " is not a valid gene"
+    },
+    "installApp": {
+      "title": {
+        "text": "Installation"
+      },
+      "step": "Step {count}",
+      "part1a": "You should install your own version of the app when:",
+      "part1b": "you want to control panels, institutions and the underlying gene database",
+      "part1c": "you do not want or cannot send us your panel(s)",
+      "part1d": "you want to have GTI behind a firewall or run offline (on a desktop for instance)",
+      "part2a": "The process varies based on your needs and whether or not you have your own server but it's basically a 3 step operation:",
+      "part2b": " fork the repository. You will basically create your own copy of the app.",
+      "part2c": " deploy the app. Platforms like CloudFlare (and others) have ways to deploy a static website (like this one!) by linking directly to a github repository.",
+      "part2d": " go to",
+      "part2e": "to create the panels and institutions you want and overwrite the files in your github repository. Your app will update automatically within a few minutes.",
+      "contact": {
+        "title": {
+          "text": "We're here to help"
+        }
+      }
     }
   },
   "institutionDetails": {
@@ -480,7 +500,7 @@
           "text": "Gene"
         },
         "panel": {
-          "text": "My Panel"
+          "text": "FooBar Panel"
         },
         "explanation": {
           "text": "Explanation"

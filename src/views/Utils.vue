@@ -7,12 +7,7 @@
       <v-spacer></v-spacer>
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
-          <v-btn
-            href="https://github.com/skriyaz95/goal-gene-panel-search"
-            target="_blank"
-            text
-            v-on="on"
-          >
+          <v-btn :href="githubRepo" target="_blank" text v-on="on">
             <span class="mr-2">{{ $t('button.link.repo.text') }}</span>
             <v-icon>mdi-open-in-new</v-icon>
           </v-btn>
@@ -65,6 +60,7 @@ import { TranslateResult } from 'vue-i18n'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import GdprInfo from '@/components/GdprInfo.vue'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
+import { GITHUB_REPO } from '@/utils/apis'
 
 export default Vue.extend({
   name: 'Utils',
@@ -79,6 +75,7 @@ export default Vue.extend({
   },
   data: () => ({
     tabs: ['panels', 'institutions', 'database', 'theme', 'cookies'],
+    githubRepo: GITHUB_REPO,
   }),
   computed: {
     tab: {

@@ -24,6 +24,9 @@
           <v-tab-item value="files">
             <file-formats> </file-formats>
           </v-tab-item>
+          <v-tab-item value="install">
+            <install-app> </install-app>
+          </v-tab-item>
         </v-tabs-items>
       </template>
     </main-content-template>
@@ -36,16 +39,18 @@ import { TranslateResult } from 'vue-i18n'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import FileFormats from '@/components/help/FileFormats.vue'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
+import InstallApp from '@/components/help/InstallApp.vue'
 
 export default Vue.extend({
   components: {
     MainContentTemplate,
     FileFormats,
+    InstallApp,
   },
   name: 'Help',
   props: {},
   data: () => ({
-    tabs: ['files'],
+    tabs: ['files', 'install'],
   }),
   computed: {
     tab: {
