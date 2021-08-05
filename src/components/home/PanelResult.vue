@@ -32,7 +32,17 @@
           <template v-slot:default="{ item }">
             <v-list-item :key="item">
               <v-list-item-content>
-                <v-list-item-title> {{ item }} </v-list-item-title>
+                <v-list-item-title>
+                  <v-chip :outlined="chipOutlined" class="ma-1" :color="formatState(item)">
+                    <div class="d-flex align-center">
+                      {{ item.gene }}
+                      <span v-if="item.synonym != ''">
+                        <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
+                        {{ item.synonym }}
+                      </span>
+                    </div>
+                  </v-chip>
+                </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
             <v-divider />
@@ -190,7 +200,7 @@ export default Vue.extend({
       currentInstitution: new Institution('', '', '', '', []),
       geneType: new String(),
       panelName: new String(),
-      genes: new Array<string>(),
+      genes: new Array<SynonymGene>(),
       expanded: [],
       singleExpand: false,
       tableHeaders: [
@@ -251,10 +261,10 @@ export default Vue.extend({
           const panelSymbolToSynonymMatchMap = new Map(panel.panelSymbolToSynonymMatch.map((item: SynonymGene) => [(item.gene as FullGene).symbol, item]))
           const panelSynonymToSymbolMatchMap = new Map(panel.panelSynonymToSymbolMatch.map((item: SynonymGene) => [item.synonym, item]))
 
-          const genesInPanel = panel.genesInPanel.filter(gene => gene && gene.name).map((gene: Gene) =>
+          const genesInPanel = panel.genesInPanel.filter(gene => gene && gene.name).sort((a, b) => (a.name > b.name) ? 1 : -1).map((gene: Gene) =>
             this.formatGeneInfo(gene, panelSymbolToSymbolMatchSet, panelSynonymToSynonymMatchSet, panelSymbolToSynonymMatchMap, panelSynonymToSymbolMatchMap)
           )
-          const genesNotInPanel = panel.genesNotInPanel.map((gene: Gene) =>
+          const genesNotInPanel = panel.genesNotInPanel.sort((a, b) => (a.name > b.name) ? 1 : -1).map((gene: Gene) =>
             this.formatGeneInfo(gene, panelSymbolToSymbolMatchSet, panelSynonymToSynonymMatchSet, panelSymbolToSynonymMatchMap, panelSynonymToSymbolMatchMap)
           )
           let institution = this.institutionsByPanel.get(panel.name)
@@ -334,21 +344,34 @@ export default Vue.extend({
       return 0
     },
     formatGeneInfo(gene:Gene, symbolToSymbolMatchSet: Set<string>, synonymToSynonymMatchSet: Set<string>,
-                   symbolToSynonymMatchMap: Map<string, SynonymGene>, synonymToSymbolMatchMap: Map<String, SynonymGene>): string {
-      const geneName = gene.name
+                   symbolToSynonymMatchMap: Map<string, SynonymGene>, synonymToSymbolMatchMap: Map<String, SynonymGene>): SynonymGene {
+      let geneName = gene.name
 
-      let geneInfo = "Matched Symbol: " + geneName.toUpperCase()
+      let resultGene = geneName.toUpperCase()
+      let synonym = ''
+
       if(synonymToSynonymMatchSet.has(geneName)) {
-        geneInfo = "Matched Synonym: " + geneName.toUpperCase()
+        synonym = geneName.toUpperCase()
+        resultGene = ''
       } else if(symbolToSynonymMatchMap.has(geneName)) {
         const symbolToSynonymMatch = symbolToSynonymMatchMap.get(geneName)
-        geneInfo = "Found Symbol: " + geneName.toUpperCase() + " ; Matched Synonym: " + (symbolToSynonymMatch as SynonymGene).synonym.toUpperCase()
+        synonym = (symbolToSynonymMatch as SynonymGene).synonym.toUpperCase()
       } else if(synonymToSymbolMatchMap.has(geneName)) {
         const synonymToSymbolMatch = synonymToSymbolMatchMap.get(geneName)
-        geneInfo = "Found Symbol: " + geneName.toUpperCase() + " ; Matched Synonym: " + ((synonymToSymbolMatch as SynonymGene).gene as string).toUpperCase()
+        synonym = ((synonymToSymbolMatch as SynonymGene).gene as string).toUpperCase()
       }
 
-      return geneInfo;
+      return new SynonymGene(synonym, resultGene)
+    },
+
+    formatState(gene: SynonymGene): string {
+      let color = 'success'
+
+      if(gene.synonym !== '') {
+        color = 'warning'
+      }
+
+      return color
     }
   },
 })

@@ -155,16 +155,16 @@ export class PanelResultFormattedRow {
   name: string
   countGenesInPanel: number
   countGenesNotInPanel: number
-  genesInPanel: string[]
-  genesNotInPanel: string[]
+  genesInPanel: SynonymGene[]
+  genesNotInPanel: SynonymGene[]
   institution: Institution
 
   constructor(
     name: string,
     countGenesInPanel: number,
     countGenesNotInPanel: number,
-    genesInPanel: string[],
-    genesNotInPanel: string[],
+    genesInPanel: SynonymGene[],
+    genesNotInPanel: SynonymGene[],
     institution: Institution,
   ) {
     this.name = name
