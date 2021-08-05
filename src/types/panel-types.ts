@@ -1,3 +1,5 @@
+import {ListItem} from "@/types/ui-types";
+
 export class Institution {
   name: string
   phone: string
@@ -157,7 +159,7 @@ export class PanelResultFormattedRow {
   countGenesNotInPanel: number
   genesInPanel: SynonymGene[]
   genesNotInPanel: SynonymGene[]
-  institution: Institution
+  institution: ListItem
 
   constructor(
     name: string,
@@ -165,7 +167,7 @@ export class PanelResultFormattedRow {
     countGenesNotInPanel: number,
     genesInPanel: SynonymGene[],
     genesNotInPanel: SynonymGene[],
-    institution: Institution,
+    institution: ListItem,
   ) {
     this.name = name
     this.countGenesInPanel = countGenesInPanel
