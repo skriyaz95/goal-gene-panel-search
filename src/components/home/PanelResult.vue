@@ -87,7 +87,7 @@
                   v-on="on"
                   @click.stop="openInstitutionDetails(item.institution)"
                 >
-                  {{ item.institution.name }}
+                  {{ item.institution.item.name }}
                   <v-icon>mdi-arrow-top-right-thick</v-icon>
                 </v-btn>
               </template>
@@ -160,6 +160,7 @@ import {
 } from '@/types/panel-types'
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import DialogTemplate from '@/components/DialogTemplate.vue'
+import {ListItem} from "@/types/ui-types";
 
 export default Vue.extend({
   components: {
@@ -187,7 +188,7 @@ export default Vue.extend({
     return {
       institutionDialog: false,
       showDialog: false,
-      currentInstitution: new Institution('', '', '', '', []),
+      currentInstitution: new ListItem(new Institution('', '', '', '', []), true),
       geneType: new String(),
       panelName: new String(),
       genes: new Array<string>(),
@@ -268,7 +269,7 @@ export default Vue.extend({
             genesNotInPanel.length,
             genesInPanel,
             genesNotInPanel,
-            institution
+            new ListItem(institution, true)
           )
         }
       )
@@ -283,7 +284,7 @@ export default Vue.extend({
         geneType === 'genesInPanel' ? panel.genesInPanel : panel.genesNotInPanel
       this.showDialog = true
     },
-    openInstitutionDetails(institution: Institution) {
+    openInstitutionDetails(institution: ListItem) {
       this.currentInstitution = institution
       this.institutionDialog = true
     },
@@ -303,8 +304,8 @@ export default Vue.extend({
     formatResult(panel: any, pretty: boolean) {
       return formatObjetToJson(panel, pretty)
     },
-    isInstitutionEmpty(institution: Institution) {
-      return Object.keys(institution).length == 0
+    isInstitutionEmpty(institution: ListItem) {
+      return Object.keys(institution.item).length == 0
     },
     handleHelp() {
       this.$emit('help')

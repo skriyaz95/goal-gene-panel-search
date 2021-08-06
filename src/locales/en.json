@@ -98,6 +98,9 @@
     },
     "refuse": {
       "text": "Refuse"
+    },
+    "download": {
+      "tooltip": "Download"
     }
   },
   "count": {
