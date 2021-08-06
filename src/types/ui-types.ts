@@ -48,3 +48,19 @@ export class ListItem {
     this.valid = valid
   }
 }
+
+// export class CSVContent {
+//   headers: string[]
+//   columns: any[] | undefined
+//   rows: any[] | undefined
+
+//   constructor(headers: string[], columns?: any[], rows?: any[]) {
+//     this.headers = headers
+//     this.columns = columns
+//     this.rows = rows
+//   }
+
+//   download() {
+//     let content = headers.join(",")
+//   }
+// }
