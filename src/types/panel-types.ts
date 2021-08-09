@@ -39,6 +39,8 @@ export class GenePanelDetails {
   synonymsOnly: SynonymGene[]
   notFound: Gene[]
   sourceFile: string
+  fusionsOnly: Gene[]
+  intronsOnly: Gene[]
 
   constructor(
     name: string,
@@ -54,6 +56,8 @@ export class GenePanelDetails {
     )
     this.notFound = parsedGenes.notFoundGenes.map((pg) => pg.gene)
     this.sourceFile = sourceFile
+    this.fusionsOnly = parsedGenes.fusionFoundGenes.map((pg) => pg.gene)
+    this.intronsOnly = parsedGenes.intronFoundGenes.map((pg) => pg.gene)
   }
 }
 
@@ -65,6 +69,8 @@ export class PanelSearchResult {
   panelSynonymToSynonymMatch: string[]
   panelSymbolToSynonymMatch: SynonymGene[]
   panelSynonymToSymbolMatch: SynonymGene[]
+  panelFusionToFusionMatch: string[]
+  panelIntronToIntronMatch: string[]
 
   constructor(
     name: string,
@@ -74,6 +80,8 @@ export class PanelSearchResult {
     panelSynonymToSynonymMatch: string[],
     panelSymbolToSynonymMatch: SynonymGene[],
     panelSynonymToSymbolMatch: SynonymGene[],
+    panelFusionToFusionMatch: string[],
+    panelIntronToIntronMatch: string[],
   ) {
     this.name = name
     this.genesInPanel = genesInPanel
@@ -82,6 +90,8 @@ export class PanelSearchResult {
     this.panelSynonymToSynonymMatch = panelSynonymToSynonymMatch
     this.panelSymbolToSynonymMatch = panelSymbolToSynonymMatch
     this.panelSynonymToSymbolMatch = panelSynonymToSymbolMatch
+    this.panelFusionToFusionMatch = panelFusionToFusionMatch
+    this.panelIntronToIntronMatch = panelIntronToIntronMatch
   }
 }
 
@@ -188,6 +198,8 @@ export class ParsedGenes {
   symbolFoundGenes = new Array<ParsedGene>()
   synonymFoundGenes = new Array<ParsedGene>()
   notFoundGenes = new Array<ParsedGene>()
+  fusionFoundGenes = new Array<ParsedGene>()
+  intronFoundGenes = new Array<ParsedGene>()
 }
 
 /**

@@ -55,14 +55,40 @@
                   <div>{{ $t('themePicker.logo.explain.text') }}</div>
                 </v-col>
                 <v-col cols="8" align-self="end">
-                  <v-chip color="error" class="mr-2" :outlined="chipOutlined">
+                  <v-chip
+                    :color="notFoundColor"
+                    class="mr-2"
+                    :outlined="chipOutlined"
+                  >
                     {{ $t('parsedInput.notFound.text') }}
                   </v-chip>
-                  <v-chip color="warning" class="mr-2" :outlined="chipOutlined">
+                  <v-chip
+                    :color="synonymColor"
+                    class="mr-2"
+                    :outlined="chipOutlined"
+                  >
                     {{ $t('parsedInput.synonyms.text') }}
                   </v-chip>
-                  <v-chip color="success" class="mr-2" :outlined="chipOutlined">
+                  <v-chip
+                    :color="symbolColor"
+                    class="mr-2"
+                    :outlined="chipOutlined"
+                  >
                     {{ $t('parsedInput.symbols.text') }}
+                  </v-chip>
+                  <v-chip
+                    :color="fusionColor"
+                    class="mr-2"
+                    :outlined="chipOutlined"
+                  >
+                    {{ $t('parsedInput.fusions.text') }}
+                  </v-chip>
+                  <v-chip
+                    :color="intronColor"
+                    class="mr-2"
+                    :outlined="chipOutlined"
+                  >
+                    {{ $t('parsedInput.introns.text') }}
                   </v-chip>
                 </v-col>
                 <v-col cols="4">
@@ -101,6 +127,8 @@ import ColorPicker from '@/components/ColorPicker.vue'
 import { lightThemes } from '@/plugins/vuetify'
 import { mapGetters, mapActions } from 'vuex'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
+import { GeneState } from '@/types/ui-types'
+import { formatStateColor } from '@/utils/formatting'
 
 export default Vue.extend({
   name: 'ThemePicker',
@@ -122,6 +150,21 @@ export default Vue.extend({
     ...mapGetters({
       chipOutlined: 'getChipOutlined',
     }),
+    notFoundColor() {
+      return formatStateColor(GeneState.NOT_FOUND)
+    },
+    symbolColor() {
+      return formatStateColor(GeneState.SYMBOL)
+    },
+    synonymColor() {
+      return formatStateColor(GeneState.SYNONYM)
+    },
+    fusionColor() {
+      return formatStateColor(GeneState.FUSION)
+    },
+    intronColor() {
+      return formatStateColor(GeneState.INTRON)
+    },
   },
   mounted() {
     this.changeTheme()

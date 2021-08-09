@@ -244,6 +244,10 @@ export default Vue.extend({
           event.data.parsedGenes.synonymFoundGenes
         this.formattedGenes.symbolFoundGenes =
           event.data.parsedGenes.symbolFoundGenes
+        this.formattedGenes.fusionFoundGenes =
+          event.data.parsedGenes.fusionFoundGenes
+        this.formattedGenes.intronFoundGenes =
+          event.data.parsedGenes.intronFoundGenes
         this.findGenesInAllPanels(this.formattedGenes)
         // })
       } else if (event.data.todo == 'findGenesInAllPanels') {

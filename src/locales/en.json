@@ -290,6 +290,14 @@
     },
     "textOnly": {
       "tooltip": "Show in text form (slow)"
+    },
+    "fusions": {
+      "text": "Fusions",
+      "tooltip": "Fusions: genes entries formatted as <GENE>_FUSION eg. ALK_FUSION"
+    },
+    "introns": {
+      "text": "Introns",
+      "tooltip": "Introns: gene entries formatted as <GENE>_INTRON eg. BCL6_INTRON1"
     }
   },
   "buildInstitutions": {

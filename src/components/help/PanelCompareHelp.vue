@@ -65,6 +65,8 @@ or a help card or other tutorial content
 <script lang="ts">
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
+import { formatStateColor, formatStateIcon } from '@/utils/formatting'
+import { GeneState } from '@/types/ui-types'
 
 export default Vue.extend({
   name: 'PanelCompareHelp',
@@ -82,10 +84,10 @@ export default Vue.extend({
         explain1: this.$t('help.panelCompare.part3.exactMatch'),
         explain2: this.$t('help.panelCompare.part3.symbolMatching'),
         explain3: this.$t('help.panelCompare.part3.symbolInput'),
-        geneColor: 'success',
-        geneIcon: 'mdi-check',
-        panelColor: 'success',
-        panelIcon: 'mdi-check',
+        geneColor: formatStateColor(GeneState.SYMBOL),
+        geneIcon: formatStateIcon(GeneState.SYMBOL),
+        panelColor: formatStateColor(GeneState.SYMBOL),
+        panelIcon: formatStateIcon(GeneState.SYMBOL),
       })
       it.push({
         gene: 'TENT5C',
@@ -93,10 +95,10 @@ export default Vue.extend({
         explain1: this.$t('help.panelCompare.part3.anyMatch'),
         explain2: this.$t('help.panelCompare.part3.synonymMatching'),
         explain3: this.$t('help.panelCompare.part3.symbolInput'),
-        geneColor: 'success',
-        geneIcon: 'mdi-check',
-        panelColor: 'warning',
-        panelIcon: 'mdi-approximately-equal',
+        geneColor: formatStateColor(GeneState.SYMBOL),
+        geneIcon: formatStateIcon(GeneState.SYMBOL),
+        panelColor: formatStateColor(GeneState.SYNONYM),
+        panelIcon: formatStateIcon(GeneState.SYNONYM),
       })
       it.push({
         gene: 'BRAF1',
@@ -104,10 +106,10 @@ export default Vue.extend({
         explain1: this.$t('help.panelCompare.part3.exactMatch'),
         explain2: this.$t('help.panelCompare.part3.symbolMatching'),
         explain3: this.$t('help.panelCompare.part3.synonyminput'),
-        geneColor: 'warning',
-        geneIcon: 'mdi-approximately-equal',
-        panelColor: 'success',
-        panelIcon: 'mdi-check',
+        geneColor: formatStateColor(GeneState.SYNONYM),
+        geneIcon: formatStateIcon(GeneState.SYNONYM),
+        panelColor: formatStateColor(GeneState.SYMBOL),
+        panelIcon: formatStateIcon(GeneState.SYNONYM_TO_SYMBOL),
       })
       it.push({
         gene: 'KRAS1',
@@ -115,10 +117,10 @@ export default Vue.extend({
         explain1: this.$t('help.panelCompare.part3.anyMatch'),
         explain2: this.$t('help.panelCompare.part3.synonymMatching'),
         explain3: this.$t('help.panelCompare.part3.synonyminput'),
-        geneColor: 'warning',
-        geneIcon: 'mdi-approximately-equal',
-        panelColor: 'warning',
-        panelIcon: 'mdi-approximately-equal',
+        geneColor: formatStateColor(GeneState.SYNONYM),
+        geneIcon: formatStateIcon(GeneState.SYNONYM),
+        panelColor: formatStateColor(GeneState.SYNONYM),
+        panelIcon: formatStateIcon(GeneState.SYNONYM),
       })
       it.push({
         gene: 'BRCA1',
@@ -126,10 +128,10 @@ export default Vue.extend({
         explain1: this.$t('help.panelCompare.part3.noMatch'),
         explain2: '',
         explain3: this.$t('help.panelCompare.part3.symbolInput'),
-        geneColor: 'success',
-        geneIcon: 'mdi-check',
-        panelColor: 'success',
-        panelIcon: 'mdi-check',
+        geneColor: formatStateColor(GeneState.SYMBOL),
+        geneIcon: formatStateIcon(GeneState.SYMBOL),
+        panelColor: formatStateColor(GeneState.SYMBOL),
+        panelIcon: formatStateIcon(GeneState.SYMBOL),
       })
       return it
     },
@@ -142,13 +144,7 @@ export default Vue.extend({
   destroyed() {},
   methods: {
     formatState(state: string) {
-      if (state == 'symbol') {
-        return 'success'
-      }
-      if (state == 'synonym') {
-        return 'warning'
-      }
-      return 'error'
+      return formatStateColor(state)
     },
   },
 })

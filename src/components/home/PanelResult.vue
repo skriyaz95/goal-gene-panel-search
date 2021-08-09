@@ -283,6 +283,12 @@ export default Vue.extend({
               item,
             ])
           )
+          // const panelFusionToFusionMatchSet = new Set(
+          //   panel.panelFusionToFusionMatch
+          // )
+          // const panelIntronToIntronMatchSet = new Set(
+          //   panel.panelIntronToIntronMatch
+          // )
 
           const genesInPanel = panel.genesInPanel
             .filter((gene) => gene && gene.name)

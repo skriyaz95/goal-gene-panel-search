@@ -194,6 +194,16 @@ export default Vue.extend({
       const panels = this.tempPanelSorted.map(
         (listItem: ListItem) => listItem.item
       )
+      //temp fix for old panels
+      for (let i = 0; i < panels.length; i++) {
+        const panel = panels[i] as GenePanelDetails
+        if (!panel.fusionsOnly) {
+          panel.fusionsOnly = []
+        }
+        if (!panel.intronsOnly) {
+          panel.intronsOnly = []
+        }
+      }
       this.updatePanels(panels)
       download('panels.json', formatObjetToJson(panels, false), 'text/json')
     },
@@ -213,14 +223,15 @@ export default Vue.extend({
       for (let i = 0; i < this.tempPanelSorted.length; i++) {
         if ((this.tempPanelSorted[i].item as GenePanelDetails).name === name) {
           const item = i.toString()
-          this.$router.replace({ params: { ...this.$route.params, item } })
+          if (item !== this.$route.params.item) {
+            this.$router.replace({ params: { ...this.$route.params, item } })
+          }
           break
         }
       }
       this.info = true
     },
     deletePanel(index: number) {
-      console.log('deleting panel')
       if (index != null) {
         this.tempPanelSorted.splice(index, 1)
       } else {
@@ -379,6 +390,8 @@ export default Vue.extend({
         parsedGenes.notFoundGenes = event.data.parsedGenes.notFoundGenes
         parsedGenes.synonymFoundGenes = event.data.parsedGenes.synonymFoundGenes
         parsedGenes.symbolFoundGenes = event.data.parsedGenes.symbolFoundGenes
+        parsedGenes.fusionFoundGenes = event.data.parsedGenes.fusionFoundGenes
+        parsedGenes.intronFoundGenes = event.data.parsedGenes.intronFoundGenes
         const panelBuilder = new PanelBuilder()
         ;(panelBuilder.panelName = event.data.panelName),
           (panelBuilder.parsedGenes = parsedGenes),

@@ -100,9 +100,10 @@ import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import PanelCompareHelp from '@/components/help/PanelCompareHelp.vue'
 import { mapGetters } from 'vuex'
-import { ActiveState, TableHeader } from '@/types/ui-types'
+import { ActiveState, GeneState, TableHeader } from '@/types/ui-types'
 import download from '@/utils/download'
 import Papa from 'papaparse'
+import { formatStateColor, formatStateIcon } from '@/utils/formatting'
 // import { transpose } from '@/utils/arrays'
 
 export default Vue.extend({
@@ -161,32 +162,15 @@ export default Vue.extend({
     },
     showChip(item: any, header: any) {
       const label: string = header.value
-      // console.log(item[label])
-      return item[label] && item[label].state !== 'notFound'
+      return item[label] && item[label].state !== GeneState.NOT_FOUND
     },
     formatState(item: any, header: any) {
       const label: string = header.value
-      if (item[label].state === 'symbol') {
-        return 'success'
-      }
-      if (
-        item[label].state === 'synonym' ||
-        item[label].state === 'symbolToSynonym' ||
-        item[label].state === 'synonymToSymbol'
-      ) {
-        return 'warning'
-      }
-      return 'error'
+      return formatStateColor(item[label].state)
     },
     formatIcon(item: any, header: any) {
       const label: string = header.value
-      if (
-        item[label].state === 'symbol' ||
-        item[label].state === 'synonymToSymbol'
-      ) {
-        return 'mdi-check'
-      }
-      return 'mdi-approximately-equal'
+      return formatStateIcon(item[label].state)
     },
     customSort(items: any[], sortBy: string[], sortDesc: boolean[]): any[] {
       items.sort((a: any, b: any) => {
@@ -233,7 +217,7 @@ export default Vue.extend({
           const h = this.filteredHeaders[i]
           const result = (this.items as any)[j][h.value]
           //skip notFound results
-          if (result && result.state === 'notFound') {
+          if (result && result.state === GeneState.NOT_FOUND) {
             row.push('')
           } else {
             const geneName = result.gene.name
@@ -252,3 +236,4 @@ export default Vue.extend({
   mounted() {},
 })
 </script>
+

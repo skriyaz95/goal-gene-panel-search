@@ -48,3 +48,13 @@ export class ListItem {
     this.valid = valid
   }
 }
+
+export enum GeneState {
+  SYMBOL = "symbol",
+  SYNONYM = "synonym",
+  NOT_FOUND = "notFound",
+  SYNONYM_TO_SYMBOL = "synonymToSymbol",
+  SYMBOL_TO_SYNONYM = "symbolToSynonym",
+  FUSION = "fusion",
+  INTRON = "intron",
+}
