@@ -43,7 +43,7 @@
         <v-list-item-content>
           <v-list-item-title>
             {{ panel.item.sourceFile }}
-            <v-btn icon :href="rawPanels + panel.sourceFile" target="_blank">
+            <v-btn icon :href="rawPanels + panel.item.sourceFile" target="_blank">
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </v-list-item-title>
