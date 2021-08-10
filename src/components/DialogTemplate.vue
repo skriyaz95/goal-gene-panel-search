@@ -3,9 +3,10 @@
     :value="value"
     @input="$emit('input', $event)"
     :max-width="maxWidth"
+    scrollable
   >
     <v-card>
-      <v-toolbar class="primary title pr-2" flat dark dense>
+      <v-toolbar fixed class="primary title pr-2" flat dark dense>
         <slot name="title"></slot>
         <v-spacer></v-spacer>
         <slot name="toolbar-buttons"></slot>
