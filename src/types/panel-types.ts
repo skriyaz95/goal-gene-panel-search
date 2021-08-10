@@ -1,4 +1,4 @@
-import {ListItem} from "@/types/ui-types";
+import { ListItem } from "@/types/ui-types"
 
 export class Institution {
   name: string
