@@ -196,6 +196,7 @@
 <script lang="ts">
 import {
   FullGene,
+  FusionIntronGene,
   Gene,
   GenePanelDetails,
   ParsedGene,
@@ -251,14 +252,24 @@ export default Vue.extend({
       )
       if (this.panel.item.fusionsOnly) {
         parsedGenes.fusionFoundGenes = this.panel.item.fusionsOnly.map(
-          (g: Gene) => new ParsedGene(g, GeneState.FUSION)
+          (fg: FusionIntronGene) =>
+            new ParsedGene(
+              new Gene(fg.originalName),
+              GeneState.FUSION,
+              fg.gene as FullGene
+            )
         )
       } else {
         parsedGenes.fusionFoundGenes = []
       }
       if (this.panel.item.intronsOnly) {
         parsedGenes.intronFoundGenes = this.panel.item.intronsOnly.map(
-          (g: Gene) => new ParsedGene(g, GeneState.INTRON)
+          (fg: FusionIntronGene) =>
+            new ParsedGene(
+              new Gene(fg.originalName),
+              GeneState.INTRON,
+              fg.gene as FullGene
+            )
         )
       } else {
         parsedGenes.intronFoundGenes = []

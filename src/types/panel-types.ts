@@ -39,8 +39,8 @@ export class GenePanelDetails {
   synonymsOnly: SynonymGene[]
   notFound: Gene[]
   sourceFile: string
-  fusionsOnly: Gene[]
-  intronsOnly: Gene[]
+  fusionsOnly: FusionIntronGene[]
+  intronsOnly: FusionIntronGene[]
 
   constructor(
     name: string,
@@ -56,8 +56,12 @@ export class GenePanelDetails {
     )
     this.notFound = parsedGenes.notFoundGenes.map((pg) => pg.gene)
     this.sourceFile = sourceFile
-    this.fusionsOnly = parsedGenes.fusionFoundGenes.map((pg) => pg.gene)
-    this.intronsOnly = parsedGenes.intronFoundGenes.map((pg) => pg.gene)
+    this.fusionsOnly = parsedGenes.fusionFoundGenes.map(
+      (pg) => new FusionIntronGene(pg.gene.name, pg.realGene),
+    )
+    this.intronsOnly = parsedGenes.intronFoundGenes.map(
+      (pg) => new FusionIntronGene(pg.gene.name, pg.realGene),
+    )
   }
 }
 
@@ -159,6 +163,16 @@ export class SynonymGene {
 
   constructor(synonym: string, gene: FullGene | string | undefined) {
     this.synonym = synonym
+    this.gene = gene
+  }
+}
+
+export class FusionIntronGene {
+  originalName!: string
+  gene!: FullGene | string | undefined //use string when the full gene is not needed
+
+  constructor(originalName: string, gene: FullGene | string | undefined) {
+    this.originalName = originalName
     this.gene = gene
   }
 }

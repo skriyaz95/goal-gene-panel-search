@@ -15,6 +15,10 @@
         <span>{{ lastSearchLabel(search) }}</span>
         <v-icon right>mdi-magnify</v-icon>
       </v-btn>
+      <v-btn text disabled v-if="!empty">
+        <v-icon left>mdi-arrow-left-thick</v-icon>
+        Latest
+      </v-btn>
     </v-col>
     <v-col class="flex-grow-0 flex-shrink-1">
       <v-tooltip bottom>
