@@ -4,6 +4,19 @@
       <v-card-title>
         {{ $t('panelCompare.title.text') }}
         <v-spacer></v-spacer>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              v-on="on"
+              :disabled="!items || items.length == 0"
+              icon
+              @click="downloadComparePanels"
+            >
+              <v-icon>mdi-download </v-icon>
+            </v-btn>
+          </template>
+          <span>{{ $t('button.download.tooltip') }}</span>
+        </v-tooltip>
         <help-button @action="handleHelp()" :active="help">
           <template v-slot:content>
             <span>
@@ -88,6 +101,9 @@ import InfoAlert from '@/components/help/InfoAlert.vue'
 import PanelCompareHelp from '@/components/help/PanelCompareHelp.vue'
 import { mapGetters } from 'vuex'
 import { ActiveState, TableHeader } from '@/types/ui-types'
+import download from '@/utils/download'
+import Papa from 'papaparse'
+// import { transpose } from '@/utils/arrays'
 
 export default Vue.extend({
   components: {
@@ -206,6 +222,31 @@ export default Vue.extend({
     },
     toggleInstitution(institution: ActiveState) {
       this.$emit('toggleInstitution', institution)
+    },
+    downloadComparePanels() {
+      //use filteredHeaders to remove geneId and hidden columns
+      const csvHeaders = this.filteredHeaders.map((h) => h.text)
+      const csvItems = []
+      for (let j = 0; j < this.items.length; j++) {
+        const row = []
+        for (let i = 0; i < this.filteredHeaders.length; i++) {
+          const h = this.filteredHeaders[i]
+          const result = (this.items as any)[j][h.value]
+          //skip notFound results
+          if (result && result.state === 'notFound') {
+            row.push('')
+          } else {
+            const geneName = result.gene.name
+            row.push(geneName)
+          }
+        }
+        csvItems.push(row)
+      }
+      const csv = Papa.unparse({
+        fields: csvHeaders,
+        data: csvItems,
+      })
+      download('compare_panels.csv', csv, 'text/csv')
     },
   },
   mounted() {},

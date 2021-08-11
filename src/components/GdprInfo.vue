@@ -11,8 +11,8 @@
           {{ $t('gdpr.learnMore') }}:
           <v-btn
             icon
-            @click="detailsVisible = !detailsVisible"
             :class="detailsVisible ? 'primary--text' : ''"
+            @click="detailsVisible = !detailsVisible"
           >
             <v-icon>mdi-eye</v-icon>
           </v-btn>
@@ -49,7 +49,7 @@
             {{ $t('gdpr.source') }}: {{ $t('gdpr.ad.cookie1.source') }} <br />
             {{ $t('gdpr.purpose') }}: {{ $t('gdpr.ad.cookie1.purpose') }} <br />
             {{ $t('gdpr.validity') }}:
-            <a :href="retention"> {{ retention }} </a>
+            <a :href="retention" target="_blank"> {{ retention }} </a>
           </div>
         </div>
         <div class="pb-2">
@@ -59,7 +59,7 @@
             </b>
             <br />
             {{ $t('gdpr.refusal') }}
-            <a :href="redirect"> {{ redirect }} </a>
+            <a :href="redirect" target="_blank"> {{ redirect }} </a>
           </div>
         </div>
       </div>

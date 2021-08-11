@@ -21,17 +21,14 @@
       </template>
       <template v-slot:one-col>
         <v-tabs-items v-model="tab" class="background">
-          <v-tab-item value="panels">
-            <build-explore-panels> </build-explore-panels>
+          <v-tab-item value="files">
+            <file-formats> </file-formats>
           </v-tab-item>
-          <v-tab-item value="institutions">
-            <build-explore-institutions
-              :editable="false"
-              :show-read-only-panels="true"
-            />
+          <v-tab-item value="install">
+            <install-app> </install-app>
           </v-tab-item>
-          <v-tab-item value="genome">
-            <human-genome-details></human-genome-details>
+          <v-tab-item value="manage">
+            <manage-app> </manage-app>
           </v-tab-item>
         </v-tabs-items>
       </template>
@@ -42,44 +39,43 @@
 <script lang="ts">
 import Vue from 'vue'
 import { TranslateResult } from 'vue-i18n'
-import BuildExploreInstitutions from '@/components/manage/BuildExploreInstitutions.vue'
-import BuildExplorePanels from '@/components/explore/BuildExplorePanels.vue'
-import HumanGenomeDetails from '@/components/explore/HumanGenomeDetails.vue'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
+import FileFormats from '@/components/help/FileFormats.vue'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
+import InstallApp from '@/components/help/InstallApp.vue'
+import ManageApp from '@/components/help/ManageApp.vue'
 
 export default Vue.extend({
   components: {
-    BuildExploreInstitutions,
-    BuildExplorePanels,
-    HumanGenomeDetails,
     MainContentTemplate,
+    FileFormats,
+    InstallApp,
+    ManageApp,
   },
-  name: 'Explore',
+  name: 'Help',
   props: {},
   data: () => ({
-    tabs: ['panels', 'institutions', 'genome'],
+    tabs: ['files', 'install', 'manage'],
   }),
   computed: {
     tab: {
       set(tab: string) {
-        const item = '0'
-        this.$router.replace({ params: { ...this.$route.params, tab, item } })
+        this.$router.replace({ params: { ...this.$route.params, tab } })
       },
       get(): string {
-        return this.$route.params.tab ? this.$route.params.tab : 'panels'
+        return this.$route.params.tab ? this.$route.params.tab : 'files'
       },
     },
     background(): VuetifyThemeItem {
       return this.$vuetify.theme.themes.light.background
     },
     toolbarTitle(): TranslateResult {
-      return this.$t('navigation.explore.toolbar.text')
+      return this.$t('navigation.help.toolbar.text')
     },
   },
   methods: {},
   mounted() {
-    document.title = 'GTI ' + this.$t('navigation.explore.title.text')
+    document.title = 'GTI ' + this.$t('navigation.help.title.text')
   },
 })
 </script>

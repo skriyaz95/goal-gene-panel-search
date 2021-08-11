@@ -10,36 +10,34 @@
         :label="$t(dropDownLabel)"
         clearable
         :items="searchableItems"
-        :value="value"
-        @input="handleInput($event)"
+        :value="item"
+        @change="handleChange"
       ></v-autocomplete>
-      <v-list-item-group
-        active-class="primary lighten-2 font-weight-bold"
-        :value="value"
-        @change="handleChange($event)"
-        mandatory
-      >
-        <v-list>
-          <v-list-item v-for="(item, index) in itemsSorted" :key="index">
-            <v-list-item-icon>
-              <v-icon>mdi-dna</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              {{ item[fieldItemLabel] }}
-            </v-list-item-content>
-            <v-list-item-action v-if="editable" class="my-0">
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click.stop="handleDelete(index)">
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{ $t('buildInstitutions.delete.tooltip') }}</span>
-              </v-tooltip>
-            </v-list-item-action>
-          </v-list-item>
-        </v-list>
-      </v-list-item-group>
+      <v-list nav dense>
+        <v-list-item
+          v-for="(item, index) in itemsSorted"
+          :key="index"
+          :to="{ params: { item: index } }"
+          :active-class="activeClassExact"
+        >
+          <v-list-item-icon>
+            <v-icon :class="textColor(item.valid)">{{ icon }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content :class="textColor(item.valid)">
+            {{ item[fieldItemLabel][fieldNameLabel] }}
+          </v-list-item-content>
+          <v-list-item-action v-if="editable" class="my-0">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" icon @click.prevent="handleDelete(index)">
+                  <v-icon :class="textColor(item.valid)">mdi-delete</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ $t('buildInstitutions.delete.tooltip') }}</span>
+            </v-tooltip>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
     </v-card-text>
     <v-card-actions class="px-4">
       <slot name="actions"></slot>
@@ -54,34 +52,45 @@ export default Vue.extend({
   components: {},
   name: 'ListTemplate',
   props: {
-    value: { type: Number, default: 0 },
-    fieldItemLabel: { type: String, default: 'name' },
+    fieldItemLabel: { type: String, default: 'item' },
+    fieldNameLabel: { type: String, default: 'name' },
     dropDownLabel: { type: String, default: 'input.details.text' },
     itemsSorted: {
       type: Array,
       default: () => [],
     },
     editable: Boolean,
+    icon: { type: String, default: 'mdi-dna' },
+    navName: { type: String, default: 'explore' },
   },
-  data: () => ({}),
+  data: () => ({
+    activeClass: 'primary lighten-1 font-weight-bold',
+    activeClassExact: 'primary lighten-2 font-weight-bold',
+  }),
   methods: {
     handleChange($event: any) {
-      this.$emit('change', $event)
-    },
-    handleInput($event: any) {
-      this.$emit('input', $event)
+      console.log($event)
+      const item = $event
+      this.$router.replace({ params: { ...this.$route.params, item } })
+      // this.$emit('change', $event)
     },
     handleDelete(index: Number) {
       this.$emit('delete', index)
+    },
+    textColor(valid: boolean) {
+      return !valid ? 'red--text' : ''
     },
   },
   computed: {
     searchableItems() {
       const items = this.itemsSorted.map((i: any, index: Number) => {
-        const text = i[this.fieldItemLabel]
+        const text = i[this.fieldItemLabel][this.fieldNameLabel]
         return { text: text, value: index }
       })
       return items
+    },
+    item(): number {
+      return Number.parseInt(this.$route.params.item)
     },
   },
   mounted() {},

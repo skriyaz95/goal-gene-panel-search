@@ -28,7 +28,6 @@ import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import { getCookie } from '@/utils/cookies'
 import GdprInfo from '@/components/GdprInfo.vue'
 import { LastSelection } from '@/types/ui-types'
-import i18n from '@/i18n'
 import { Route } from 'vue-router'
 
 export default Vue.extend({
@@ -93,8 +92,7 @@ export default Vue.extend({
       )
       this.updateLastSelection(lastSelectionForTab)
     },
-    fetchLastSelection(to: Route, from: Route) {
-      console.log(to, from)
+    fetchLastSelection(to: Route) {
       const lastSelectionForTab = this.lastSelections.get(
         (to.name as string) + to.params.tab
       )
@@ -117,7 +115,8 @@ export default Vue.extend({
     this.initWorkers()
     this.handleGDPR()
     this.$router.beforeEach((to, _from, next) => {
-      document.title = 'GTI ' + (i18n.t(to.meta.i18n + '.title.text') || '')
+      document.title =
+        'GTI ' + (this.$t('navigation.' + to.name + '.title.text') || '')
       next()
     })
     this.$router.afterEach((to) => {

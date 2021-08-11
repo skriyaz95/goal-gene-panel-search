@@ -1,43 +1,43 @@
 [
   {
     "name": "ACMG",
-    "phone": "(856)-966-7377",
+    "phone": "(856) 966-7377",
     "email": "customerservice@coriell.org",
     "website": "https://www.coriell.org/1/NIGMS/Collections/ACMG-59-Genes",
     "panels": ["ACMG_SF_V2.0"]
   },
   {
     "name": "Foundation One",
-    "phone": "(617)-418-2290",
+    "phone": "(617) 418-2290",
     "email": "bmailbox@foundationmedicine.com",
     "website": "https://www.foundationmedicine.com/test/foundationone-cdx",
     "panels": ["foundation_one"]
   },
   {
     "name": "NCBI",
-    "phone": "(214)-648-3111",
+    "phone": "(214) 648-3111",
     "email": "gb-admin@ncbi.nlm.nih.gov",
     "website": "https://www.ncbi.nlm.nih.gov/gene/",
     "panels": []
   },
   {
     "name": "UTSW",
-    "phone": "(214)-648-3111",
+    "phone": "(214) 648-3111",
     "email": "abc@utsouthwestern.edu",
     "website": "https://www.utsouthwestern.edu/departments/bioinformatics/",
     "panels": ["UTSW_V4_HEME", "UTSW_V4_PANCANCER", "UTSW_V4_RNASEQ"]
   },
   {
     "name": "UCLA",
-    "phone": "310-206-2292",
+    "phone": "(310) 206-2292",
     "email": "cprs@mednet.ucla.edu",
     "website": "https://www.uclahealth.org/pathology/default.cfm",
     "panels": ["ucla_mdl_cancer.grch38"]
   },
   {
     "name": "UF",
-    "phone": "(123)-456-789",
-    "email": "abc@pathology.ufl.edu",
+    "phone": "(352) 265-7977",
+    "email": "lburch@pathology.ufl.edu",
     "website": "https://pathology.ufl.edu/",
     "panels": ["GOAL_2600.hg38", "GOAL_Core_497_genes_sorted", "GS700_V2"]
   }

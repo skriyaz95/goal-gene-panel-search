@@ -74,8 +74,9 @@
         <v-list-item-title>{{ $t('navigation.mini.text') }}</v-list-item-title>
       </v-list-item>
       <v-list-item
-        :to="{ name: 'Home', params: { tab: 'results' } }"
-        active-class="primary lighten-2 font-weight-bold"
+        :to="{ name: 'home', params: { tab: 'results' } }"
+        :active-class="activeClassExact"
+        :class="isActiveHome ? activeClass : ''"
         exact-path
         @click.stop=""
       >
@@ -112,6 +113,19 @@
           <v-icon>mdi-cog</v-icon>
         </v-list-item-icon>
         <v-list-item-title>{{ $t('navigation.utils.text') }}</v-list-item-title>
+      </v-list-item>
+
+      <v-list-item
+        :to="{ name: 'help', params: { tab: 'files' } }"
+        :active-class="activeClassExact"
+        :class="isActiveHelp ? activeClass : ''"
+        exact-path
+        @click.stop=""
+      >
+        <v-list-item-icon>
+          <v-icon>mdi-lifebuoy</v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>{{ $t('navigation.help.text') }}</v-list-item-title>
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
@@ -150,6 +164,14 @@ export default Vue.extend({
     imageStyle() {
       return 'margin: auto; filter: saturate(' + this.saturation + ')'
     },
+    isActiveHome() {
+      const route = this.$route as any
+      //skip default route which is handled by VueRouter
+      if (route.name !== 'home' || route.params.tab === 'results') {
+        return false
+      }
+      return route.name === 'home'
+    },
     isActiveExplore() {
       const route = this.$route as any
       //skip default route which is handled by VueRouter
@@ -171,6 +193,14 @@ export default Vue.extend({
         return false
       }
       return route.name === 'utils'
+    },
+    isActiveHelp() {
+      const route = this.$route as any
+      //skip default route which is handled by VueRouter
+      if (route.name !== 'help' || route.params.tab === 'files') {
+        return false
+      }
+      return route.name === 'help'
     },
   },
   mounted() {},

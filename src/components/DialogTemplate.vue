@@ -5,13 +5,13 @@
     :max-width="maxWidth"
   >
     <v-card>
-      <v-toolbar class="primary title" flat dark>
+      <v-toolbar class="primary title pr-2" flat dark dense>
         <slot name="title"></slot>
         <v-spacer></v-spacer>
         <slot name="toolbar-buttons"></slot>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" @click="close()" icon dark>
+            <v-btn v-on="on" @click="close()" icon dark small>
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </template>
