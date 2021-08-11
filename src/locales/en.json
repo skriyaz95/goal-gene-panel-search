@@ -223,8 +223,7 @@
       "headers": {
         "institution-name": "Institution Name",
         "panel-name": "Gene Panel Name",
-        "genes-found": "Genes Found",
-        "genes-not-found": "Genes Not Found",
+        "genes": "Genes Found/ Not Found",
         "actions": "Actions"
       }
     },
@@ -237,8 +236,11 @@
     "dialog": {
       "title-institution-details": "Institution Details",
       "institution-website-link": "Go to Website",
-      "title-genes-in-panel": "Genes in Panel",
-      "title-genes-not-in-panel": "Genes Not in Panel",
+      "title": "Panel Details",
+      "table": {
+        "genes-found": "Genes Found",
+        "genes-not-found": "Genes Not Found"
+      },
       "button": {
         "close": "Close",
         "save": "Save"
@@ -423,7 +425,7 @@
           "text": "Customize You App"
         },
         "part1": "You can change the theme of your app by playing with the color pickers and other tools available.",
-        "part2": "This is more of a playground to help you quickly get settings going rather than a full fledge UI editor, but following the instructions should help you understand which variable controls the colors and the styles of the app.",
+        "part2": "This is more of a playground to help you quickly get settings going rather than a full-fledged UI editor, but following the instructions should help you understand which variables control the colors and the styles of the app.",
         "part3": "If you want to completely change the logo and even the name of the app, the supporting_files directory contains the source images (Gimp format) and fonts."
       }
     }

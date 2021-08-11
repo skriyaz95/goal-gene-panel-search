@@ -18,39 +18,87 @@
       @closing="showDialog = false"
     >
       <template v-slot:title>
-        <span v-if="geneType === 'genesInPanel'">
-          {{ $t('panel-result.dialog.title-genes-in-panel') }}:
-          {{ panelName }}
-        </span>
-        <span v-else>
-          {{ $t('panel-result.dialog.title-genes-not-in-panel') }}:
-          {{ panelName }}
-        </span>
+        {{ $t('panel-result.dialog.title') }}:
+        {{ panelName }}
       </template>
       <template v-slot:content>
-        <v-virtual-scroll :items="genes" height="400" item-height="64">
-          <template v-slot:default="{ item }">
-            <v-list-item :key="item">
-              <v-list-item-content>
-                <v-list-item-title>
-                  <v-chip :outlined="chipOutlined" class="ma-1" :color="formatState(item)">
-                    <div class="d-flex align-center">
-                      {{ item.gene }}
-                      <span v-if="item.synonym != ''">
-                        <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
-                        {{ item.synonym }}
-                      </span>
-                    </div>
-                  </v-chip>
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider />
-          </template>
-        </v-virtual-scroll>
+        <v-row no-gutters>
+          <v-col
+            cols="6"
+          >
+            <v-simple-table
+              fixed-header
+              height="600px"
+            >
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th class="text-left">
+                      {{ $t('panel-result.dialog.table.genes-found') }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="item in panelGenes.genesInPanel"
+                    :key="item.gene"
+                  >
+                    <td>
+                      <v-chip :outlined="chipOutlined" class="ma-1" :color="formatState(item)">
+                        <div class="d-flex align-center">
+                          {{ item.gene }}
+                          <span v-if="item.synonym != ''">
+                            <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
+                            {{ item.synonym }}
+                          </span>
+                        </div>
+                      </v-chip>
+                    </td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-col>
+          <v-col
+            cols="6"
+          >
+            <v-simple-table
+              fixed-header
+              height="600px"
+            >
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th class="text-left">
+                      {{ $t('panel-result.dialog.table.genes-not-found') }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="item in panelGenes.genesNotInPanel"
+                    :key="item.gene"
+                  >
+                    <td>
+                      <v-chip :outlined="chipOutlined" class="ma-1" :color="formatState(item)">
+                        <div class="d-flex align-center">
+                          <span v-if="item.synonym != ''">
+                            {{ item.synonym }}
+                            <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
+                          </span>
+                          {{ item.gene }}
+                        </div>
+                      </v-chip>
+                    </td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-col>
+        </v-row>
       </template>
       <template v-slot:action-buttons>
-        <v-btn class="primary" @click="downloadGenes(genes)">
+        <v-btn class="primary" @click="downloadGenes(panelGenes)">
           {{ $t('panel-result.dialog.button.save') }}
         </v-btn>
       </template>
@@ -97,40 +145,38 @@
                   v-on="on"
                   @click.stop="openInstitutionDetails(item.institution)"
                 >
-                  {{ item.institution.name }}
+                  {{ item.institution.item.name }}
                   <v-icon>mdi-arrow-top-right-thick</v-icon>
                 </v-btn>
               </template>
               <span>{{ $t('panel-result.show-institution-details') }}</span>
             </v-tooltip>
           </template>
-          <template v-slot:[`item.countGenesInPanel`]="{ item }">
-            <v-tooltip bottom v-if="item.countGenesInPanel > 0">
+          <template v-slot:[`item.panelGenes`]="{ item }">
+            <v-tooltip bottom v-if="item.panelGenes.genesInPanel.length > 0 || item.panelGenes.genesNotInPanel.length > 0">
               <template v-slot:activator="{ on }">
                 <v-chip
-                  :outlined="chipOutlined"
+                  color="transparent"
+                  @click.stop="openDialog(item)"
+                  v-on="on"
                   class="ma-2"
-                  color="primary"
-                  v-on="on"
-                  @click.stop="openDialog(item, 'genesInPanel')"
                 >
-                  {{ item.countGenesInPanel }}
-                </v-chip>
-              </template>
-              <span>{{ $t('panel-result.chip.show-genes') }}</span>
-            </v-tooltip>
-          </template>
-          <template v-slot:[`item.countGenesNotInPanel`]="{ item }">
-            <v-tooltip bottom v-if="item.countGenesNotInPanel > 0">
-              <template v-slot:activator="{ on }">
-                <v-chip
-                  :outlined="chipOutlined"
-                  class="ma-2 secondary"
-                  text-color="black"
-                  v-on="on"
-                  @click.stop="openDialog(item, 'genesNotInPanel')"
-                >
-                  {{ item.countGenesNotInPanel }}
+                  <v-chip
+                    :outlined="chipOutlined"
+                    class="ma-2"
+                    color="primary"
+                    @click.stop="openDialog(item)"
+                  >
+                    {{ item.panelGenes.genesInPanel.length }}
+                  </v-chip>
+                  <v-chip
+                    :outlined="chipOutlined"
+                    class="ma-2"
+                    color="warning"
+                    @click.stop="openDialog(item)"
+                  >
+                    {{ item.panelGenes.genesNotInPanel.length }}
+                  </v-chip>
                 </v-chip>
               </template>
               <span>{{ $t('panel-result.chip.show-genes') }}</span>
@@ -162,14 +208,15 @@ import InfoAlert from '@/components/help/InfoAlert.vue'
 import {
   FullGene,
   Gene,
-  Institution,
+  Institution, PanelGenes,
   PanelResultFormattedRow,
-  PanelSearchResult,
+  PanelSearchResult, ParsedGene,
   ParsedGenes, SynonymGene,
   // ParsedGene,
 } from '@/types/panel-types'
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import DialogTemplate from '@/components/DialogTemplate.vue'
+import {ListItem} from "@/types/ui-types";
 
 export default Vue.extend({
   components: {
@@ -197,12 +244,13 @@ export default Vue.extend({
     return {
       institutionDialog: false,
       showDialog: false,
-      currentInstitution: new Institution('', '', '', '', []),
+      currentInstitution: new ListItem(new Institution('', '', '', '', []), true),
       geneType: new String(),
       panelName: new String(),
       genes: new Array<SynonymGene>(),
       expanded: [],
       singleExpand: false,
+      panelGenes: new PanelGenes([], []),
       tableHeaders: [
         {
           text: this.$t('panel-result.table.headers.institution-name'),
@@ -214,12 +262,8 @@ export default Vue.extend({
           value: 'name',
         },
         {
-          text: this.$t('panel-result.table.headers.genes-found'),
-          value: 'countGenesInPanel',
-        },
-        {
-          text: this.$t('panel-result.table.headers.genes-not-found'),
-          value: 'countGenesNotInPanel',
+          text: this.$t('panel-result.table.headers.genes'),
+          value: 'panelGenes',
         },
         {
           text: this.$t('panel-result.table.headers.actions'),
@@ -256,17 +300,41 @@ export default Vue.extend({
     panelContent(): Array<PanelResultFormattedRow> {
       return (this.panelSearchResults as Array<PanelSearchResult>).map(
         (panel: PanelSearchResult) => {
-          const panelSymbolToSymbolMatchSet = new Set(panel.panelSymbolToSymbolMatch)
+          let genesInPanel = new Array<SynonymGene>()
+          const parsedGeneSynonymsMap = new Map(this.parsedGenes.synonymFoundGenes.map((item: ParsedGene) => [(item.gene as Gene).name, item]))
           const panelSynonymToSynonymMatchSet = new Set(panel.panelSynonymToSynonymMatch)
-          const panelSymbolToSynonymMatchMap = new Map(panel.panelSymbolToSynonymMatch.map((item: SynonymGene) => [(item.gene as FullGene).symbol, item]))
+          const panelSymbolToSynonymMatchMap = new Map(panel.panelSymbolToSynonymMatch.map((item: SynonymGene) => [item.gene, item]))
           const panelSynonymToSymbolMatchMap = new Map(panel.panelSynonymToSymbolMatch.map((item: SynonymGene) => [item.synonym, item]))
 
-          const genesInPanel = panel.genesInPanel.filter(gene => gene && gene.name).sort((a, b) => (a.name > b.name) ? 1 : -1).map((gene: Gene) =>
-            this.formatGeneInfo(gene, panelSymbolToSymbolMatchSet, panelSynonymToSynonymMatchSet, panelSymbolToSynonymMatchMap, panelSynonymToSymbolMatchMap)
-          )
-          const genesNotInPanel = panel.genesNotInPanel.sort((a, b) => (a.name > b.name) ? 1 : -1).map((gene: Gene) =>
-            this.formatGeneInfo(gene, panelSymbolToSymbolMatchSet, panelSynonymToSynonymMatchSet, panelSymbolToSynonymMatchMap, panelSynonymToSymbolMatchMap)
-          )
+
+          panel.panelSymbolToSymbolMatch.forEach(symbol => {
+            if(panelSynonymToSynonymMatchSet.has(symbol) || panelSymbolToSynonymMatchMap.has(symbol) || panelSynonymToSymbolMatchMap.has(symbol)) {
+              return
+            }
+            genesInPanel.push(new SynonymGene('', symbol))
+          })
+
+          panel.panelSynonymToSynonymMatch.forEach(symbol => {
+            if(parsedGeneSynonymsMap.has(symbol)) {
+              const parsedGene = parsedGeneSynonymsMap.get(symbol)
+              genesInPanel.push(new SynonymGene(((parsedGene as ParsedGene).realGene as FullGene).symbol, symbol))
+            }
+          })
+
+          panel.panelSynonymToSymbolMatch.forEach(synonymGene => {
+            genesInPanel.push(new SynonymGene(synonymGene.synonym, synonymGene.gene))
+          })
+
+          panel.panelSymbolToSynonymMatch.forEach(synonymGene => {
+            genesInPanel.push(new SynonymGene(synonymGene.synonym, synonymGene.gene))
+          })
+
+          genesInPanel.sort((a, b) => ((a.gene as string) > (b.gene as string)) ? 1 : -1)
+
+          const genesNotInPanel = panel.genesNotInPanel.sort((a, b) => (a.name > b.name) ? 1 : -1).map((gene: Gene) => {
+            return new SynonymGene('', gene.name.toUpperCase())
+          })
+
           let institution = this.institutionsByPanel.get(panel.name)
           if (!institution) {
             institution = {}
@@ -274,11 +342,8 @@ export default Vue.extend({
 
           return new PanelResultFormattedRow(
             panel.name,
-            genesInPanel.length,
-            genesNotInPanel.length,
-            genesInPanel,
-            genesNotInPanel,
-            institution
+            new PanelGenes(genesInPanel, genesNotInPanel),
+            new ListItem(institution, true)
           )
         }
       )
@@ -286,21 +351,22 @@ export default Vue.extend({
   },
   watch: {},
   methods: {
-    openDialog(panel: PanelResultFormattedRow, geneType: string) {
+    openDialog(panel: PanelResultFormattedRow) {
       this.panelName = panel.name
-      this.geneType = geneType
-      this.genes =
-        geneType === 'genesInPanel' ? panel.genesInPanel : panel.genesNotInPanel
+      this.panelGenes = panel.panelGenes
       this.showDialog = true
     },
-    openInstitutionDetails(institution: Institution) {
+    openInstitutionDetails(institution: ListItem) {
       this.currentInstitution = institution
       this.institutionDialog = true
     },
-    downloadGenes(genes: string) {
+    downloadGenes(genes: PanelGenes) {
+      const genesInPanel = genes.genesInPanel.map(geneInPanel => geneInPanel.gene)
+      const genesNotInPanel = genes.genesNotInPanel.map(geneNotInPanel => geneNotInPanel.gene)
       const result = {
-        name: this.panelName,
-        genes: genes,
+        "name": this.panelName,
+        "genes-in-panel": genesInPanel,
+        "genes-not-in-panel": genesNotInPanel,
       }
       this.downloadResult(result)
       //this.showDialog = false;
@@ -313,8 +379,8 @@ export default Vue.extend({
     formatResult(panel: any, pretty: boolean) {
       return formatObjetToJson(panel, pretty)
     },
-    isInstitutionEmpty(institution: Institution) {
-      return Object.keys(institution).length == 0
+    isInstitutionEmpty(institution: ListItem) {
+      return Object.keys(institution.item).length == 0
     },
     handleHelp() {
       this.$emit('help')
@@ -343,27 +409,6 @@ export default Vue.extend({
       }
       return 0
     },
-    formatGeneInfo(gene:Gene, symbolToSymbolMatchSet: Set<string>, synonymToSynonymMatchSet: Set<string>,
-                   symbolToSynonymMatchMap: Map<string, SynonymGene>, synonymToSymbolMatchMap: Map<String, SynonymGene>): SynonymGene {
-      let geneName = gene.name
-
-      let resultGene = geneName.toUpperCase()
-      let synonym = ''
-
-      if(synonymToSynonymMatchSet.has(geneName)) {
-        synonym = geneName.toUpperCase()
-        resultGene = ''
-      } else if(symbolToSynonymMatchMap.has(geneName)) {
-        const symbolToSynonymMatch = symbolToSynonymMatchMap.get(geneName)
-        synonym = (symbolToSynonymMatch as SynonymGene).synonym.toUpperCase()
-      } else if(synonymToSymbolMatchMap.has(geneName)) {
-        const synonymToSymbolMatch = synonymToSymbolMatchMap.get(geneName)
-        synonym = ((synonymToSymbolMatch as SynonymGene).gene as string).toUpperCase()
-      }
-
-      return new SynonymGene(synonym, resultGene)
-    },
-
     formatState(gene: SynonymGene): string {
       let color = 'success'
 
