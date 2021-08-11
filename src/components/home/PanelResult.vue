@@ -302,8 +302,15 @@ export default Vue.extend({
         (panel: PanelSearchResult) => {
           let genesInPanel = new Array<SynonymGene>()
           const parsedGeneSynonymsMap = new Map(this.parsedGenes.synonymFoundGenes.map((item: ParsedGene) => [(item.gene as Gene).name, item]))
+          const panelSynonymToSynonymMatchSet = new Set(panel.panelSynonymToSynonymMatch)
+          const panelSymbolToSynonymMatchMap = new Map(panel.panelSymbolToSynonymMatch.map((item: SynonymGene) => [item.gene, item]))
+          const panelSynonymToSymbolMatchMap = new Map(panel.panelSynonymToSymbolMatch.map((item: SynonymGene) => [item.synonym, item]))
+
 
           panel.panelSymbolToSymbolMatch.forEach(symbol => {
+            if(panelSynonymToSynonymMatchSet.has(symbol) || panelSymbolToSynonymMatchMap.has(symbol) || panelSynonymToSymbolMatchMap.has(symbol)) {
+              return
+            }
             genesInPanel.push(new SynonymGene('', symbol))
           })
 
@@ -312,6 +319,14 @@ export default Vue.extend({
               const parsedGene = parsedGeneSynonymsMap.get(symbol)
               genesInPanel.push(new SynonymGene(((parsedGene as ParsedGene).realGene as FullGene).symbol, symbol))
             }
+          })
+
+          panel.panelSynonymToSymbolMatch.forEach(synonymGene => {
+            genesInPanel.push(new SynonymGene(synonymGene.synonym, synonymGene.gene))
+          })
+
+          panel.panelSymbolToSynonymMatch.forEach(synonymGene => {
+            genesInPanel.push(new SynonymGene(synonymGene.synonym, synonymGene.gene))
           })
 
           genesInPanel.sort((a, b) => ((a.gene as string) > (b.gene as string)) ? 1 : -1)
