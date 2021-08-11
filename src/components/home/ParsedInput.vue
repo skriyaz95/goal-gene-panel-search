@@ -3,6 +3,20 @@
     <v-card-title>
       {{ $t('parsedInput.title.text') }}
       <v-spacer></v-spacer>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            v-on="on"
+            :disabled="noData"
+            icon
+            @click="downloadParsedSearch"
+          >
+            <v-icon>mdi-download </v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('button.download.tooltip') }}</span>
+      </v-tooltip>
+
       <help-button @action="handleHelp()" :active="help">
         <template v-slot:content>
           <span>
@@ -93,6 +107,9 @@ import GeneParsedContent from '@/components/GeneParsedContent.vue'
 import ParsedSearchHelp from '@/components/help/ParsedSearchHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
+import download from '@/utils/download'
+import Papa from 'papaparse'
+import { transpose } from '@/utils/arrays'
 
 export default Vue.extend({
   components: { GeneParsedContent, ParsedSearchHelp, HelpButton, InfoAlert },
@@ -140,6 +157,26 @@ export default Vue.extend({
   methods: {
     handleHelp() {
       this.$emit('help')
+    },
+    downloadParsedSearch() {
+      const headers = [
+        this.$t('parsedInput.notFound.text').toString(),
+        this.$t('parsedInput.synonyms.text').toString(),
+        this.$t('parsedInput.symbols.text').toString(),
+      ]
+      const columns = [
+        this.formattedGenes.notFoundGenes.map((pg) => pg.gene.name),
+        this.formattedGenes.synonymFoundGenes.map((pg) => pg.gene.name),
+        this.formattedGenes.symbolFoundGenes.map((pg) => pg.gene.name),
+      ]
+      const transposed = transpose(columns)
+
+      // const csv = new CSVContent(headers, columns)
+      const csv = Papa.unparse({
+        fields: headers,
+        data: transposed,
+      })
+      download('parsed_search.csv', csv, 'text/csv')
     },
   },
 })

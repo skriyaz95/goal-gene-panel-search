@@ -1,6 +1,8 @@
 /**
  * Used in PanelCompare v-chip active state
  */
+import { GenePanelDetails, Institution } from "@/types/panel-types"
+
 export class ActiveState {
   active: boolean
   id: string
@@ -34,5 +36,15 @@ export class LastSelection {
     this.tab = tab
     this.item = item
     this.path = "/" + page + "/" + tab + "/" + item
+  }
+}
+
+export class ListItem {
+  item: Institution | GenePanelDetails
+  valid: boolean
+
+  constructor(item: Institution | GenePanelDetails, valid: boolean) {
+    this.item = item
+    this.valid = valid
   }
 }

@@ -30,6 +30,13 @@
       "text": "Save All",
       "tooltip": "Download a JSON file of the panels"
     },
+    "resetAll": {
+      "text": "Reset",
+      "tooltip": {
+        "part1": "Reset panels. All changes will be lost",
+        "part2": "(including saved data)."
+      }
+    },
     "noInstitution": {
       "text": "Select Institution in the Institutions tab after saving"
     },
@@ -91,6 +98,9 @@
     },
     "refuse": {
       "text": "Refuse"
+    },
+    "download": {
+      "tooltip": "Download"
     }
   },
   "count": {
@@ -126,6 +136,29 @@
       },
       "title": {
         "text": "Explore"
+      }
+    },
+    "error": {
+      "title": {
+        "text": "Error Page"
+      },
+      "toolbar": {
+        "text": "Oops..."
+      },
+      "content": {
+        "text": {
+          "part1": "The page you are trying to reach does not exist.",
+          "part2": "Take me home"
+        }
+      }
+    },
+    "help": {
+      "text": "Help",
+      "title": {
+        "text": "Help"
+      },
+      "toolbar": {
+        "text": "Help Section"
       }
     }
   },
@@ -278,6 +311,13 @@
     "info": {
       "part1": "All changes are temporary. They will be lost after reload.",
       "part2": "Replace assets/institutions.json on your server to make the changes permanent for all users."
+    },
+    "resetAll": {
+      "text": "Reset",
+      "tooltip": {
+        "part1": "Reset institutions. All changes will be lost",
+        "part2": "(including saved data)."
+      }
     }
   },
   "help": {
@@ -334,24 +374,90 @@
     "institutionExplore": {
       "purpose": "Click on an institution below to see its contact information",
       "edit": "Here you can edit or delete existing institutions and create new ones."
+    },
+    "fileFormats": {
+      "title": {
+        "text": "File Formats"
+      },
+      "part1": "GTI accepts two file formats to import new panels: .csv and .bed.",
+      "part2": "When parsing a file, GTI only uses the gene name, it could be a symbol or a synonym.",
+      "part3": "If it cannot find a matching term, the gene is considered 'Not Found' and ignored during searches.",
+      "csv": {
+        "part1": "It's a simple text file: one column with a list of genes.",
+        "part2": "The first row needs to be the column header (the label doesn't matter). Other columns are ignored."
+      },
+      "bed": {
+        "part1": "Bed files have at least 4 columns, separated by tabs (no header):",
+        "part2": "At the moment, only the NAME column is parsed. The gene name is extracted by taking the first term before",
+        "header1": "Bed File Content",
+        "header2": "Gene Extracted"
+      },
+      "notValid": " is not a valid gene"
+    },
+    "installApp": {
+      "title": {
+        "text": "Installation"
+      },
+      "step": "Step {count}",
+      "part1a": "You should install your own version of the app when:",
+      "part1b": "you want to control panels, institutions and the underlying gene database",
+      "part1c": "you do not want or cannot send us your panel(s)",
+      "part1d": "you want to have GTI behind a firewall or run offline (on a desktop for instance)",
+      "part2a": "The process varies based on your needs and whether or not you have your own server but it's basically a 3 step operation:",
+      "part2b": " fork the repository. You will basically create your own copy of the app.",
+      "part2c": " deploy the app. Platforms like CloudFlare (and others) have ways to deploy a static website (like this one!) by linking directly to a github repository.",
+      "part2d": " go to",
+      "part2e": "to create the panels and institutions you want and overwrite the files in your github repository. Your app will update automatically within a few minutes.",
+      "contact": {
+        "title": {
+          "text": "We're here to help"
+        }
+      }
+    },
+    "manageApp": {
+      "title": {
+        "text": "Manage You Own Data"
+      },
+      "customize": {
+        "title": {
+          "text": "Customize You App"
+        },
+        "part1": "You can change the theme of your app by playing with the color pickers and other tools available.",
+        "part2": "This is more of a playground to help you quickly get settings going rather than a full-fledged UI editor, but following the instructions should help you understand which variables control the colors and the styles of the app.",
+        "part3": "If you want to completely change the logo and even the name of the app, the supporting_files directory contains the source images (Gimp format) and fonts."
+      }
     }
   },
   "institutionDetails": {
     "name": {
       "text": "Name",
-      "tooltip": "Institution Name"
+      "tooltip": "Institution Name",
+      "rules": {
+        "required": "Institution Name is required",
+        "length": "Institution Name must be less than 50 characters",
+        "valid": "Invalid Institution Name"
+      }
     },
     "phone": {
       "text": "Phone",
-      "tooltip": "Institution Phone"
+      "tooltip": "Institution Phone",
+      "rules": {
+        "valid": "Invalid Institution Phone Number"
+      }
     },
     "email": {
       "text": "Email",
-      "tooltip": "Primary Contact Email"
+      "tooltip": "Primary Contact Email",
+      "rules": {
+        "valid": "Invalid Institution E-mail"
+      }
     },
     "website": {
       "text": "Website",
-      "tooltip": "Institution Website"
+      "tooltip": "Institution Website",
+      "rules": {
+        "valid": "Institution Website is not in proper format"
+      }
     },
     "panels": {
       "text": "Panels",
@@ -410,7 +516,7 @@
           "text": "Gene"
         },
         "panel": {
-          "text": "My Panel"
+          "text": "FooBar Panel"
         },
         "explanation": {
           "text": "Explanation"

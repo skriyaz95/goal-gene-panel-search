@@ -3,13 +3,11 @@
   <main-content-template inner>
     <template v-slot:left-col>
       <list-template
-        :value="item"
-        @input="handleInput($event)"
-        @change="handleChange($event)"
         :itemsSorted="tempInstitutionSorted"
         :editable="editable"
         @delete="deleteInstitution($event)"
         dropDownLabel="buildPanels.selectInstitution.text"
+        icon="mdi-bank-outline"
       >
         <template v-slot:title>
           {{ $t('buildInstitutions.list.text') }}:
@@ -45,6 +43,7 @@
             <template v-slot:activator="{ on }">
               <v-btn class="primary" v-on="on" @click="addInstitution()">
                 {{ $t('buildInstitutions.new.text') }}
+                <v-icon right>mdi-bank-plus</v-icon>
               </v-btn>
             </template>
             <span>{{ $t('buildInstitutions.new.tooltip') }}</span>
@@ -53,14 +52,27 @@
             <template v-slot:activator="{ on }">
               <v-btn
                 class="primary ml-2"
-                :disabled="!validInstitutions()"
+                :disabled="!validInstitutions"
                 v-on="on"
                 @click="saveAll()"
               >
                 {{ $t('buildInstitutions.saveAll.text') }}
+                <v-icon right>mdi-content-save</v-icon>
               </v-btn>
             </template>
             <span> {{ $t('buildInstitutions.saveAll.tooltip') }}</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn class="warning ml-2" v-on="on" @click="resetAll()">
+                {{ $t('buildPanels.resetAll.text') }}
+                <v-icon right>mdi-reload</v-icon>
+              </v-btn>
+            </template>
+            <span>
+              {{ $t('buildPanels.resetAll.tooltip.part1') }}<br />
+              {{ $t('buildPanels.resetAll.tooltip.part2') }}</span
+            >
           </v-tooltip>
         </template>
       </list-template>
@@ -72,6 +84,7 @@
             :institution="getCurrentInstitution()"
             :editable="editable"
             :panels="panelNames"
+            @institution-valid="validateInstitutions($event)"
             @name-changed="updateTempInstitutions"
             :show-read-only-panels="showReadOnlyPanels"
           />
@@ -104,6 +117,8 @@ import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InstitutionExploreHelp from '../help/InstitutionExploreHelp.vue'
+import { ListItem } from '@/types/ui-types'
+import { listItemSorter } from '@/utils/arrays'
 
 export default Vue.extend({
   components: {
@@ -123,63 +138,82 @@ export default Vue.extend({
     publicPath: process.env.BASE_URL,
     // institutionIndex: 0,
     previousIndex: 0, //to prevent undefined error when clicking on the same institution twice
-    tempInstitutionSorted: new Array<Institution>(),
+    tempInstitutionSorted: new Array<ListItem>(),
     info: false,
     help: false,
+    validInstitutions: true,
   }),
   methods: {
-    ...mapActions(['updateInstitutions']),
+    ...mapActions(['updateInstitutions', 'resetInstitutions']),
     handleHelp() {
       this.$emit('help')
       this.help = !this.help
     },
     addInstitution() {
       const newInstitution = new Institution('New', '', '', '', [])
-      this.tempInstitutionSorted.push(newInstitution)
-      this.tempInstitutionSorted.sort(this.sortInstitutionsByName)
+      const newItem = new ListItem(newInstitution, true)
+      this.tempInstitutionSorted.push(newItem)
+      this.tempInstitutionSorted.sort(listItemSorter)
       this.updateTempInstitutions('New')
     },
-    validInstitutions() {
-      //TODO validate form
-      return true
+    validateInstitutions($event: ListItem) {
+      if (this.item >= this.tempInstitutionSorted.length) {
+        return true
+      }
+      this.tempInstitutionSorted[this.item] = $event
+      for (let i = 0; i < this.tempInstitutionSorted.length; i++) {
+        if (!this.tempInstitutionSorted[i].valid) {
+          this.validInstitutions = false
+          return
+        }
+      }
+      this.validInstitutions = true
     },
     saveAll() {
       this.info = true
-      this.updateInstitutions(this.tempInstitutionSorted)
+      const institutions = this.tempInstitutionSorted.map(
+        (listItem: ListItem) => listItem.item
+      )
+      this.updateInstitutions(institutions)
       download(
         'institutions.json',
-        formatObjetToJson(this.tempInstitutionSorted, false),
+        formatObjetToJson(institutions, false),
         'text/json'
       )
     },
-    getCurrentInstitution(): Institution | null {
+    getCurrentInstitution(): ListItem | null {
       return this.tempInstitutionSorted[this.item]
     },
     updateTempInstitutionsFromStore() {
-      this.tempInstitutionSorted = JSON.parse(JSON.stringify(this.institutions))
+      this.tempInstitutionSorted = JSON.parse(
+        JSON.stringify(this.institutions)
+      ).map((institution: Institution) => new ListItem(institution, true))
       for (let i = 0; i < this.tempInstitutionSorted.length; i++) {
-        for (let j = 0; j < this.tempInstitutionSorted[i].panels.length; j++) {
-          if (
-            this.panelNames.indexOf(this.tempInstitutionSorted[i].panels[j]) ==
-            -1
-          ) {
-            this.tempInstitutionSorted[i].panels = []
+        const item = this.tempInstitutionSorted[i].item as Institution
+        for (let j = 0; j < item.panels.length; j++) {
+          if (this.panelNames.indexOf(item.panels[j]) == -1) {
+            const institution = this.tempInstitutionSorted[i]
+              .item as Institution
+            institution.panels = []
             break
           }
         }
       }
+      this.panels.map((p: GenePanelDetails) => p.name)
     },
     updateTempInstitutions(name: string) {
-      this.tempInstitutionSorted.sort(this.sortInstitutionsByName)
+      this.tempInstitutionSorted.sort(listItemSorter)
       for (let i = 0; i < this.tempInstitutionSorted.length; i++) {
-        if (this.tempInstitutionSorted[i].name === name) {
-          this.$emit('update', i)
+        if (this.tempInstitutionSorted[i].item.name === name) {
+          const item = i.toString()
+          this.$router.replace({ params: { ...this.$route.params, item } })
           break
         }
       }
       this.info = true
     },
     deleteInstitution(index: number) {
+      console.log('deleting institution')
       if (index != null) {
         this.tempInstitutionSorted.splice(index, 1)
       } else {
@@ -187,20 +221,10 @@ export default Vue.extend({
       }
       this.info = true
     },
-    sortInstitutionsByName(a: Institution, b: Institution) {
-      if (a.name < b.name) {
-        return -1
-      }
-      if (a.name > b.name) {
-        return 1
-      }
-      return 0
-    },
-    handleChange($event: any) {
-      this.item = $event
-    },
-    handleInput($event: any) {
-      this.item = $event
+    resetAll() {
+      this.resetInstitutions().then(() => {
+        this.updateTempInstitutionsFromStore()
+      })
     },
   },
   computed: {
@@ -208,21 +232,11 @@ export default Vue.extend({
       institutions: 'getInstitutionsSorted',
       panels: 'getPanels',
     }),
-    item: {
-      set(itemNumber: number) {
-        //avoid duplicate navigation
-        if (itemNumber === this.item) {
-          return
-        }
-        const item = itemNumber.toString()
-        this.$router.replace({ params: { ...this.$route.params, item } })
-      },
-      get(): number {
-        return Number.parseInt(this.$route.params.item)
-      },
-    },
     panelNames(): string[] {
       return this.panels.map((p: GenePanelDetails) => p.name)
+    },
+    item(): number {
+      return Number.parseInt(this.$route.params.item)
     },
   },
   mounted() {

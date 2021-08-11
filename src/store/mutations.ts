@@ -1,10 +1,7 @@
-import { GenePanelDetails, Institution, SynonymGene } from "@/types/panel-types"
 import { LastSelection } from "@/types/ui-types"
+import {GenePanelDetails, Institution, SynonymGene} from "@/types/panel-types";
 
 export default {
-  resetPanels(state: any) {
-    state.panels = []
-  },
   updatePanels(state: any, payload: Array<GenePanelDetails>) {
     state.panels = JSON.parse(JSON.stringify(payload))
   },
@@ -31,5 +28,11 @@ export default {
   },
   updateLastSelection(state: any, payload: LastSelection) {
     state.lastSelections.set(payload.pageTab, payload)
+  },
+  resetPanels(state: any) {
+    state.panels = require("@/assets/panels.json")
+  },
+  resetInstitutions(state: any) {
+    state.institutions = require("@/assets/institutions.json")
   },
 }

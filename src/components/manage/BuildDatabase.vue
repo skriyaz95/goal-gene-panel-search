@@ -91,9 +91,6 @@ export default Vue.extend({
   components: { MainContentTemplate, HelpButton, InfoAlert, DatabaseHelp },
   data: () => ({
     sourceFileUrl: NCBI_GENE_INFO_FILE_URL,
-    rawDir: 'raw_panels/',
-    sourceDir: 'source_panels/',
-    publicPath: process.env.BASE_URL,
     geneFile: null,
     linebreak: /\r?\n|\r/g,
     headerSymbol: 'Symbol',

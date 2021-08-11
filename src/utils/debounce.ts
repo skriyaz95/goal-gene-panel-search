@@ -19,7 +19,7 @@ export default function(fn: any, delay: number): any {
   return function(this: any, ...args: IArguments[]) {
     clearTimeout(timeoutID)
     const that = this
-    timeoutID = setTimeout(function() {
+    timeoutID = window.setTimeout(function() {
       fn.apply(that, args)
     }, delay)
   }

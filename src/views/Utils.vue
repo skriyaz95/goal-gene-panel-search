@@ -7,12 +7,7 @@
       <v-spacer></v-spacer>
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
-          <v-btn
-            href="https://github.com/skriyaz95/goal-gene-panel-search"
-            target="_blank"
-            text
-            v-on="on"
-          >
+          <v-btn :href="githubRepo" target="_blank" text v-on="on">
             <span class="mr-2">{{ $t('button.link.repo.text') }}</span>
             <v-icon>mdi-open-in-new</v-icon>
           </v-btn>
@@ -35,10 +30,7 @@
       <template v-slot:one-col>
         <v-tabs-items v-model="tab" class="background">
           <v-tab-item value="panels">
-            <build-explore-panels
-              :editable="true"
-              @update="handlePanelUpdate($event)"
-            />
+            <build-explore-panels :editable="true" />
           </v-tab-item>
           <v-tab-item value="institutions">
             <build-explore-institutions :editable="true" />
@@ -68,6 +60,7 @@ import { TranslateResult } from 'vue-i18n'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import GdprInfo from '@/components/GdprInfo.vue'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
+import { GITHUB_REPO } from '@/utils/apis'
 
 export default Vue.extend({
   name: 'Utils',
@@ -82,15 +75,13 @@ export default Vue.extend({
   },
   data: () => ({
     tabs: ['panels', 'institutions', 'database', 'theme', 'cookies'],
+    githubRepo: GITHUB_REPO,
   }),
   computed: {
     tab: {
       set(tab: string) {
-        this.$router.replace({ params: { ...this.$route.params, tab } })
-        if (this.$route.params.item !== '0') {
-          const item = '0'
-          this.$router.replace({ params: { ...this.$route.params, item } })
-        }
+        const item = '0'
+        this.$router.replace({ params: { ...this.$route.params, tab, item } })
       },
       get(): string | (string | null)[] {
         return this.$route.params.tab ? this.$route.params.tab : 'panels'
@@ -100,14 +91,13 @@ export default Vue.extend({
       return this.$vuetify.theme.themes.light.background
     },
     toolbarTitle(): TranslateResult {
-      if (this.$route.meta && this.$route.meta.i18n) {
-        return this.$t(this.$route.meta.i18n + '.toolbar.text')
-      }
-      return 'GTI'
+      return this.$t('navigation.utils.toolbar.text')
     },
   },
   methods: {},
-  mounted() {},
+  mounted() {
+    document.title = 'GTI ' + this.$t('navigation.utils.title.text')
+  },
   watch: {},
 })
 </script>
