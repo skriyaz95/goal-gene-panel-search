@@ -215,7 +215,6 @@ export default Vue.extend({
       this.$emit('toggleInstitution', institution)
     },
     downloadComparePanels() {
-      console.log('downloading')
       //use filteredHeaders to remove geneId and hidden columns
       const csvHeaders = this.filteredHeaders.map((h) => h.text)
       const csvItems = []
