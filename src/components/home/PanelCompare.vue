@@ -108,6 +108,7 @@ import { ActiveState, GeneState, TableHeader } from '@/types/ui-types'
 import download from '@/utils/download'
 import Papa from 'papaparse'
 import { formatStateColor, formatStateIcon } from '@/utils/formatting'
+import { ParsedGene } from '@/types/panel-types'
 // import { transpose } from '@/utils/arrays'
 
 export default Vue.extend({
@@ -214,6 +215,7 @@ export default Vue.extend({
       this.$emit('toggleInstitution', institution)
     },
     downloadComparePanels() {
+      console.log('downloading')
       //use filteredHeaders to remove geneId and hidden columns
       const csvHeaders = this.filteredHeaders.map((h) => h.text)
       const csvItems = []
@@ -223,11 +225,17 @@ export default Vue.extend({
           const h = this.filteredHeaders[i]
           const result = (this.items as any)[j][h.value]
           //skip notFound results
-          if (result && result.state === GeneState.NOT_FOUND) {
-            row.push('')
-          } else {
-            const geneName = result.gene.name
-            row.push(geneName)
+          if (result && result.length > 0) {
+            const genes: string[] = []
+            result.forEach((r: ParsedGene) => {
+              if (r && r.state === GeneState.NOT_FOUND) {
+                genes.push('')
+              } else {
+                const geneName = r.gene.name
+                genes.push(geneName)
+              }
+            })
+            row.push(genes.join(' '))
           }
         }
         csvItems.push(row)
