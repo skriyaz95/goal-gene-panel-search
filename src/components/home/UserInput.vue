@@ -53,15 +53,19 @@
             @click:clear="clear()"
             @blur="handleBlur"
           />
-          <div>{{ $t('userInput.upload.text') }}:</div>
-          <v-file-input
-            v-model="geneFile"
-            accept=".bed,.csv"
-            label=".bed,.csv"
-            prepend-icon="mdi-paperclip"
-            @change="handleFileUpload"
-            class="pr-2 pb-2"
-          />
+          <v-card outlined class="darker-border">
+            <v-card-text>
+              <div>{{ $t('userInput.upload.text') }}:</div>
+              <v-file-input
+                v-model="geneFile"
+                accept=".bed,.csv"
+                label=".bed,.csv"
+                prepend-icon="mdi-paperclip"
+                @change="handleFileUpload"
+                class="pr-2 pb-2"
+              />
+            </v-card-text>
+          </v-card>
           <!-- <v-btn
             class="ma-2"
             large
@@ -109,7 +113,7 @@ export default Vue.extend({
     isFormValid: true,
     geneList: String(),
     validSeparators: /[ ,;\s]+/,
-    validCharacters: /^[-,;~\w\s]+$/,
+    validCharacters: /^[-,;~\w\s]*$/,
     demoRunning: false,
     geneFile: null,
   }),
@@ -233,3 +237,9 @@ export default Vue.extend({
   mounted() {},
 })
 </script>
+
+<style scoped>
+.darker-border {
+  border-color: rgba(0, 0, 0, 0.38);
+}
+</style>
