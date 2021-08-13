@@ -125,6 +125,7 @@ import HelpButton from '@/components/help/HelpButton.vue'
 import PanelExploreHelp from '../help/PanelExploreHelp.vue'
 import { ListItem } from '@/types/ui-types'
 import { listItemSorter } from '@/utils/arrays'
+import { getPanelGenes } from '@/utils/csv-bed-parser'
 
 export default Vue.extend({
   components: {
@@ -310,62 +311,12 @@ export default Vue.extend({
       const panelBuilder = new PanelBuilder()
       panelBuilder.panelName = panelName
       panelBuilder.panelFileName = fileName
-      const genes = this.getPanelGenes(allRows, extension)
+      const genes = getPanelGenes(allRows, extension)
       this.formatGenes(
         genes,
         panelBuilder.panelName,
         panelBuilder.panelFileName
       )
-    },
-    getPanelGenes(allRows: string[], extension: string): Gene[] {
-      const uniqueRows =
-        extension == '.csv' ? this.parseCSV(allRows) : this.parseBED(allRows)
-      const uniqueRowsArray = Array.from(uniqueRows)
-      const panelGenes: Gene[] = []
-      for (let j = 0; j < uniqueRowsArray.length; j++) {
-        const geneSymbol = uniqueRowsArray[j]
-        if (!geneSymbol || geneSymbol.length == 0 || geneSymbol == 'SNP') {
-          continue
-        }
-        panelGenes.push({
-          name: geneSymbol.toUpperCase(),
-        })
-      }
-      return panelGenes
-    },
-    parseCSV(allRows: string[]) {
-      const uniqueRows = new Set<string>()
-      for (let j = 1; j < allRows.length; j++) {
-        //skip header row
-        const row = allRows[j]
-        if (!row || row.length == 0) {
-          continue
-        }
-        const rowItems = row.split(',')
-        if (rowItems && rowItems[0]) {
-          uniqueRows.add(rowItems[0].trim())
-        }
-        uniqueRows.add(rowItems[0].trim())
-      }
-      return uniqueRows
-    },
-    parseBED(allRows: string[]) {
-      const uniqueRows = new Set<string>()
-      for (let j = 0; j < allRows.length; j++) {
-        const row = allRows[j]
-        if (!row || row.length == 0) {
-          continue
-        }
-        const rowItems = row.split('\t')
-        if (rowItems && rowItems[3]) {
-          //GNB1:GNB1_chr1:1718769-1718876:275744_14961302_GNB1_chr1:1718769-1718876_1
-          const gene = rowItems[3].split(':')[0]
-          if (gene) {
-            uniqueRows.add(gene.trim())
-          }
-        }
-      }
-      return uniqueRows
     },
     resetAll() {
       this.resetPanels().then(() => {

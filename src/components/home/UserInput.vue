@@ -53,6 +53,15 @@
             @click:clear="clear()"
             @blur="handleBlur"
           />
+          <div>{{ $t('userInput.upload.text') }}:</div>
+          <v-file-input
+            v-model="geneFile"
+            accept=".bed,.csv"
+            label=".bed,.csv"
+            prepend-icon="mdi-paperclip"
+            @change="handleFileUpload"
+            class="pr-2 pb-2"
+          />
           <v-btn
             class="ma-2"
             large
@@ -81,6 +90,7 @@ import GeneSearchHelp from '@/components/help/GeneSearchHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import { UserInputPayload } from '@/types/payload-types'
+import { getPanelGenes } from '@/utils/csv-bed-parser'
 
 export default Vue.extend({
   components: { GeneSearchHelp, HelpButton, InfoAlert },
@@ -101,6 +111,7 @@ export default Vue.extend({
     validSeparators: /[ ,;\s]+/,
     validCharacters: /^[-,;~\w\s]+$/,
     demoRunning: false,
+    geneFile: null,
   }),
   computed: {
     ...mapGetters({}),
@@ -199,6 +210,24 @@ export default Vue.extend({
     },
     fillLastSearch(search: string) {
       this.geneList = search
+    },
+    handleFileUpload() {
+      if (!this.geneFile) {
+        return
+      }
+      var fr = new FileReader()
+      // verify that panel doesn't already exist
+      const fileName = (this.geneFile as any).name
+      fr.readAsText(this.geneFile as any)
+      fr.onload = () => {
+        this.parseContent(fileName, fr.result as string)
+      }
+    },
+    parseContent(fileName: string, content: string) {
+      const extension = /\.csv$/.test(fileName) ? '.csv' : '.bed'
+      const allRows = content.split(/\r?\n|\r/)
+      const genes = getPanelGenes(allRows, extension)
+      this.geneList = genes.map((g) => g.name).join('\n')
     },
   },
   mounted() {},
