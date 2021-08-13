@@ -209,6 +209,9 @@
       },
       "empty": {
         "text": "The last 3 searches will be displayed here"
+      },
+      "latest": {
+        "text": "Latest"
       }
     }
   },

@@ -17,7 +17,7 @@
       </v-btn>
       <v-btn text disabled v-if="!empty">
         <v-icon left>mdi-arrow-left-thick</v-icon>
-        Latest
+        {{ $t('userInput.recall.latest.text') }}
       </v-btn>
     </v-col>
     <v-col class="flex-grow-0 flex-shrink-1">
