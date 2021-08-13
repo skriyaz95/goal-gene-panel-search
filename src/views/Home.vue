@@ -48,7 +48,7 @@
                 v-for="tabTitle in tabs"
                 :key="tabTitle"
               >
-                {{ tabTitle }}
+                {{ $t('navigation.tabs.' + tabTitle) }}
               </v-tab>
             </v-tabs>
           </template>

@@ -62,7 +62,7 @@
             @change="handleFileUpload"
             class="pr-2 pb-2"
           />
-          <v-btn
+          <!-- <v-btn
             class="ma-2"
             large
             depressed
@@ -74,7 +74,7 @@
           </v-btn>
           <v-btn class="ma-2" large depressed @click="clear()">
             {{ $t('userInput.button.clear') }}
-          </v-btn>
+          </v-btn> -->
         </v-form>
       </v-card-text>
     </v-card>

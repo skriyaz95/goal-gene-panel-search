@@ -160,6 +160,19 @@
       "toolbar": {
         "text": "Help Section"
       }
+    },
+    "tabs": {
+      "results": "Results",
+      "compare": "Compare",
+      "panels": "Panels",
+      "institutions": "Institutions",
+      "genome": "Genome",
+      "database": "Database",
+      "theme": "Theme",
+      "cookies": "Cookies",
+      "files": "Files",
+      "install": "Install",
+      "manage": "Manage"
     }
   },
   "themePicker": {
