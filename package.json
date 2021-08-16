@@ -9,6 +9,7 @@
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/undefined/**/*.json\""
   },
   "dependencies": {
+    "@types/node": "^16.4.13",
     "@types/papaparse": "^5.2.6",
     "core-js": "^3.6.5",
     "papaparse": "^5.3.1",

@@ -16,7 +16,6 @@
         </template>
         <span>{{ $t('button.download.tooltip') }}</span>
       </v-tooltip>
-
       <help-button @action="handleHelp()" :active="help">
         <template v-slot:content>
           <span>
@@ -107,9 +106,9 @@ import GeneParsedContent from '@/components/GeneParsedContent.vue'
 import ParsedSearchHelp from '@/components/help/ParsedSearchHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
-import download from '@/utils/download'
 import Papa from 'papaparse'
 import { transpose } from '@/utils/arrays'
+import download from '@/utils/download'
 
 export default Vue.extend({
   components: { GeneParsedContent, ParsedSearchHelp, HelpButton, InfoAlert },
@@ -150,9 +149,7 @@ export default Vue.extend({
       return !this.showNotFound && !this.showSynonym && !this.showSymbol
     },
   },
-  watch: {
-    // parsedGenes: 'formatGenes',
-  },
+  watch: {},
   destroyed() {},
   methods: {
     handleHelp() {
