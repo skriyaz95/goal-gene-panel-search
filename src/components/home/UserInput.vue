@@ -238,8 +238,3 @@ export default Vue.extend({
 })
 </script>
 
-<style scoped>
-.darker-border {
-  border-color: rgba(0, 0, 0, 0.38);
-}
-</style>

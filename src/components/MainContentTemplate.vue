@@ -8,10 +8,10 @@
         <slot name="header"></slot>
       </v-col>
       <template v-if="twoCols">
-        <v-col cols="12" :md="even ? 6 : 4">
+        <v-col cols="12" :md="even ? 6 : 4" v-show="!hideLeft">
           <slot name="left-col"></slot>
         </v-col>
-        <v-col cols="12" :md="even ? 6 : 8">
+        <v-col cols="12" :md="rightColWidth">
           <slot name="right-col"></slot>
         </v-col>
       </template>
@@ -45,6 +45,18 @@ export default Vue.extend({
     even: {
       type: Boolean,
       default: false,
+    },
+    hideLeft: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  computed: {
+    rightColWidth() {
+      if (this.hideLeft) {
+        return 12
+      }
+      return this.even ? 6 : 8
     },
   },
 })

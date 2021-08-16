@@ -554,7 +554,16 @@
       },
       "institutions": {
         "text": "Show/Hide Institutions"
+      },
+      "tools": {
+        "text": "Table Tools"
       }
+    },
+    "expand": {
+      "tooltip": "Expand Tables"
+    },
+    "shrink": {
+      "tooltip": "Shrink Tables"
     }
   },
   "gdpr": {

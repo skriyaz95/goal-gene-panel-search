@@ -6,7 +6,7 @@
       </v-toolbar-title>
       <v-spacer />
     </v-toolbar>
-    <main-content-template outter even>
+    <main-content-template outter even :hideLeft="maximized">
       <template v-slot:left-col>
         <main-content-template inner header>
           <template v-slot:header>
@@ -42,15 +42,45 @@
       <template v-slot:right-col>
         <main-content-template inner header :twoCols="false">
           <template v-slot:header>
-            <v-tabs centered v-model="tab" :background-color="background">
-              <v-tab
-                :href="'#' + tabTitle"
-                v-for="tabTitle in tabs"
-                :key="tabTitle"
-              >
-                {{ $t('navigation.tabs.' + tabTitle) }}
-              </v-tab>
-            </v-tabs>
+            <v-row>
+              <v-col>
+                <v-tabs
+                  centered
+                  v-model="tab"
+                  :background-color="background"
+                  ref="tabs"
+                >
+                  <v-tab
+                    :href="'#' + tabTitle"
+                    v-for="tabTitle in tabs"
+                    :key="tabTitle"
+                  >
+                    {{ $t('navigation.tabs.' + tabTitle) }}
+                  </v-tab>
+                </v-tabs>
+              </v-col>
+              <v-col cols="1" align-self="end" align="end">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      v-on="on"
+                      icon
+                      @click="handleMaximize"
+                      class="primary--text"
+                    >
+                      <v-icon v-if="maximized">mdi-arrow-collapse-all</v-icon>
+                      <v-icon v-else>mdi-arrow-expand-all</v-icon>
+                    </v-btn>
+                  </template>
+                  <span v-if="maximized">
+                    {{ $t('panelCompare.shrink.tooltip') }}
+                  </span>
+                  <span v-else>
+                    {{ $t('panelCompare.expand.tooltip') }}
+                  </span>
+                </v-tooltip>
+              </v-col>
+            </v-row>
           </template>
           <template v-slot:one-col>
             <v-tabs-items v-model="tab" class="background">
@@ -72,6 +102,7 @@
                   :headers="compareHeaders"
                   :visibleInstitutions="visibleInstitutions"
                   @toggleInstitution="toggleInstitution"
+                  @maximize="handleMaximize"
                 />
               </v-tab-item>
             </v-tabs-items>
@@ -126,6 +157,7 @@ export default Vue.extend({
     compareHeaders: new Array<TableHeader>(),
     visibleInstitutions: new Array<ActiveState>(),
     lastSearches: [],
+    maximized: false,
   }),
   computed: {
     ...mapGetters({
@@ -231,6 +263,13 @@ export default Vue.extend({
         this.lastSearches = result
         this.loadLastInput()
       })
+    },
+    handleMaximize() {
+      this.maximized = !this.maximized
+      if (this.$refs.tabs !== undefined) {
+        const tabComponent = this.$refs.tabs as any
+        tabComponent.callSlider()
+      }
     },
   },
   mounted() {

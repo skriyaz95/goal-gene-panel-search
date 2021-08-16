@@ -32,8 +32,10 @@
             <panel-compare-help />
           </template>
         </info-alert>
-        <v-card outlined>
-          <v-card-title>Table Tools:</v-card-title>
+        <v-card outlined class="darker-border">
+          <v-card-title>
+            {{ $t('panelCompare.table.tools.text') }}:
+          </v-card-title>
           <v-card-text>
             <v-row>
               <v-col cols="12">

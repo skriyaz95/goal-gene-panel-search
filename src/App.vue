@@ -129,11 +129,14 @@ export default Vue.extend({
 })
 </script>
 
-<style>
+<style >
 .v-input.v-text-field.v-textarea .v-text-field__slot {
   padding: 5px 10px 5px 5px; /*fix scrollbar overlapping with textarea outlined */
 }
 tr:nth-child(even) {
   background-color: #fafafa;
+}
+.darker-border {
+  border-color: rgba(0, 0, 0, 0.38) !important;
 }
 </style>
