@@ -242,7 +242,7 @@
       "headers": {
         "institution-name": "Institution Name",
         "panel-name": "Gene Panel Name",
-        "genes": "Genes Found/ Not Found",
+        "genes": "Genes Found / Not Found",
         "actions": "Actions"
       }
     },

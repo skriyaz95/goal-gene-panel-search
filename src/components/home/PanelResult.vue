@@ -22,16 +22,9 @@
         {{ panelName }}
       </template>
       <template v-slot:content>
-        <v-row>
-          <v-col
-            cols="6"
-            class="pl-0 pr-0"
-          >
-            <v-simple-table
-              fixed-header
-              height="600px"
-              :style="[panelGenes.genesInPanel.length <= 12 ? { 'overflow-y': 'scroll'} : {}]"
-            >
+        <v-row dense>
+          <v-col cols="12" md="6">
+            <v-simple-table fixed-header>
               <template v-slot:default>
                 <thead class="pt-2">
                   <tr>
@@ -46,11 +39,17 @@
                     :key="item.gene.name"
                   >
                     <td>
-                      <v-chip :outlined="chipOutlined" class="ma-1" :color="formatState(item)">
+                      <v-chip
+                        :outlined="chipOutlined"
+                        class="ma-1"
+                        :color="formatState(item)"
+                      >
                         <div class="d-flex align-center">
                           <span v-if="item.state == 'synonym'">
                             {{ item.gene.name }}
-                            <v-icon class="ml-1 mr-1">mdi-arrow-right-bold</v-icon>
+                            <v-icon class="ml-1 mr-1">
+                              mdi-arrow-right-bold
+                            </v-icon>
                           </span>
                           {{ item.realGene }}
                         </div>
@@ -61,15 +60,8 @@
               </template>
             </v-simple-table>
           </v-col>
-          <v-col
-            cols="6"
-            class="pl-0 pr-0"
-          >
-            <v-simple-table
-              fixed-header
-              height="600px"
-              :style="[panelGenes.genesNotInPanel.length <= 12 ? { 'overflow-y': 'scroll'} : {}]"
-            >
+          <v-col cols="12" md="6">
+            <v-simple-table fixed-header>
               <template v-slot:default>
                 <thead class="pt-2">
                   <tr>
@@ -84,11 +76,17 @@
                     :key="item.gene.name"
                   >
                     <td>
-                      <v-chip :outlined="chipOutlined" class="ma-1" :color="formatState(item)">
+                      <v-chip
+                        :outlined="chipOutlined"
+                        class="ma-1"
+                        :color="formatState(item)"
+                      >
                         <div class="d-flex align-center">
                           <span v-if="item.state == 'synonym'">
                             {{ item.gene.name }}
-                            <v-icon class="ml-1 mr-1">mdi-arrow-right-bold</v-icon>
+                            <v-icon class="ml-1 mr-1">
+                              mdi-arrow-right-bold
+                            </v-icon>
                           </span>
                           {{ item.realGene }}
                         </div>
@@ -157,31 +155,27 @@
             </v-tooltip>
           </template>
           <template v-slot:[`item.panelGenes`]="{ item }">
-            <v-tooltip bottom v-if="item.panelGenes.genesInPanel.length > 0 || item.panelGenes.genesNotInPanel.length > 0">
+            <v-tooltip bottom v-if="notEmpty(item)">
               <template v-slot:activator="{ on }">
-                <v-chip
-                  color="transparent"
-                  @click.stop="openDialog(item)"
-                  v-on="on"
-                  class="ma-2"
-                >
+                <v-btn text @click="openDialog(item)" v-on="on">
                   <v-chip
                     :outlined="chipOutlined"
-                    class="ma-2"
                     color="primary"
+                    :class="hiddenClass(item.panelGenes.genesInPanel)"
                     @click.stop="openDialog(item)"
                   >
                     {{ item.panelGenes.genesInPanel.length }}
                   </v-chip>
+                  <span class="mx-2">/</span>
                   <v-chip
                     :outlined="chipOutlined"
-                    class="ma-2"
+                    :class="hiddenClass(item.panelGenes.genesNotInPanel)"
                     color="warning"
                     @click.stop="openDialog(item)"
                   >
                     {{ item.panelGenes.genesNotInPanel.length }}
                   </v-chip>
-                </v-chip>
+                </v-btn>
               </template>
               <span>{{ $t('panel-result.chip.show-genes') }}</span>
             </v-tooltip>
@@ -210,15 +204,17 @@ import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import {
-  Institution, PanelGenes,
+  Institution,
+  PanelGenes,
   PanelResultFormattedRow,
-  PanelSearchResult, ParsedGene,
+  PanelSearchResult,
+  ParsedGene,
   ParsedGenes,
   // ParsedGene,
 } from '@/types/panel-types'
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import DialogTemplate from '@/components/DialogTemplate.vue'
-import {GeneState, ListItem} from "@/types/ui-types";
+import { GeneState, ListItem } from '@/types/ui-types'
 
 export default Vue.extend({
   components: {
@@ -246,7 +242,10 @@ export default Vue.extend({
     return {
       institutionDialog: false,
       showDialog: false,
-      currentInstitution: new ListItem(new Institution('', '', '', '', []), true),
+      currentInstitution: new ListItem(
+        new Institution('', '', '', '', []),
+        true
+      ),
       panelName: new String(),
       panelGenes: new PanelGenes([], []),
       tableHeaders: [
@@ -262,6 +261,7 @@ export default Vue.extend({
         {
           text: this.$t('panel-result.table.headers.genes'),
           value: 'panelGenes',
+          sortable: false,
         },
         {
           text: this.$t('panel-result.table.headers.actions'),
@@ -324,12 +324,16 @@ export default Vue.extend({
       this.institutionDialog = true
     },
     downloadGenes(genes: PanelGenes) {
-      const genesInPanel = genes.genesInPanel.map(geneInPanel => geneInPanel.gene.name)
-      const genesNotInPanel = genes.genesNotInPanel.map(geneNotInPanel => geneNotInPanel.gene.name)
+      const genesInPanel = genes.genesInPanel.map(
+        (geneInPanel) => geneInPanel.gene.name
+      )
+      const genesNotInPanel = genes.genesNotInPanel.map(
+        (geneNotInPanel) => geneNotInPanel.gene.name
+      )
       const result = {
-        "name": this.panelName,
-        "genes-in-panel": genesInPanel,
-        "genes-not-in-panel": genesNotInPanel,
+        name: this.panelName,
+        'genes-in-panel': genesInPanel,
+        'genes-not-in-panel': genesNotInPanel,
       }
       this.downloadResult(result)
       //this.showDialog = false;
@@ -375,12 +379,27 @@ export default Vue.extend({
     formatState(item: ParsedGene): string {
       let color = 'success'
 
-      if(item.state == GeneState.SYNONYM) {
+      if (item.state == GeneState.SYNONYM) {
         color = 'warning'
       }
 
       return color
-    }
+    },
+    notEmpty(item: PanelResultFormattedRow) {
+      return (
+        item.panelGenes.genesInPanel.length > 0 ||
+        item.panelGenes.genesNotInPanel.length > 0
+      )
+    },
+    hiddenClass(items: ParsedGene[]) {
+      return items.length === 0 ? 'hidden' : ''
+    },
   },
 })
 </script>
+
+<style scoped>
+.hidden {
+  opacity: 0;
+}
+</style>
