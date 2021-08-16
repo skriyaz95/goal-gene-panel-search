@@ -22,16 +22,18 @@
         {{ panelName }}
       </template>
       <template v-slot:content>
-        <v-row no-gutters>
+        <v-row>
           <v-col
             cols="6"
+            class="pl-0 pr-0"
           >
             <v-simple-table
               fixed-header
               height="600px"
+              :style="[panelGenes.genesInPanel.length <= 12 ? { 'overflow-y': 'scroll'} : {}]"
             >
               <template v-slot:default>
-                <thead>
+                <thead class="pt-2">
                   <tr>
                     <th class="text-left">
                       {{ $t('panel-result.dialog.table.genes-found') }}
@@ -41,7 +43,7 @@
                 <tbody>
                   <tr
                     v-for="item in panelGenes.genesInPanel"
-                    :key="item.gene"
+                    :key="item.gene.name"
                   >
                     <td>
                       <v-chip :outlined="chipOutlined" class="ma-1" :color="formatState(item)">
@@ -61,13 +63,15 @@
           </v-col>
           <v-col
             cols="6"
+            class="pl-0 pr-0"
           >
             <v-simple-table
               fixed-header
               height="600px"
+              :style="[panelGenes.genesNotInPanel.length <= 12 ? { 'overflow-y': 'scroll'} : {}]"
             >
               <template v-slot:default>
-                <thead>
+                <thead class="pt-2">
                   <tr>
                     <th class="text-left">
                       {{ $t('panel-result.dialog.table.genes-not-found') }}
@@ -77,7 +81,7 @@
                 <tbody>
                   <tr
                     v-for="item in panelGenes.genesNotInPanel"
-                    :key="item.gene"
+                    :key="item.gene.name"
                   >
                     <td>
                       <v-chip :outlined="chipOutlined" class="ma-1" :color="formatState(item)">
@@ -209,7 +213,7 @@ import {
   Institution, PanelGenes,
   PanelResultFormattedRow,
   PanelSearchResult, ParsedGene,
-  ParsedGenes, SynonymGene,
+  ParsedGenes,
   // ParsedGene,
 } from '@/types/panel-types'
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
@@ -243,11 +247,7 @@ export default Vue.extend({
       institutionDialog: false,
       showDialog: false,
       currentInstitution: new ListItem(new Institution('', '', '', '', []), true),
-      geneType: new String(),
       panelName: new String(),
-      genes: new Array<SynonymGene>(),
-      expanded: [],
-      singleExpand: false,
       panelGenes: new PanelGenes([], []),
       tableHeaders: [
         {
