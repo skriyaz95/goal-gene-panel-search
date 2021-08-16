@@ -96,6 +96,7 @@ function findGenesInAllPanels(allMatches, panels, parsedGenes) {
   let result = []
   panels.forEach((panel) => {
     const genes = findGenesInSelectedPanel(allMatches, panel, parsedGenes)
+
     if (genes.genesInPanel.length > 0 || genes.genesNotInPanel.length > 0) {
       result.push(
         new PanelSearchResult(
@@ -128,15 +129,7 @@ function findGenesInSelectedPanel(allMatches, panel, parsedGenes) {
   const panelSynonymToSymbolMatch = []
   const panelFusionToFusionMatch = []
   const panelIntronToIntronMatch = []
-  //
-  allMatches.geneSet.forEach((gene) => {
-    const geneObj = new Gene(gene)
-    if (panelGenesSet.has(gene)) {
-      genesInPanel.push(geneObj)
-    } else {
-      genesNotInPanel.push(geneObj)
-    }
-  })
+
   //look for symbols to symbol match and symbol to synonym match
   const symbolsInPanel = new Set(panel.symbolsOnly.map((g) => g.name))
   const synonymsInPanelArray = panel.synonymsOnly.map((g) => g.synonym)
@@ -172,6 +165,7 @@ function findGenesInSelectedPanel(allMatches, panel, parsedGenes) {
       panelSynonymToSymbolMatch.push(synonym)
     }
   })
+
   //look for fusion to fusion match
   //need to separate the _FUSION part
   const fusionsInPanelArray = panel.fusionsOnly.map((g) => g.originalName)
@@ -179,8 +173,8 @@ function findGenesInSelectedPanel(allMatches, panel, parsedGenes) {
   parsedGenes.fusionFoundGenes.forEach((parsedGene) => {
     if (fusionsInPanel.has(parsedGene.gene.name)) {
       const fusion = new FusionIntronGene(
-        parsedGene.gene.name,
-        parsedGene.realGene,
+          parsedGene.gene.name,
+          parsedGene.realGene,
       )
       if (notIn(panelFusionToFusionMatch, fusion)) {
         panelFusionToFusionMatch.push(fusion)
@@ -207,8 +201,8 @@ function findGenesInSelectedPanel(allMatches, panel, parsedGenes) {
   parsedGenes.intronFoundGenes.forEach((parsedGene) => {
     if (intronsInPanel.has(parsedGene.gene.name)) {
       const intron = new FusionIntronGene(
-        parsedGene.gene.name,
-        parsedGene.realGene,
+          parsedGene.gene.name,
+          parsedGene.realGene,
       )
       if (notIn(panelIntronToIntronMatch, intron)) {
         panelIntronToIntronMatch.push(intron)
@@ -230,6 +224,47 @@ function findGenesInSelectedPanel(allMatches, panel, parsedGenes) {
       })
     }
   })
+
+  const parsedGeneSynonymsMap = new Map(parsedGenes.synonymFoundGenes.map((item) => [item.gene.name, item]))
+  const panelSynonymToSynonymMatchSet = new Set(panelSynonymToSynonymMatch)
+  const panelSymbolToSynonymMatchMap = new Map(panelSymbolToSynonymMatch.map(item => [item.gene, item]))
+  const panelSynonymToSymbolMatchMap = new Map(panelSynonymToSymbolMatch.map(item => [item.synonym, item]))
+
+  panelSymbolToSymbolMatch.forEach(symbol => {
+    if(panelSynonymToSynonymMatchSet.has(symbol) || panelSymbolToSynonymMatchMap.has(symbol) || panelSynonymToSymbolMatchMap.has(symbol)) {
+      return
+    }
+    const gene = new Gene(symbol)
+    genesInPanel.push(new ParsedGene(gene, GeneState.SYMBOL, symbol))
+  })
+
+  panelSynonymToSynonymMatch.forEach(symbol => {
+    if(parsedGeneSynonymsMap.has(symbol)) {
+      const parsedGene = parsedGeneSynonymsMap.get(symbol);
+      genesInPanel.push(new ParsedGene(parsedGene.gene, GeneState.SYNONYM, parsedGene.realGene.symbol))
+    }
+  })
+
+  panelSynonymToSymbolMatch.forEach(synonymGene => {
+    const gene = new Gene(synonymGene.synonym)
+    genesInPanel.push(new ParsedGene(gene, GeneState.SYNONYM, synonymGene.gene))
+  })
+
+  panelSymbolToSynonymMatch.forEach(synonymGene => {
+    const gene = new Gene(synonymGene.synonym)
+    genesInPanel.push(new ParsedGene(gene, GeneState.SYNONYM, synonymGene.gene))
+  })
+
+  genesInPanel.sort((a, b) => a.gene.name > b.gene.name ? 1 : -1)
+
+  //
+  allMatches.geneSet.forEach((gene) => {
+    const geneObj = new Gene(gene)
+    if (!panelGenesSet.has(gene)) {
+      genesNotInPanel.push(new ParsedGene(geneObj, GeneState.NOT_FOUND, geneObj.name))
+    }
+  })
+
   return {
     genesInPanel,
     genesNotInPanel,

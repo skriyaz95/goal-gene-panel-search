@@ -67,8 +67,8 @@ export class GenePanelDetails {
 
 export class PanelSearchResult {
   name: string
-  genesInPanel: Gene[]
-  genesNotInPanel: Gene[]
+  genesInPanel: ParsedGene[]
+  genesNotInPanel: ParsedGene[]
   panelSymbolToSymbolMatch: string[]
   panelSynonymToSynonymMatch: string[]
   panelSymbolToSynonymMatch: SynonymGene[]
@@ -78,8 +78,8 @@ export class PanelSearchResult {
 
   constructor(
     name: string,
-    genesInPanel: Gene[],
-    genesNotInPanel: Gene[],
+    genesInPanel: ParsedGene[],
+    genesNotInPanel: ParsedGene[],
     panelSymbolToSymbolMatch: string[],
     panelSynonymToSynonymMatch: string[],
     panelSymbolToSynonymMatch: SynonymGene[],
@@ -179,26 +179,26 @@ export class FusionIntronGene {
 
 export class PanelResultFormattedRow {
   name: string
-  countGenesInPanel: number
-  countGenesNotInPanel: number
-  genesInPanel: SynonymGene[]
-  genesNotInPanel: SynonymGene[]
-  institution: ListItem
-
+  panelGenes: PanelGenes
+  institution: ListItem | null
   constructor(
     name: string,
-    countGenesInPanel: number,
-    countGenesNotInPanel: number,
-    genesInPanel: SynonymGene[],
-    genesNotInPanel: SynonymGene[],
-    institution: ListItem,
+    panelGenes: PanelGenes,
+    institution: ListItem | null,
   ) {
     this.name = name
-    this.countGenesInPanel = countGenesInPanel
-    this.countGenesNotInPanel = countGenesNotInPanel
-    this.genesInPanel = genesInPanel
-    this.genesNotInPanel = genesNotInPanel
+    this.panelGenes = panelGenes
     this.institution = institution
+  }
+}
+
+export class PanelGenes {
+  genesInPanel: ParsedGene[]
+  genesNotInPanel: ParsedGene[]
+
+  constructor(genesInPanel: ParsedGene[], genesNotInPanel: ParsedGene[]) {
+    this.genesInPanel = genesInPanel;
+    this.genesNotInPanel = genesNotInPanel;
   }
 }
 

@@ -16,7 +16,6 @@
         </template>
         <span>{{ $t('button.download.tooltip') }}</span>
       </v-tooltip>
-
       <help-button @action="handleHelp()" :active="help">
         <template v-slot:content>
           <span>
