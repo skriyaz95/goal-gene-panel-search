@@ -184,7 +184,7 @@
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
                 <v-btn icon v-on="on" @click.stop="downloadResult(item)">
-                  <v-icon>mdi-content-save</v-icon>
+                  <v-icon>mdi-download</v-icon>
                 </v-btn>
               </template>
               <span>{{ $t('panel-result.tooltip.save-result') }}</span>
