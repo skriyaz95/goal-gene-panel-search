@@ -46,11 +46,11 @@
                     <td>
                       <v-chip :outlined="chipOutlined" class="ma-1" :color="formatState(item)">
                         <div class="d-flex align-center">
-                          {{ item.gene }}
-                          <span v-if="item.synonym != ''">
-                            <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
-                            {{ item.synonym }}
+                          <span v-if="item.state == 'synonym'">
+                            {{ item.gene.name }}
+                            <v-icon class="ml-1 mr-1">mdi-arrow-right-bold</v-icon>
                           </span>
+                          {{ item.realGene }}
                         </div>
                       </v-chip>
                     </td>
@@ -82,11 +82,11 @@
                     <td>
                       <v-chip :outlined="chipOutlined" class="ma-1" :color="formatState(item)">
                         <div class="d-flex align-center">
-                          <span v-if="item.synonym != ''">
-                            {{ item.synonym }}
-                            <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
+                          <span v-if="item.state == 'synonym'">
+                            {{ item.gene.name }}
+                            <v-icon class="ml-1 mr-1">mdi-arrow-right-bold</v-icon>
                           </span>
-                          {{ item.gene }}
+                          {{ item.realGene }}
                         </div>
                       </v-chip>
                     </td>
@@ -206,8 +206,6 @@ import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import {
-  FullGene,
-  Gene,
   Institution, PanelGenes,
   PanelResultFormattedRow,
   PanelSearchResult, ParsedGene,
@@ -300,41 +298,6 @@ export default Vue.extend({
     panelContent(): Array<PanelResultFormattedRow> {
       return (this.panelSearchResults as Array<PanelSearchResult>).map(
         (panel: PanelSearchResult) => {
-          let genesInPanel = new Array<SynonymGene>()
-          const parsedGeneSynonymsMap = new Map(this.parsedGenes.synonymFoundGenes.map((item: ParsedGene) => [(item.gene as Gene).name, item]))
-          const panelSynonymToSynonymMatchSet = new Set(panel.panelSynonymToSynonymMatch)
-          const panelSymbolToSynonymMatchMap = new Map(panel.panelSymbolToSynonymMatch.map((item: SynonymGene) => [item.gene, item]))
-          const panelSynonymToSymbolMatchMap = new Map(panel.panelSynonymToSymbolMatch.map((item: SynonymGene) => [item.synonym, item]))
-
-
-          panel.panelSymbolToSymbolMatch.forEach(symbol => {
-            if(panelSynonymToSynonymMatchSet.has(symbol) || panelSymbolToSynonymMatchMap.has(symbol) || panelSynonymToSymbolMatchMap.has(symbol)) {
-              return
-            }
-            genesInPanel.push(new SynonymGene('', symbol))
-          })
-
-          panel.panelSynonymToSynonymMatch.forEach(symbol => {
-            if(parsedGeneSynonymsMap.has(symbol)) {
-              const parsedGene = parsedGeneSynonymsMap.get(symbol)
-              genesInPanel.push(new SynonymGene(((parsedGene as ParsedGene).realGene as FullGene).symbol, symbol))
-            }
-          })
-
-          panel.panelSynonymToSymbolMatch.forEach(synonymGene => {
-            genesInPanel.push(new SynonymGene(synonymGene.synonym, synonymGene.gene))
-          })
-
-          panel.panelSymbolToSynonymMatch.forEach(synonymGene => {
-            genesInPanel.push(new SynonymGene(synonymGene.synonym, synonymGene.gene))
-          })
-
-          genesInPanel.sort((a, b) => ((a.gene as string) > (b.gene as string)) ? 1 : -1)
-
-          const genesNotInPanel = panel.genesNotInPanel.sort((a, b) => (a.name > b.name) ? 1 : -1).map((gene: Gene) => {
-            return new SynonymGene('', gene.name.toUpperCase())
-          })
-
           let institution = this.institutionsByPanel.get(panel.name)
           if (!institution) {
             institution = {}
@@ -342,7 +305,7 @@ export default Vue.extend({
 
           return new PanelResultFormattedRow(
             panel.name,
-            new PanelGenes(genesInPanel, genesNotInPanel),
+            new PanelGenes(panel.genesInPanel, panel.genesNotInPanel),
             new ListItem(institution, true)
           )
         }
@@ -361,8 +324,8 @@ export default Vue.extend({
       this.institutionDialog = true
     },
     downloadGenes(genes: PanelGenes) {
-      const genesInPanel = genes.genesInPanel.map(geneInPanel => geneInPanel.gene)
-      const genesNotInPanel = genes.genesNotInPanel.map(geneNotInPanel => geneNotInPanel.gene)
+      const genesInPanel = genes.genesInPanel.map(geneInPanel => geneInPanel.gene.name)
+      const genesNotInPanel = genes.genesNotInPanel.map(geneNotInPanel => geneNotInPanel.gene.name)
       const result = {
         "name": this.panelName,
         "genes-in-panel": genesInPanel,
@@ -409,10 +372,10 @@ export default Vue.extend({
       }
       return 0
     },
-    formatState(gene: SynonymGene): string {
+    formatState(item: ParsedGene): string {
       let color = 'success'
 
-      if(gene.synonym !== '') {
+      if(item.state == 'synonym') {
         color = 'warning'
       }
 

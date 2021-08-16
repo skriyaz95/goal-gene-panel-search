@@ -59,8 +59,8 @@ export class GenePanelDetails {
 
 export class PanelSearchResult {
   name: string
-  genesInPanel: Gene[]
-  genesNotInPanel: Gene[]
+  genesInPanel: ParsedGene[]
+  genesNotInPanel: ParsedGene[]
   panelSymbolToSymbolMatch: string[]
   panelSynonymToSynonymMatch: string[]
   panelSymbolToSynonymMatch: SynonymGene[]
@@ -68,8 +68,8 @@ export class PanelSearchResult {
 
   constructor(
     name: string,
-    genesInPanel: Gene[],
-    genesNotInPanel: Gene[],
+    genesInPanel: ParsedGene[],
+    genesNotInPanel: ParsedGene[],
     panelSymbolToSymbolMatch: string[],
     panelSynonymToSynonymMatch: string[],
     panelSymbolToSynonymMatch: SynonymGene[],
@@ -169,10 +169,10 @@ export class PanelResultFormattedRow {
 }
 
 export class PanelGenes {
-  genesInPanel: SynonymGene[]
-  genesNotInPanel: SynonymGene[]
+  genesInPanel: ParsedGene[]
+  genesNotInPanel: ParsedGene[]
 
-  constructor(genesInPanel: SynonymGene[], genesNotInPanel: SynonymGene[]) {
+  constructor(genesInPanel: ParsedGene[], genesNotInPanel: ParsedGene[]) {
     this.genesInPanel = genesInPanel;
     this.genesNotInPanel = genesNotInPanel;
   }

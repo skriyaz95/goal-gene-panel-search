@@ -77,6 +77,7 @@ function findGenesInAllPanels(allMatches, panels, parsedGenes) {
   let result = []
   panels.forEach((panel) => {
     const genes = findGenesInSelectedPanel(allMatches, panel, parsedGenes)
+
     if (genes.genesInPanel.length > 0 || genes.genesNotInPanel.length > 0) {
       result.push(
         new PanelSearchResult(
@@ -105,15 +106,7 @@ function findGenesInSelectedPanel(allMatches, panel, parsedGenes) {
   const panelSynonymToSynonymMatch = []
   const panelSymbolToSynonymMatch = []
   const panelSynonymToSymbolMatch = []
-  //
-  allMatches.geneSet.forEach((gene) => {
-    const geneObj = new Gene(gene)
-    if (panelGenesSet.has(gene)) {
-      genesInPanel.push(geneObj)
-    } else {
-      genesNotInPanel.push(geneObj)
-    }
-  })
+
   //look for symbols to symbol match and symbol to synonym match
   const symbolsInPanel = new Set(panel.symbolsOnly.map((g) => g.name))
   const synonymsInPanelArray = panel.synonymsOnly.map((g) => g.synonym)
@@ -149,6 +142,47 @@ function findGenesInSelectedPanel(allMatches, panel, parsedGenes) {
       panelSynonymToSymbolMatch.push(synonym)
     }
   })
+
+  const parsedGeneSynonymsMap = new Map(parsedGenes.synonymFoundGenes.map((item) => [item.gene.name, item]))
+  const panelSynonymToSynonymMatchSet = new Set(panelSynonymToSynonymMatch)
+  const panelSymbolToSynonymMatchMap = new Map(panelSymbolToSynonymMatch.map(item => [item.gene, item]))
+  const panelSynonymToSymbolMatchMap = new Map(panelSynonymToSymbolMatch.map(item => [item.synonym, item]))
+
+  panelSymbolToSymbolMatch.forEach(symbol => {
+    if(panelSynonymToSynonymMatchSet.has(symbol) || panelSymbolToSynonymMatchMap.has(symbol) || panelSynonymToSymbolMatchMap.has(symbol)) {
+      return
+    }
+    const gene = new Gene(symbol)
+    genesInPanel.push(new ParsedGene(gene, 'symbol', symbol))
+  })
+
+  panelSynonymToSynonymMatch.forEach(symbol => {
+    if(parsedGeneSynonymsMap.has(symbol)) {
+      const parsedGene = parsedGeneSynonymsMap.get(symbol);
+      genesInPanel.push(new ParsedGene(parsedGene.gene, 'synonym', parsedGene.realGene.symbol))
+    }
+  })
+
+  panelSynonymToSymbolMatch.forEach(synonymGene => {
+    const gene = new Gene(synonymGene.synonym)
+    genesInPanel.push(new ParsedGene(gene, 'synonym', synonymGene.gene))
+  })
+
+  panelSymbolToSynonymMatch.forEach(synonymGene => {
+    const gene = new Gene(synonymGene.synonym)
+    genesInPanel.push(new ParsedGene(gene, 'synonym', synonymGene.gene))
+  })
+
+  genesInPanel.sort((a, b) => a.gene.name > b.gene.name ? 1 : -1)
+
+  //
+  allMatches.geneSet.forEach((gene) => {
+    const geneObj = new Gene(gene)
+    if (!panelGenesSet.has(gene)) {
+      genesNotInPanel.push(new ParsedGene(geneObj, 'notFound', geneObj.name))
+    }
+  })
+
   return {
     genesInPanel,
     genesNotInPanel,
