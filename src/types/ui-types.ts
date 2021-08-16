@@ -49,18 +49,12 @@ export class ListItem {
   }
 }
 
-// export class CSVContent {
-//   headers: string[]
-//   columns: any[] | undefined
-//   rows: any[] | undefined
-
-//   constructor(headers: string[], columns?: any[], rows?: any[]) {
-//     this.headers = headers
-//     this.columns = columns
-//     this.rows = rows
-//   }
-
-//   download() {
-//     let content = headers.join(",")
-//   }
-// }
+export enum GeneState {
+  SYMBOL = "symbol",
+  SYNONYM = "synonym",
+  NOT_FOUND = "notFound",
+  SYNONYM_TO_SYMBOL = "synonymToSymbol",
+  SYMBOL_TO_SYNONYM = "symbolToSynonym",
+  FUSION = "fusion",
+  INTRON = "intron",
+}

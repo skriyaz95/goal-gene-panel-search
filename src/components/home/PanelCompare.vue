@@ -76,14 +76,18 @@
             <tbody>
               <tr v-for="item in items" :key="item.geneId">
                 <td v-for="header in filteredHeaders" :key="header.value">
-                  <v-chip
-                    :outlined="chipOutlined"
-                    v-if="showChip(item, header)"
-                    :color="formatState(item, header)"
-                  >
-                    <v-icon left v-text="formatIcon(item, header)"> </v-icon>
-                    {{ geneName(item, header) }}
-                  </v-chip>
+                  <template v-for="(match, index) in getMatches(item, header)">
+                    <v-chip
+                      class="ma-1"
+                      :key="index"
+                      :outlined="chipOutlined"
+                      v-if="showChip(match)"
+                      :color="formatState(match)"
+                    >
+                      <v-icon left v-text="formatIcon(match)"> </v-icon>
+                      {{ geneName(match) }}
+                    </v-chip>
+                  </template>
                 </td>
               </tr>
             </tbody>
@@ -100,9 +104,11 @@ import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import PanelCompareHelp from '@/components/help/PanelCompareHelp.vue'
 import { mapGetters } from 'vuex'
-import { ActiveState, TableHeader } from '@/types/ui-types'
+import { ActiveState, GeneState, TableHeader } from '@/types/ui-types'
 import download from '@/utils/download'
 import Papa from 'papaparse'
+import { formatStateColor, formatStateIcon } from '@/utils/formatting'
+import { ParsedGene } from '@/types/panel-types'
 // import { transpose } from '@/utils/arrays'
 
 export default Vue.extend({
@@ -156,45 +162,30 @@ export default Vue.extend({
     handleHelp() {
       this.$emit('help')
     },
-    geneName(item: any, header: any) {
-      return item[header.value].gene.name
+    geneName(match: any) {
+      const gene = match.gene ? match.gene.name : match.name
+      return gene
     },
-    showChip(item: any, header: any) {
-      const label: string = header.value
-      // console.log(item[label])
-      return item[label] && item[label].state !== 'notFound'
+    showChip(match: any) {
+      return match && match.state !== GeneState.NOT_FOUND
     },
-    formatState(item: any, header: any) {
-      const label: string = header.value
-      if (item[label].state === 'symbol') {
-        return 'success'
-      }
-      if (
-        item[label].state === 'synonym' ||
-        item[label].state === 'symbolToSynonym' ||
-        item[label].state === 'synonymToSymbol'
-      ) {
-        return 'warning'
-      }
-      return 'error'
+    formatState(match: any) {
+      return formatStateColor(match.state)
     },
-    formatIcon(item: any, header: any) {
+    formatIcon(match: any) {
+      return formatStateIcon(match.state)
+    },
+    getMatches(item: any, header: any) {
       const label: string = header.value
-      if (
-        item[label].state === 'symbol' ||
-        item[label].state === 'synonymToSymbol'
-      ) {
-        return 'mdi-check'
-      }
-      return 'mdi-approximately-equal'
+      return item[label]
     },
     customSort(items: any[], sortBy: string[], sortDesc: boolean[]): any[] {
       items.sort((a: any, b: any) => {
         if (!sortBy[0]) {
           return 0
         }
-        const aItem = a[sortBy[0]].gene.name
-        const bItem = b[sortBy[0]].gene.name
+        const aItem = a[sortBy[0]][0].gene.name
+        const bItem = b[sortBy[0]][0].gene.name
         const desc = sortDesc[0]
         if (aItem > bItem) {
           return desc ? 1 : -1
@@ -233,11 +224,17 @@ export default Vue.extend({
           const h = this.filteredHeaders[i]
           const result = (this.items as any)[j][h.value]
           //skip notFound results
-          if (result && result.state === 'notFound') {
-            row.push('')
-          } else {
-            const geneName = result.gene.name
-            row.push(geneName)
+          if (result && result.length > 0) {
+            const genes: string[] = []
+            result.forEach((r: ParsedGene) => {
+              if (r && r.state === GeneState.NOT_FOUND) {
+                genes.push('')
+              } else {
+                const geneName = r.gene.name
+                genes.push(geneName)
+              }
+            })
+            row.push(genes.join(' '))
           }
         }
         csvItems.push(row)
@@ -252,3 +249,4 @@ export default Vue.extend({
   mounted() {},
 })
 </script>
+

@@ -125,6 +125,7 @@ import HelpButton from '@/components/help/HelpButton.vue'
 import PanelExploreHelp from '../help/PanelExploreHelp.vue'
 import { ListItem } from '@/types/ui-types'
 import { listItemSorter } from '@/utils/arrays'
+import { getPanelGenes } from '@/utils/csv-bed-parser'
 
 export default Vue.extend({
   components: {
@@ -194,6 +195,16 @@ export default Vue.extend({
       const panels = this.tempPanelSorted.map(
         (listItem: ListItem) => listItem.item
       )
+      //temp fix for old panels
+      for (let i = 0; i < panels.length; i++) {
+        const panel = panels[i] as GenePanelDetails
+        if (!panel.fusionsOnly) {
+          panel.fusionsOnly = []
+        }
+        if (!panel.intronsOnly) {
+          panel.intronsOnly = []
+        }
+      }
       this.updatePanels(panels)
       download('panels.json', formatObjetToJson(panels, false), 'text/json')
     },
@@ -213,14 +224,15 @@ export default Vue.extend({
       for (let i = 0; i < this.tempPanelSorted.length; i++) {
         if ((this.tempPanelSorted[i].item as GenePanelDetails).name === name) {
           const item = i.toString()
-          this.$router.replace({ params: { ...this.$route.params, item } })
+          if (item !== this.$route.params.item) {
+            this.$router.replace({ params: { ...this.$route.params, item } })
+          }
           break
         }
       }
       this.info = true
     },
     deletePanel(index: number) {
-      console.log('deleting panel')
       if (index != null) {
         this.tempPanelSorted.splice(index, 1)
       } else {
@@ -299,62 +311,12 @@ export default Vue.extend({
       const panelBuilder = new PanelBuilder()
       panelBuilder.panelName = panelName
       panelBuilder.panelFileName = fileName
-      const genes = this.getPanelGenes(allRows, extension)
+      const genes = getPanelGenes(allRows, extension)
       this.formatGenes(
         genes,
         panelBuilder.panelName,
         panelBuilder.panelFileName
       )
-    },
-    getPanelGenes(allRows: string[], extension: string): Gene[] {
-      const uniqueRows =
-        extension == '.csv' ? this.parseCSV(allRows) : this.parseBED(allRows)
-      const uniqueRowsArray = Array.from(uniqueRows)
-      const panelGenes: Gene[] = []
-      for (let j = 0; j < uniqueRowsArray.length; j++) {
-        const geneSymbol = uniqueRowsArray[j]
-        if (!geneSymbol || geneSymbol.length == 0 || geneSymbol == 'SNP') {
-          continue
-        }
-        panelGenes.push({
-          name: geneSymbol.toUpperCase(),
-        })
-      }
-      return panelGenes
-    },
-    parseCSV(allRows: string[]) {
-      const uniqueRows = new Set<string>()
-      for (let j = 1; j < allRows.length; j++) {
-        //skip header row
-        const row = allRows[j]
-        if (!row || row.length == 0) {
-          continue
-        }
-        const rowItems = row.split(',')
-        if (rowItems && rowItems[0]) {
-          uniqueRows.add(rowItems[0].trim())
-        }
-        uniqueRows.add(rowItems[0].trim())
-      }
-      return uniqueRows
-    },
-    parseBED(allRows: string[]) {
-      const uniqueRows = new Set<string>()
-      for (let j = 0; j < allRows.length; j++) {
-        const row = allRows[j]
-        if (!row || row.length == 0) {
-          continue
-        }
-        const rowItems = row.split('\t')
-        if (rowItems && rowItems[3]) {
-          //GNB1:GNB1_chr1:1718769-1718876:275744_14961302_GNB1_chr1:1718769-1718876_1
-          const gene = rowItems[3].split(':')[0]
-          if (gene) {
-            uniqueRows.add(gene.trim())
-          }
-        }
-      }
-      return uniqueRows
     },
     resetAll() {
       this.resetPanels().then(() => {
@@ -379,6 +341,8 @@ export default Vue.extend({
         parsedGenes.notFoundGenes = event.data.parsedGenes.notFoundGenes
         parsedGenes.synonymFoundGenes = event.data.parsedGenes.synonymFoundGenes
         parsedGenes.symbolFoundGenes = event.data.parsedGenes.symbolFoundGenes
+        parsedGenes.fusionFoundGenes = event.data.parsedGenes.fusionFoundGenes
+        parsedGenes.intronFoundGenes = event.data.parsedGenes.intronFoundGenes
         const panelBuilder = new PanelBuilder()
         ;(panelBuilder.panelName = event.data.panelName),
           (panelBuilder.parsedGenes = parsedGenes),

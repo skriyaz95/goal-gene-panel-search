@@ -4,11 +4,12 @@ import {
   Gene,
   PanelSearchResult,
   SynonymGene,
+  FusionIntronGene,
 } from "@/types/panel-types"
 
 import allGenesData from "@/assets/all_genes.json"
 import synonymData from "@/assets/synonyms.json"
-import { TableHeader } from "@/types/ui-types"
+import { TableHeader, GeneState } from "@/types/ui-types"
 
 const ctx = self
 let allGeneMap = new Map()
@@ -19,10 +20,6 @@ allGenesData.forEach((gene) => {
 synonymData.forEach((synonym) => {
   synonymMap.set(synonym.synonym, synonym)
 })
-
-const stateSymbol = "symbol"
-const stateSynonym = "synonym"
-const stateNotFound = "notfound"
 
 function cleanUserInput(userinput, validSeparators) {
   const genes = userinput.toUpperCase().split(validSeparators)
@@ -41,10 +38,14 @@ function parseUserGenes(userGenes) {
   for (let i = 0; i < userGenes.length; i++) {
     const userGene = userGenes[i]
     const parsedGene = applyState(userGene)
-    if (parsedGene.state === stateSymbol) {
+    if (parsedGene.state === GeneState.SYMBOL) {
       parsedGenes.symbolFoundGenes.push(parsedGene)
-    } else if (parsedGene.state === stateSynonym) {
+    } else if (parsedGene.state === GeneState.SYNONYM) {
       parsedGenes.synonymFoundGenes.push(parsedGene)
+    } else if (parsedGene.state === GeneState.FUSION) {
+      parsedGenes.fusionFoundGenes.push(parsedGene)
+    } else if (parsedGene.state === GeneState.INTRON) {
+      parsedGenes.intronFoundGenes.push(parsedGene)
     } else {
       parsedGenes.notFoundGenes.push(parsedGene)
     }
@@ -59,17 +60,35 @@ function applyState(userGene) {
     // const fullGene = allGeneMap.get(userGene.name)
     // if (fullGene && fullGene.symbol == userGene.name) {
     //exact match
-    parsedGene.state = stateSymbol
+    parsedGene.state = GeneState.SYMBOL
     return parsedGene
     // }
   } else if (synonymMap.has(userGene.name)) {
     //synonym
     var fullGene = synonymMap.get(userGene.name).gene
-    parsedGene.state = stateSynonym
+    parsedGene.state = GeneState.SYNONYM
     parsedGene.realGene = fullGene
     return parsedGene
+  } else if (userGene.name.indexOf("_FUSION") > -1) {
+    //fusion
+    const fusionGene = userGene.name.split("_FUSION")[0]
+    if (allGeneMap.has(fusionGene)) {
+      const realGene = allGeneMap.get(fusionGene)
+      parsedGene.state = GeneState.FUSION
+      parsedGene.realGene = realGene
+      return parsedGene
+    }
+  } else if (userGene.name.indexOf("_INTRON") > -1) {
+    //intron
+    const intronGene = userGene.name.split("_INTRON")[0]
+    if (allGeneMap.has(intronGene)) {
+      const realGene = allGeneMap.get(intronGene)
+      parsedGene.state = GeneState.INTRON
+      parsedGene.realGene = realGene
+      return parsedGene
+    }
   }
-  parsedGene.state = stateNotFound
+  parsedGene.state = GeneState.NOT_FOUND
   return parsedGene
 }
 
@@ -88,6 +107,8 @@ function findGenesInAllPanels(allMatches, panels, parsedGenes) {
           genes.panelSynonymToSynonymMatch,
           genes.panelSymbolToSynonymMatch,
           genes.panelSynonymToSymbolMatch,
+          genes.panelFusionToFusionMatch,
+          genes.panelIntronToIntronMatch,
         ),
       )
     }
@@ -106,6 +127,8 @@ function findGenesInSelectedPanel(allMatches, panel, parsedGenes) {
   const panelSynonymToSynonymMatch = []
   const panelSymbolToSynonymMatch = []
   const panelSynonymToSymbolMatch = []
+  const panelFusionToFusionMatch = []
+  const panelIntronToIntronMatch = []
 
   //look for symbols to symbol match and symbol to synonym match
   const symbolsInPanel = new Set(panel.symbolsOnly.map((g) => g.name))
@@ -140,6 +163,65 @@ function findGenesInSelectedPanel(allMatches, panel, parsedGenes) {
         parsedGene.gene.name,
       )
       panelSynonymToSymbolMatch.push(synonym)
+    }
+  })
+
+  //look for fusion to fusion match
+  //need to separate the _FUSION part
+  const fusionsInPanelArray = panel.fusionsOnly.map((g) => g.originalName)
+  const fusionsInPanel = new Set(fusionsInPanelArray)
+  parsedGenes.fusionFoundGenes.forEach((parsedGene) => {
+    if (fusionsInPanel.has(parsedGene.gene.name)) {
+      const fusion = new FusionIntronGene(
+          parsedGene.gene.name,
+          parsedGene.realGene,
+      )
+      if (notIn(panelFusionToFusionMatch, fusion)) {
+        panelFusionToFusionMatch.push(fusion)
+      }
+    }
+  })
+  //also check fusions from regular symbols
+  const fusionsInPanelArraySymbols = panel.fusionsOnly.map((g) => g.gene.symbol)
+  const fusionsInPanelSymbols = new Set(fusionsInPanelArraySymbols)
+  parsedGenes.symbolFoundGenes.forEach((parsedGene) => {
+    if (fusionsInPanelSymbols.has(parsedGene.gene.name)) {
+      const fusion = panel.fusionsOnly.find((elt) => {
+        return elt.gene.symbol === parsedGene.gene.name
+      })
+      if (notIn(panelFusionToFusionMatch, fusion)) {
+        panelFusionToFusionMatch.push(fusion)
+      }
+    }
+  })
+  //look for intron to intron match
+  //need to separate the _INTRON part eb. _INTRON1 _INTRON2 etc.
+  const intronsInPanelArray = panel.fusionsOnly.map((g) => g.originalName)
+  const intronsInPanel = new Set(intronsInPanelArray)
+  parsedGenes.intronFoundGenes.forEach((parsedGene) => {
+    if (intronsInPanel.has(parsedGene.gene.name)) {
+      const intron = new FusionIntronGene(
+          parsedGene.gene.name,
+          parsedGene.realGene,
+      )
+      if (notIn(panelIntronToIntronMatch, intron)) {
+        panelIntronToIntronMatch.push(intron)
+      }
+    }
+  })
+  //also check introns from regular symbols
+  const intronsInPanelArraySymbols = panel.intronsOnly.map((g) => g.gene.symbol)
+  const intronsInPanelSymbols = new Set(intronsInPanelArraySymbols)
+  parsedGenes.symbolFoundGenes.forEach((parsedGene) => {
+    if (intronsInPanelSymbols.has(parsedGene.gene.name)) {
+      const introns = panel.intronsOnly.filter((elt) => {
+        return elt.gene.symbol === parsedGene.gene.name
+      })
+      introns.forEach((intron) => {
+        if (notIn(panelIntronToIntronMatch, intron)) {
+          panelIntronToIntronMatch.push(intron)
+        }
+      })
     }
   })
 
@@ -190,13 +272,38 @@ function findGenesInSelectedPanel(allMatches, panel, parsedGenes) {
     panelSynonymToSynonymMatch,
     panelSymbolToSynonymMatch,
     panelSynonymToSymbolMatch,
+    panelFusionToFusionMatch,
+    panelIntronToIntronMatch,
   }
 }
+
+function notIn(panelArray, elt) {
+  for (let i = 0; i < panelArray.length; i++) {
+    if (
+      panelArray[i] === elt ||
+      (panelArray[i].gene.symbol === elt.gene.symbol &&
+        panelArray[i].originalName === elt.originalName)
+    ) {
+      return false
+    }
+  }
+  return true
+}
+
+// function splitIntron(intron) {
+//   return intron.split("_INTRON")[0]
+// }
+
+// function splitFusion(fusion) {
+//   return fusion.split("_FUSION")[0]
+// }
 
 function findAllMatches(parsedGenes) {
   const geneSet = new Set()
   const symbolSet = new Set()
   const synonymSet = new Set()
+  const fusionSet = new Set()
+  const intronSet = new Set()
   parsedGenes.symbolFoundGenes.forEach((parsedGene) => {
     const name = parsedGene.gene.name.toUpperCase()
     geneSet.add(name)
@@ -209,7 +316,19 @@ function findAllMatches(parsedGenes) {
     synonymSet.add(parsedGene.gene.name.toUpperCase())
   })
 
-  return { geneSet, symbolSet, synonymSet }
+  parsedGenes.fusionFoundGenes.forEach((parsedGene) => {
+    const name = parsedGene.gene.name.toUpperCase()
+    geneSet.add(name)
+    fusionSet.add(name)
+  })
+
+  parsedGenes.intronFoundGenes.forEach((parsedGene) => {
+    const name = parsedGene.gene.name.toUpperCase()
+    geneSet.add(name)
+    intronSet.add(name)
+  })
+
+  return { geneSet, symbolSet, synonymSet, fusionSet, intronSet }
 }
 
 function buildCompareHeaders(payload) {
@@ -243,19 +362,18 @@ function formatCompareItems(payload) {
   const rows = []
   const allFound = payload.parsedGenes.symbolFoundGenes.concat(
     payload.parsedGenes.synonymFoundGenes,
+    payload.parsedGenes.fusionFoundGenes,
+    payload.parsedGenes.intronFoundGenes,
   )
   for (let g = 0; g < allFound.length; g++) {
     const row = {}
     row.geneId = allFound[g].gene.name
     const parsedGene = JSON.parse(JSON.stringify(allFound[g]))
-    row.gene = parsedGene
+    row.gene = [parsedGene]
     for (let h = 0; h < headers.length; h++) {
       const value = headers[h].value
-      const parsedGeneForPanel = new ParsedGene(
-        JSON.parse(JSON.stringify(allFound[g].gene)),
-      )
       if (value !== "gene") {
-        row[value] = parsedGeneForPanel
+        row[value] = [] // parsedGeneForPanel
       }
       const panel = panelSearchResultsMap.get(value)
       if (!panel) {
@@ -265,14 +383,22 @@ function formatCompareItems(payload) {
       if (panel.panelSymbolToSymbolMatch.length > 0) {
         const symbolSet = new Set(panel.panelSymbolToSymbolMatch)
         if (symbolSet.has(row.geneId)) {
-          parsedGeneForPanel.state = "symbol"
+          const parsedGeneForPanel = new ParsedGene(
+            JSON.parse(JSON.stringify(allFound[g].gene)),
+          )
+          parsedGeneForPanel.state = GeneState.SYMBOL
+          row[value].push(parsedGeneForPanel)
           found = true
         }
       }
       if (panel.panelSynonymToSynonymMatch.length > 0) {
         const synonymSet = new Set(panel.panelSynonymToSynonymMatch)
         if (synonymSet.has(row.geneId)) {
-          parsedGeneForPanel.state = "synonym"
+          const parsedGeneForPanel = new ParsedGene(
+            JSON.parse(JSON.stringify(allFound[g].gene)),
+          )
+          parsedGeneForPanel.state = GeneState.SYNONYM
+          row[value].push(parsedGeneForPanel)
           found = true
         }
       }
@@ -280,9 +406,13 @@ function formatCompareItems(payload) {
         for (let i = 0; i < panel.panelSymbolToSynonymMatch.length; i++) {
           const s = panel.panelSymbolToSynonymMatch[i]
           if (s.gene == row.geneId) {
-            parsedGeneForPanel.state = "symbolToSynonym"
+            const parsedGeneForPanel = new ParsedGene(
+              JSON.parse(JSON.stringify(allFound[g].gene)),
+            )
+            parsedGeneForPanel.state = GeneState.SYMBOL_TO_SYNONYM
             parsedGeneForPanel.gene.name = s.synonym
             parsedGeneForPanel.realGene = s.gene
+            row[value].push(parsedGeneForPanel)
             found = true
             break
           }
@@ -292,16 +422,54 @@ function formatCompareItems(payload) {
         for (let i = 0; i < panel.panelSynonymToSymbolMatch.length; i++) {
           const s = panel.panelSynonymToSymbolMatch[i]
           if (s.gene == row.geneId) {
-            parsedGeneForPanel.state = "synonymToSymbol"
+            const parsedGeneForPanel = new ParsedGene(
+              JSON.parse(JSON.stringify(allFound[g].gene)),
+            )
+            parsedGeneForPanel.state = GeneState.SYNONYM_TO_SYMBOL
             parsedGeneForPanel.gene.name = s.synonym
             parsedGeneForPanel.realGene = s.gene
+            row[value].push(parsedGeneForPanel)
             found = true
             break
           }
         }
       }
+      if (panel.panelFusionToFusionMatch.length > 0) {
+        for (let i = 0; i < panel.panelFusionToFusionMatch.length; i++) {
+          const f = panel.panelFusionToFusionMatch[i]
+          if (f.gene.symbol === row.geneId || f.originalName === row.geneId) {
+            const parsedGeneForPanel = new ParsedGene(
+              JSON.parse(JSON.stringify(allFound[g].gene)),
+            )
+            parsedGeneForPanel.state = GeneState.FUSION
+            parsedGeneForPanel.gene.name = f.originalName
+            parsedGeneForPanel.realGene = f.gene
+            row[value].push(parsedGeneForPanel)
+            found = true
+          }
+        }
+      }
+      if (panel.panelIntronToIntronMatch.length > 0) {
+        for (let i = 0; i < panel.panelIntronToIntronMatch.length; i++) {
+          const f = panel.panelIntronToIntronMatch[i]
+          if (f.gene.symbol === row.geneId || f.originalName === row.geneId) {
+            const parsedGeneForPanel = new ParsedGene(
+              JSON.parse(JSON.stringify(allFound[g].gene)),
+            )
+            parsedGeneForPanel.state = GeneState.INTRON
+            parsedGeneForPanel.gene.name = f.originalName
+            parsedGeneForPanel.realGene = f.gene
+            row[value].push(parsedGeneForPanel)
+            found = true
+          }
+        }
+      }
       if (!found) {
-        parsedGeneForPanel.state = "notFound"
+        const parsedGeneForPanel = new ParsedGene(
+          JSON.parse(JSON.stringify(allFound[g].gene)),
+        )
+        parsedGeneForPanel.state = GeneState.NOT_FOUND
+        row[value].push(parsedGeneForPanel)
       }
     }
     rows.push(row)

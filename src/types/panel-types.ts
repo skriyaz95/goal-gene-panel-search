@@ -39,6 +39,8 @@ export class GenePanelDetails {
   synonymsOnly: SynonymGene[]
   notFound: Gene[]
   sourceFile: string
+  fusionsOnly: FusionIntronGene[]
+  intronsOnly: FusionIntronGene[]
 
   constructor(
     name: string,
@@ -54,6 +56,12 @@ export class GenePanelDetails {
     )
     this.notFound = parsedGenes.notFoundGenes.map((pg) => pg.gene)
     this.sourceFile = sourceFile
+    this.fusionsOnly = parsedGenes.fusionFoundGenes.map(
+      (pg) => new FusionIntronGene(pg.gene.name, pg.realGene),
+    )
+    this.intronsOnly = parsedGenes.intronFoundGenes.map(
+      (pg) => new FusionIntronGene(pg.gene.name, pg.realGene),
+    )
   }
 }
 
@@ -65,6 +73,8 @@ export class PanelSearchResult {
   panelSynonymToSynonymMatch: string[]
   panelSymbolToSynonymMatch: SynonymGene[]
   panelSynonymToSymbolMatch: SynonymGene[]
+  panelFusionToFusionMatch: string[]
+  panelIntronToIntronMatch: string[]
 
   constructor(
     name: string,
@@ -74,6 +84,8 @@ export class PanelSearchResult {
     panelSynonymToSynonymMatch: string[],
     panelSymbolToSynonymMatch: SynonymGene[],
     panelSynonymToSymbolMatch: SynonymGene[],
+    panelFusionToFusionMatch: string[],
+    panelIntronToIntronMatch: string[],
   ) {
     this.name = name
     this.genesInPanel = genesInPanel
@@ -82,6 +94,8 @@ export class PanelSearchResult {
     this.panelSynonymToSynonymMatch = panelSynonymToSynonymMatch
     this.panelSymbolToSynonymMatch = panelSymbolToSynonymMatch
     this.panelSynonymToSymbolMatch = panelSynonymToSymbolMatch
+    this.panelFusionToFusionMatch = panelFusionToFusionMatch
+    this.panelIntronToIntronMatch = panelIntronToIntronMatch
   }
 }
 
@@ -153,6 +167,16 @@ export class SynonymGene {
   }
 }
 
+export class FusionIntronGene {
+  originalName!: string
+  gene!: FullGene | string | undefined //use string when the full gene is not needed
+
+  constructor(originalName: string, gene: FullGene | string | undefined) {
+    this.originalName = originalName
+    this.gene = gene
+  }
+}
+
 export class PanelResultFormattedRow {
   name: string
   panelGenes: PanelGenes
@@ -188,6 +212,8 @@ export class ParsedGenes {
   symbolFoundGenes = new Array<ParsedGene>()
   synonymFoundGenes = new Array<ParsedGene>()
   notFoundGenes = new Array<ParsedGene>()
+  fusionFoundGenes = new Array<ParsedGene>()
+  intronFoundGenes = new Array<ParsedGene>()
 }
 
 /**

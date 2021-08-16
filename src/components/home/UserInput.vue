@@ -53,7 +53,20 @@
             @click:clear="clear()"
             @blur="handleBlur"
           />
-          <v-btn
+          <v-card outlined class="darker-border">
+            <v-card-text>
+              <div>{{ $t('userInput.upload.text') }}:</div>
+              <v-file-input
+                v-model="geneFile"
+                accept=".bed,.csv"
+                label=".bed,.csv"
+                prepend-icon="mdi-paperclip"
+                @change="handleFileUpload"
+                class="pr-2 pb-2"
+              />
+            </v-card-text>
+          </v-card>
+          <!-- <v-btn
             class="ma-2"
             large
             depressed
@@ -65,7 +78,7 @@
           </v-btn>
           <v-btn class="ma-2" large depressed @click="clear()">
             {{ $t('userInput.button.clear') }}
-          </v-btn>
+          </v-btn> -->
         </v-form>
       </v-card-text>
     </v-card>
@@ -81,6 +94,7 @@ import GeneSearchHelp from '@/components/help/GeneSearchHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import { UserInputPayload } from '@/types/payload-types'
+import { getPanelGenes } from '@/utils/csv-bed-parser'
 
 export default Vue.extend({
   components: { GeneSearchHelp, HelpButton, InfoAlert },
@@ -99,8 +113,9 @@ export default Vue.extend({
     isFormValid: true,
     geneList: String(),
     validSeparators: /[ ,;\s]+/,
-    validCharacters: /^[-,;~\w\s]+$/,
+    validCharacters: /^[-,;~\w\s]*$/,
     demoRunning: false,
+    geneFile: null,
   }),
   computed: {
     ...mapGetters({}),
@@ -200,7 +215,31 @@ export default Vue.extend({
     fillLastSearch(search: string) {
       this.geneList = search
     },
+    handleFileUpload() {
+      if (!this.geneFile) {
+        return
+      }
+      var fr = new FileReader()
+      // verify that panel doesn't already exist
+      const fileName = (this.geneFile as any).name
+      fr.readAsText(this.geneFile as any)
+      fr.onload = () => {
+        this.parseContent(fileName, fr.result as string)
+      }
+    },
+    parseContent(fileName: string, content: string) {
+      const extension = /\.csv$/.test(fileName) ? '.csv' : '.bed'
+      const allRows = content.split(/\r?\n|\r/)
+      const genes = getPanelGenes(allRows, extension)
+      this.geneList = genes.map((g) => g.name).join('\n')
+    },
   },
   mounted() {},
 })
 </script>
+
+<style scoped>
+.darker-border {
+  border-color: rgba(0, 0, 0, 0.38);
+}
+</style>

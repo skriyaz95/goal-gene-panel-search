@@ -43,7 +43,11 @@
         <v-list-item-content>
           <v-list-item-title>
             {{ panel.item.sourceFile }}
-            <v-btn icon :href="rawPanels + panel.item.sourceFile" target="_blank">
+            <v-btn
+              icon
+              :href="rawPanels + panel.item.sourceFile"
+              target="_blank"
+            >
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </v-list-item-title>
@@ -58,60 +62,112 @@
             <span>{{ $t('explore.panelDetails.genesInPanel.text') }}:</span>
             <v-fade-transition>
               <span class="ml-3" v-show="showAny">
-                <v-tooltip bottom v-show="showNotFound">
-                  <template v-slot:activator="{ on }">
-                    <v-chip
-                      :outlined="chipOutlined"
-                      color="error"
-                      class="ml-1 mr-1"
-                      v-on="on"
-                    >
-                      {{ $t('parsedInput.notFound.text') }} ({{
-                        $tc(
-                          'count.gene',
-                          $n(formattedGenes.notFoundGenes.length)
-                        )
-                      }})
-                    </v-chip>
-                  </template>
-                  <span>{{ $t('explore.panelDetails.notFound.tooltip') }}</span>
-                </v-tooltip>
-                <v-tooltip bottom v-show="showSynonym">
-                  <template v-slot:activator="{ on }">
-                    <v-chip
-                      :outlined="chipOutlined"
-                      color="warning"
-                      class="ml-1 mr-1"
-                      v-on="on"
-                    >
-                      {{ $t('parsedInput.synonyms.text') }} ({{
-                        $tc(
-                          'count.gene',
-                          $n(formattedGenes.synonymFoundGenes.length)
-                        )
-                      }})
-                    </v-chip>
-                  </template>
-                  <span>{{ $t('explore.panelDetails.synonyms.tooltip') }}</span>
-                </v-tooltip>
-                <v-tooltip bottom v-show="showSymbol">
-                  <template v-slot:activator="{ on }">
-                    <v-chip
-                      :outlined="chipOutlined"
-                      color="success"
-                      class="ml-1 mr-1"
-                      v-on="on"
-                    >
-                      {{ $t('parsedInput.symbols.text') }} ({{
-                        $tc(
-                          'count.gene',
-                          $n(formattedGenes.symbolFoundGenes.length)
-                        )
-                      }})
-                    </v-chip>
-                  </template>
-                  <span>{{ $t('explore.panelDetails.symbols.tooltip') }}</span>
-                </v-tooltip>
+                <span v-show="showNotFound">
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                      <v-chip
+                        :outlined="chipOutlined"
+                        :color="notFoundColor"
+                        class="ml-1 mr-1"
+                        v-on="on"
+                      >
+                        {{ $t('parsedInput.notFound.text') }} ({{
+                          $tc(
+                            'count.gene',
+                            $n(formattedGenes.notFoundGenes.length)
+                          )
+                        }})
+                      </v-chip>
+                    </template>
+                    <span>{{
+                      $t('explore.panelDetails.notFound.tooltip')
+                    }}</span>
+                  </v-tooltip>
+                </span>
+                <span v-show="showSynonym">
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                      <v-chip
+                        :outlined="chipOutlined"
+                        :color="synonymColor"
+                        class="ml-1 mr-1"
+                        v-on="on"
+                      >
+                        {{ $t('parsedInput.synonyms.text') }} ({{
+                          $tc(
+                            'count.gene',
+                            $n(formattedGenes.synonymFoundGenes.length)
+                          )
+                        }})
+                      </v-chip>
+                    </template>
+                    <span>{{
+                      $t('explore.panelDetails.synonyms.tooltip')
+                    }}</span>
+                  </v-tooltip>
+                </span>
+                <span v-show="showSymbol">
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                      <v-chip
+                        :outlined="chipOutlined"
+                        :color="symbolColor"
+                        class="ml-1 mr-1"
+                        v-on="on"
+                      >
+                        {{ $t('parsedInput.symbols.text') }} ({{
+                          $tc(
+                            'count.gene',
+                            $n(formattedGenes.symbolFoundGenes.length)
+                          )
+                        }})
+                      </v-chip>
+                    </template>
+                    <span>{{
+                      $t('explore.panelDetails.symbols.tooltip')
+                    }}</span>
+                  </v-tooltip>
+                </span>
+                <span v-show="showFusion">
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                      <v-chip
+                        :outlined="chipOutlined"
+                        :color="fusionColor"
+                        class="ml-1 mr-1 mb-1"
+                        v-on="on"
+                      >
+                        {{ $t('parsedInput.fusions.text') }} ({{
+                          $tc(
+                            'count.gene',
+                            $n(formattedGenes.fusionFoundGenes.length)
+                          )
+                        }})
+                      </v-chip>
+                    </template>
+                    <span>{{ $t('parsedInput.fusions.tooltip') }}</span>
+                  </v-tooltip>
+                </span>
+                <span v-show="showIntron">
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                      <v-chip
+                        :outlined="chipOutlined"
+                        :color="intronColor"
+                        class="ml-1 mr-1 mb-1"
+                        v-on="on"
+                      >
+                        {{ $t('parsedInput.introns.text') }} ({{
+                          $tc(
+                            'count.gene',
+                            $n(formattedGenes.intronFoundGenes.length)
+                          )
+                        }})
+                      </v-chip>
+                    </template>
+                    <span>{{ $t('parsedInput.introns.tooltip') }}</span>
+                  </v-tooltip>
+                </span>
               </span>
             </v-fade-transition>
           </v-list-item-title>
@@ -122,7 +178,13 @@
       <v-fade-transition>
         <div v-show="showAny" class="pl-15 ml-6">
           <gene-parsed-content
-            :show-genes="[showNotFound, showSynonym, showSymbol]"
+            :show-genes="[
+              showNotFound,
+              showSynonym,
+              showSymbol,
+              showFusion,
+              showIntron,
+            ]"
             :parsed-genes="formattedGenes"
           />
         </div>
@@ -134,6 +196,7 @@
 <script lang="ts">
 import {
   FullGene,
+  FusionIntronGene,
   Gene,
   GenePanelDetails,
   ParsedGene,
@@ -143,7 +206,8 @@ import {
 import Vue from 'vue'
 import GeneParsedContent from '@/components/GeneParsedContent.vue'
 import { mapGetters } from 'vuex'
-import {ListItem} from "@/types/ui-types";
+import { GeneState, ListItem } from '@/types/ui-types'
+import { formatStateColor } from '@/utils/formatting'
 
 export default Vue.extend({
   components: { GeneParsedContent },
@@ -151,7 +215,8 @@ export default Vue.extend({
   props: {
     panel: {
       type: Object,
-      default: () => new ListItem(new GenePanelDetails('', [], new ParsedGenes(), ''), true),
+      default: () =>
+        new ListItem(new GenePanelDetails('', [], new ParsedGenes(), ''), true),
     },
     institution: {
       type: String,
@@ -175,14 +240,42 @@ export default Vue.extend({
     formattedGenes() {
       const parsedGenes = new ParsedGenes()
       parsedGenes.symbolFoundGenes = this.panel.item.symbolsOnly.map(
-        (g: Gene) => new ParsedGene(g, 'symbol')
+        (g: Gene) => new ParsedGene(g, GeneState.SYMBOL)
       )
       parsedGenes.synonymFoundGenes = this.panel.item.synonymsOnly.map(
         (sg: SynonymGene) =>
-          new ParsedGene(new Gene(sg.synonym), 'synonym', sg.gene as FullGene)
+          new ParsedGene(
+            new Gene(sg.synonym),
+            GeneState.SYNONYM,
+            sg.gene as FullGene
+          )
       )
+      if (this.panel.item.fusionsOnly) {
+        parsedGenes.fusionFoundGenes = this.panel.item.fusionsOnly.map(
+          (fg: FusionIntronGene) =>
+            new ParsedGene(
+              new Gene(fg.originalName),
+              GeneState.FUSION,
+              fg.gene as FullGene
+            )
+        )
+      } else {
+        parsedGenes.fusionFoundGenes = []
+      }
+      if (this.panel.item.intronsOnly) {
+        parsedGenes.intronFoundGenes = this.panel.item.intronsOnly.map(
+          (fg: FusionIntronGene) =>
+            new ParsedGene(
+              new Gene(fg.originalName),
+              GeneState.INTRON,
+              fg.gene as FullGene
+            )
+        )
+      } else {
+        parsedGenes.intronFoundGenes = []
+      }
       parsedGenes.notFoundGenes = this.panel.item.notFound.map(
-        (g: Gene) => new ParsedGene(g, 'notFound')
+        (g: Gene) => new ParsedGene(g, GeneState.NOT_FOUND)
       )
       return parsedGenes
     },
@@ -195,8 +288,35 @@ export default Vue.extend({
     showSymbol(): boolean {
       return this.formattedGenes.symbolFoundGenes.length > 0
     },
+    showFusion(): boolean {
+      return this.formattedGenes.fusionFoundGenes.length > 0
+    },
+    showIntron(): boolean {
+      return this.formattedGenes.intronFoundGenes.length > 0
+    },
     showAny(): boolean {
-      return this.showNotFound || this.showSynonym || this.showSymbol
+      return (
+        this.showNotFound ||
+        this.showSynonym ||
+        this.showSymbol ||
+        this.showFusion ||
+        this.showIntron
+      )
+    },
+    notFoundColor() {
+      return formatStateColor(GeneState.NOT_FOUND)
+    },
+    symbolColor() {
+      return formatStateColor(GeneState.SYMBOL)
+    },
+    synonymColor() {
+      return formatStateColor(GeneState.SYNONYM)
+    },
+    fusionColor() {
+      return formatStateColor(GeneState.FUSION)
+    },
+    intronColor() {
+      return formatStateColor(GeneState.INTRON)
     },
   },
   methods: {
@@ -205,8 +325,6 @@ export default Vue.extend({
     },
   },
   watch: {},
-  mounted() {
-
-  },
+  mounted() {},
 })
 </script>

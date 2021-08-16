@@ -160,6 +160,19 @@
       "toolbar": {
         "text": "Help Section"
       }
+    },
+    "tabs": {
+      "results": "Results",
+      "compare": "Compare",
+      "panels": "Panels",
+      "institutions": "Institutions",
+      "genome": "Genome",
+      "database": "Database",
+      "theme": "Theme",
+      "cookies": "Cookies",
+      "files": "Files",
+      "install": "Install",
+      "manage": "Manage"
     }
   },
   "themePicker": {
@@ -209,7 +222,13 @@
       },
       "empty": {
         "text": "The last 3 searches will be displayed here"
+      },
+      "latest": {
+        "text": "Latest"
       }
+    },
+    "upload": {
+      "text": "Search with a bed file or csv file"
     }
   },
   "panel-result": {
@@ -292,6 +311,14 @@
     },
     "textOnly": {
       "tooltip": "Show in text form (slow)"
+    },
+    "fusions": {
+      "text": "Fusions",
+      "tooltip": "Fusions: genes entries formatted as <GENE>_FUSION eg. ALK_FUSION"
+    },
+    "introns": {
+      "text": "Introns",
+      "tooltip": "Introns: gene entries formatted as <GENE>_INTRON eg. BCL6_INTRON1"
     }
   },
   "buildInstitutions": {

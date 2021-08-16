@@ -33,54 +33,103 @@
       </info-alert>
       <v-fade-transition>
         <span class="text-xs-left" v-show="showAny">
-          <v-tooltip bottom v-show="showNotFound">
-            <template v-slot:activator="{ on }">
-              <v-chip
-                :outlined="chipOutlined"
-                color="error"
-                class="ml-1 mr-1 mb-1"
-                v-on="on"
-              >
-                {{ $t('parsedInput.notFound.text') }} ({{
-                  $tc('count.gene', $n(formattedGenes.notFoundGenes.length))
-                }})
-              </v-chip>
-            </template>
-            <span>{{ $t('parsedInput.notFound.tooltip') }}</span>
-          </v-tooltip>
-          <v-tooltip bottom v-show="showSynonym">
-            <template v-slot:activator="{ on }">
-              <v-chip
-                :outlined="chipOutlined"
-                color="warning"
-                class="ml-1 mr-1 mb-1"
-                v-on="on"
-              >
-                {{ $t('parsedInput.synonyms.text') }} ({{
-                  $tc(
-                    'count.gene',
-                    $n(formattedGenes.synonymFoundGenes.length)
-                  )
-                }})
-              </v-chip>
-            </template>
-            <span>{{ $t('parsedInput.synonyms.tooltip') }}</span>
-          </v-tooltip>
-          <v-tooltip bottom v-show="showSymbol">
-            <template v-slot:activator="{ on }">
-              <v-chip
-                :outlined="chipOutlined"
-                color="success"
-                class="ml-1 mr-1 mb-1"
-                v-on="on"
-              >
-                {{ $t('parsedInput.symbols.text') }} ({{
-                  $tc('count.gene', $n(formattedGenes.symbolFoundGenes.length))
-                }})
-              </v-chip>
-            </template>
-            <span>{{ $t('parsedInput.symbols.tooltip') }}</span>
-          </v-tooltip>
+          <span v-show="showNotFound">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-chip
+                  :outlined="chipOutlined"
+                  :color="notFoundColor"
+                  class="ml-1 mr-1 mb-1"
+                  v-on="on"
+                >
+                  {{ $t('parsedInput.notFound.text') }} ({{
+                    $tc('count.gene', $n(formattedGenes.notFoundGenes.length))
+                  }})
+                </v-chip>
+              </template>
+              <span>{{ $t('parsedInput.notFound.tooltip') }}</span>
+            </v-tooltip>
+          </span>
+          <span v-show="showSynonym">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-chip
+                  :outlined="chipOutlined"
+                  :color="synonymColor"
+                  class="ml-1 mr-1 mb-1"
+                  v-on="on"
+                >
+                  {{ $t('parsedInput.synonyms.text') }} ({{
+                    $tc(
+                      'count.gene',
+                      $n(formattedGenes.synonymFoundGenes.length)
+                    )
+                  }})
+                </v-chip>
+              </template>
+              <span>{{ $t('parsedInput.synonyms.tooltip') }}</span>
+            </v-tooltip>
+          </span>
+          <span v-show="showSymbol">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-chip
+                  :outlined="chipOutlined"
+                  :color="symbolColor"
+                  class="ml-1 mr-1 mb-1"
+                  v-on="on"
+                >
+                  {{ $t('parsedInput.symbols.text') }} ({{
+                    $tc(
+                      'count.gene',
+                      $n(formattedGenes.symbolFoundGenes.length)
+                    )
+                  }})
+                </v-chip>
+              </template>
+              <span>{{ $t('parsedInput.symbols.tooltip') }}</span>
+            </v-tooltip>
+          </span>
+          <span v-show="showFusion">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-chip
+                  :outlined="chipOutlined"
+                  :color="fusionColor"
+                  class="ml-1 mr-1 mb-1"
+                  v-on="on"
+                >
+                  {{ $t('parsedInput.fusions.text') }} ({{
+                    $tc(
+                      'count.gene',
+                      $n(formattedGenes.fusionFoundGenes.length)
+                    )
+                  }})
+                </v-chip>
+              </template>
+              <span>{{ $t('parsedInput.fusions.tooltip') }}</span>
+            </v-tooltip>
+          </span>
+          <span v-show="showIntron">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-chip
+                  :outlined="chipOutlined"
+                  :color="intronColor"
+                  class="ml-1 mr-1 mb-1"
+                  v-on="on"
+                >
+                  {{ $t('parsedInput.introns.text') }} ({{
+                    $tc(
+                      'count.gene',
+                      $n(formattedGenes.intronFoundGenes.length)
+                    )
+                  }})
+                </v-chip>
+              </template>
+              <span>{{ $t('parsedInput.introns.tooltip') }}</span>
+            </v-tooltip>
+          </span>
         </span>
       </v-fade-transition>
       <div v-show="noData">
@@ -89,7 +138,13 @@
       <v-fade-transition>
         <div v-show="showAny">
           <gene-parsed-content
-            :show-genes="[showNotFound, showSynonym, showSymbol]"
+            :show-genes="[
+              showNotFound,
+              showSynonym,
+              showSymbol,
+              showFusion,
+              showIntron,
+            ]"
             :parsed-genes="formattedGenes"
           />
         </div>
@@ -106,9 +161,11 @@ import GeneParsedContent from '@/components/GeneParsedContent.vue'
 import ParsedSearchHelp from '@/components/help/ParsedSearchHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
+import download from '@/utils/download'
 import Papa from 'papaparse'
 import { transpose } from '@/utils/arrays'
-import download from '@/utils/download'
+import { GeneState } from '@/types/ui-types'
+import { formatStateColor } from '@/utils/formatting'
 
 export default Vue.extend({
   components: { GeneParsedContent, ParsedSearchHelp, HelpButton, InfoAlert },
@@ -142,14 +199,49 @@ export default Vue.extend({
     showSymbol(): boolean {
       return this.formattedGenes.symbolFoundGenes.length > 0
     },
+    showFusion(): boolean {
+      return this.formattedGenes.fusionFoundGenes.length > 0
+    },
+    showIntron(): boolean {
+      return this.formattedGenes.intronFoundGenes.length > 0
+    },
     showAny(): boolean {
-      return this.showNotFound || this.showSynonym || this.showSymbol
+      return (
+        this.showNotFound ||
+        this.showSynonym ||
+        this.showSymbol ||
+        this.showFusion ||
+        this.showIntron
+      )
     },
     noData(): boolean {
-      return !this.showNotFound && !this.showSynonym && !this.showSymbol
+      return (
+        !this.showNotFound &&
+        !this.showSynonym &&
+        !this.showSymbol &&
+        !this.showFusion &&
+        !this.showIntron
+      )
+    },
+    notFoundColor() {
+      return formatStateColor(GeneState.NOT_FOUND)
+    },
+    symbolColor() {
+      return formatStateColor(GeneState.SYMBOL)
+    },
+    synonymColor() {
+      return formatStateColor(GeneState.SYNONYM)
+    },
+    fusionColor() {
+      return formatStateColor(GeneState.FUSION)
+    },
+    intronColor() {
+      return formatStateColor(GeneState.INTRON)
     },
   },
-  watch: {},
+  watch: {
+    // parsedGenes: 'formatGenes',
+  },
   destroyed() {},
   methods: {
     handleHelp() {
@@ -160,11 +252,15 @@ export default Vue.extend({
         this.$t('parsedInput.notFound.text').toString(),
         this.$t('parsedInput.synonyms.text').toString(),
         this.$t('parsedInput.symbols.text').toString(),
+        this.$t('parsedInput.fusions.text').toString(),
+        this.$t('parsedInput.introns.text').toString(),
       ]
       const columns = [
         this.formattedGenes.notFoundGenes.map((pg) => pg.gene.name),
         this.formattedGenes.synonymFoundGenes.map((pg) => pg.gene.name),
         this.formattedGenes.symbolFoundGenes.map((pg) => pg.gene.name),
+        this.formattedGenes.fusionFoundGenes.map((pg) => pg.gene.name),
+        this.formattedGenes.intronFoundGenes.map((pg) => pg.gene.name),
       ]
       const transposed = transpose(columns)
 

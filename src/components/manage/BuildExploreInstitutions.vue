@@ -213,7 +213,6 @@ export default Vue.extend({
       this.info = true
     },
     deleteInstitution(index: number) {
-      console.log('deleting institution')
       if (index != null) {
         this.tempInstitutionSorted.splice(index, 1)
       } else {
