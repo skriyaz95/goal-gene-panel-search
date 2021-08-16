@@ -235,24 +235,24 @@ function findGenesInSelectedPanel(allMatches, panel, parsedGenes) {
       return
     }
     const gene = new Gene(symbol)
-    genesInPanel.push(new ParsedGene(gene, 'symbol', symbol))
+    genesInPanel.push(new ParsedGene(gene, GeneState.SYMBOL, symbol))
   })
 
   panelSynonymToSynonymMatch.forEach(symbol => {
     if(parsedGeneSynonymsMap.has(symbol)) {
       const parsedGene = parsedGeneSynonymsMap.get(symbol);
-      genesInPanel.push(new ParsedGene(parsedGene.gene, 'synonym', parsedGene.realGene.symbol))
+      genesInPanel.push(new ParsedGene(parsedGene.gene, GeneState.SYNONYM, parsedGene.realGene.symbol))
     }
   })
 
   panelSynonymToSymbolMatch.forEach(synonymGene => {
     const gene = new Gene(synonymGene.synonym)
-    genesInPanel.push(new ParsedGene(gene, 'synonym', synonymGene.gene))
+    genesInPanel.push(new ParsedGene(gene, GeneState.SYNONYM, synonymGene.gene))
   })
 
   panelSymbolToSynonymMatch.forEach(synonymGene => {
     const gene = new Gene(synonymGene.synonym)
-    genesInPanel.push(new ParsedGene(gene, 'synonym', synonymGene.gene))
+    genesInPanel.push(new ParsedGene(gene, GeneState.SYNONYM, synonymGene.gene))
   })
 
   genesInPanel.sort((a, b) => a.gene.name > b.gene.name ? 1 : -1)
@@ -261,7 +261,7 @@ function findGenesInSelectedPanel(allMatches, panel, parsedGenes) {
   allMatches.geneSet.forEach((gene) => {
     const geneObj = new Gene(gene)
     if (!panelGenesSet.has(gene)) {
-      genesNotInPanel.push(new ParsedGene(geneObj, 'notFound', geneObj.name))
+      genesNotInPanel.push(new ParsedGene(geneObj, GeneState.NOT_FOUND, geneObj.name))
     }
   })
 

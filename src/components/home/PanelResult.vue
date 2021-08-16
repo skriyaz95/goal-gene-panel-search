@@ -214,7 +214,7 @@ import {
 } from '@/types/panel-types'
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import DialogTemplate from '@/components/DialogTemplate.vue'
-import {ListItem} from "@/types/ui-types";
+import {GeneState, ListItem} from "@/types/ui-types";
 
 export default Vue.extend({
   components: {
@@ -375,7 +375,7 @@ export default Vue.extend({
     formatState(item: ParsedGene): string {
       let color = 'success'
 
-      if(item.state == 'synonym') {
+      if(item.state == GeneState.SYNONYM) {
         color = 'warning'
       }
 
