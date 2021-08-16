@@ -43,6 +43,8 @@
         <main-content-template inner header :twoCols="false">
           <template v-slot:header>
             <v-row>
+              <!-- to force an offset so that tabs are centered -->
+              <v-col cols="1"></v-col>
               <v-col>
                 <v-tabs
                   centered
