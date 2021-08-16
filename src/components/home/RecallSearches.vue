@@ -5,16 +5,20 @@
       <div v-else>{{ $t('userInput.recall.empty.text') }}</div>
     </v-col>
     <v-col class="flex-grow-1 flex-shrink-0">
-      <v-btn
-        v-for="(search, index) in lastSearches"
-        :key="index"
-        class="primary--text"
-        @click="fillLastSearch(search)"
-        text
-      >
-        <span>{{ lastSearchLabel(search) }}</span>
-        <v-icon right>mdi-magnify</v-icon>
-      </v-btn>
+      <v-tooltip bottom v-for="(search, index) in lastSearches" :key="index">
+        <template v-slot:activator="{ on }">
+          <v-btn
+            v-on="on"
+            class="primary--text"
+            @click="fillLastSearch(search)"
+            text
+          >
+            <span>{{ lastSearchLabel(search) }}</span>
+            <v-icon right>mdi-magnify</v-icon>
+          </v-btn>
+        </template>
+        <span v-text="truncatedSearch(search)"> </span>
+      </v-tooltip>
       <v-btn text disabled v-if="!empty">
         <v-icon left>mdi-arrow-left-thick</v-icon>
         {{ $t('userInput.recall.latest.text') }}
@@ -72,6 +76,13 @@ export default Vue.extend({
     },
     resetLastSearches() {
       this.$emit('resetLastSearches')
+    },
+    truncatedSearch(search: string) {
+      console.log(search)
+      if (search.length > 40) {
+        return search.substring(0, 40) + '...'
+      }
+      return search
     },
   },
   mounted() {},
