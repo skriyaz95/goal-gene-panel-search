@@ -378,7 +378,7 @@
       "example": "Here is an example",
       "part1a": " shows each Symbol and Synonym from ",
       "part1b": "and which panel has those genes.",
-      "part2": "A gene (each row in leftmost column) may match a gene symbol or a synonym in each panel (column)",
+      "part2": "The user input (leftmost column) may match a gene symbol or a synonym in each panel (column)",
       "part3": {
         "exactMatch": "has the exact ",
         "anyMatch": "has a ",
@@ -542,7 +542,7 @@
     "table": {
       "headers": {
         "gene": {
-          "text": "Gene"
+          "text": "Gene Search"
         },
         "panel": {
           "text": "FooBar Panel"

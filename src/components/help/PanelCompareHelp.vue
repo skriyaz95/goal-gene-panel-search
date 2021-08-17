@@ -36,6 +36,10 @@ or a help card or other tutorial content
               <v-chip :color="item.geneColor" :outlined="chipOutlined">
                 <v-icon left v-text="item.geneIcon"> </v-icon>
                 {{ item.gene }}
+                <span v-if="isSynonym(item)">
+                  <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
+                  {{ realGeneName(item) }}
+                </span>
               </v-chip>
             </td>
             <td>
@@ -88,6 +92,8 @@ export default Vue.extend({
         geneIcon: formatStateIcon(GeneState.SYMBOL),
         panelColor: formatStateColor(GeneState.SYMBOL),
         panelIcon: formatStateIcon(GeneState.SYMBOL),
+        state: GeneState.SYMBOL,
+        realGene: null,
       })
       it.push({
         gene: 'TENT5C',
@@ -99,6 +105,8 @@ export default Vue.extend({
         geneIcon: formatStateIcon(GeneState.SYMBOL),
         panelColor: formatStateColor(GeneState.SYNONYM),
         panelIcon: formatStateIcon(GeneState.SYNONYM),
+        state: GeneState.SYMBOL,
+        realGene: null,
       })
       it.push({
         gene: 'BRAF1',
@@ -110,6 +118,8 @@ export default Vue.extend({
         geneIcon: formatStateIcon(GeneState.SYNONYM),
         panelColor: formatStateColor(GeneState.SYMBOL),
         panelIcon: formatStateIcon(GeneState.SYNONYM_TO_SYMBOL),
+        state: GeneState.SYNONYM,
+        realGene: 'BRAF',
       })
       it.push({
         gene: 'KRAS1',
@@ -121,6 +131,8 @@ export default Vue.extend({
         geneIcon: formatStateIcon(GeneState.SYNONYM),
         panelColor: formatStateColor(GeneState.SYNONYM),
         panelIcon: formatStateIcon(GeneState.SYNONYM),
+        state: GeneState.SYNONYM,
+        realGene: 'KRAS',
       })
       it.push({
         gene: 'BRCA1',
@@ -132,6 +144,8 @@ export default Vue.extend({
         geneIcon: formatStateIcon(GeneState.SYMBOL),
         panelColor: formatStateColor(GeneState.SYMBOL),
         panelIcon: formatStateIcon(GeneState.SYMBOL),
+        state: GeneState.SYMBOL,
+        realGene: null,
       })
       return it
     },
@@ -145,6 +159,12 @@ export default Vue.extend({
   methods: {
     formatState(state: string) {
       return formatStateColor(state)
+    },
+    isSynonym(item: any) {
+      return (item.state = GeneState.SYNONYM)
+    },
+    realGeneName(item: any) {
+      return item.realGene
     },
   },
 })

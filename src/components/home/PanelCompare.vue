@@ -88,6 +88,10 @@
                     >
                       <v-icon left v-text="formatIcon(match)"> </v-icon>
                       {{ geneName(match) }}
+                      <span v-if="isSynonym(match)">
+                        <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
+                        {{ realGeneName(match) }}
+                      </span>
                     </v-chip>
                   </template>
                 </td>
@@ -110,7 +114,7 @@ import { ActiveState, GeneState, TableHeader } from '@/types/ui-types'
 import download from '@/utils/download'
 import Papa from 'papaparse'
 import { formatStateColor, formatStateIcon } from '@/utils/formatting'
-import { ParsedGene } from '@/types/panel-types'
+import { FullGene, ParsedGene } from '@/types/panel-types'
 // import { transpose } from '@/utils/arrays'
 
 export default Vue.extend({
@@ -164,17 +168,22 @@ export default Vue.extend({
     handleHelp() {
       this.$emit('help')
     },
-    geneName(match: any) {
-      const gene = match.gene ? match.gene.name : match.name
+    geneName(match: ParsedGene) {
+      const gene = match.gene ? match.gene.name : (match as any).name
       return gene
     },
-    showChip(match: any) {
+    realGeneName(match: ParsedGene) {
+      console.log(match)
+      const gene = match.realGene ? (match.realGene as FullGene).symbol : '?'
+      return gene
+    },
+    showChip(match: ParsedGene) {
       return match && match.state !== GeneState.NOT_FOUND
     },
-    formatState(match: any) {
+    formatState(match: ParsedGene) {
       return formatStateColor(match.state)
     },
-    formatIcon(match: any) {
+    formatIcon(match: ParsedGene) {
       return formatStateIcon(match.state)
     },
     getMatches(item: any, header: any) {
@@ -246,6 +255,9 @@ export default Vue.extend({
         data: csvItems,
       })
       download('compare_panels.csv', csv, 'text/csv')
+    },
+    isSynonym(match: ParsedGene) {
+      return match.state === GeneState.SYNONYM
     },
   },
   mounted() {},

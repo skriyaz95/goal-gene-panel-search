@@ -1,6 +1,6 @@
 import { GeneState } from "@/types/ui-types"
 
-export function formatStateColor(state: string) {
+export function formatStateColor(state: string | undefined) {
   if (
     state === GeneState.SYMBOL ||
     state === GeneState.FUSION ||
@@ -18,7 +18,7 @@ export function formatStateColor(state: string) {
   return "error"
 }
 
-export function formatStateIcon(state: string) {
+export function formatStateIcon(state: string | undefined) {
   if (
     state === GeneState.SYMBOL ||
     state === GeneState.SYNONYM_TO_SYMBOL ||

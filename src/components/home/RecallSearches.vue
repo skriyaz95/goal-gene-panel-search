@@ -78,7 +78,6 @@ export default Vue.extend({
       this.$emit('resetLastSearches')
     },
     truncatedSearch(search: string) {
-      console.log(search)
       if (search.length > 40) {
         return search.substring(0, 40) + '...'
       }
