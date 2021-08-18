@@ -29,30 +29,26 @@
                 <thead class="pt-2">
                   <tr>
                     <th class="text-left">
-                      {{ $t('panel-result.dialog.table.genes-found') }}
+                      {{ $t('panel-result.dialog.table.genesFound') }}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr
-                    v-for="item in panelGenes.genesInPanel"
-                    :key="item.gene.name"
+                    v-for="(item, index) in panelGenes.genesInPanel"
+                    :key="index"
                   >
                     <td>
                       <v-chip
-                        :outlined="chipOutlined"
                         class="ma-1"
+                        :outlined="chipOutlined"
                         :color="formatState(item)"
                       >
-                        <div class="d-flex align-center">
-                          <span v-if="item.state == 'synonym'">
-                            {{ item.gene.name }}
-                            <v-icon class="ml-1 mr-1">
-                              mdi-arrow-right-bold
-                            </v-icon>
-                          </span>
-                          {{ item.realGene }}
-                        </div>
+                        {{ geneName(item) }}
+                        <span v-if="isSynonym(item)">
+                          <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
+                          {{ realGeneName(item) }}
+                        </span>
                       </v-chip>
                     </td>
                   </tr>
@@ -66,30 +62,26 @@
                 <thead class="pt-2">
                   <tr>
                     <th class="text-left">
-                      {{ $t('panel-result.dialog.table.genes-not-found') }}
+                      {{ $t('panel-result.dialog.table.genesNotFound') }}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr
-                    v-for="item in panelGenes.genesNotInPanel"
-                    :key="item.gene.name"
+                    v-for="(item, index) in panelGenes.genesNotInPanel"
+                    :key="index"
                   >
                     <td>
                       <v-chip
-                        :outlined="chipOutlined"
                         class="ma-1"
+                        :outlined="chipOutlined"
                         :color="formatState(item)"
                       >
-                        <div class="d-flex align-center">
-                          <span v-if="item.state == 'synonym'">
-                            {{ item.gene.name }}
-                            <v-icon class="ml-1 mr-1">
-                              mdi-arrow-right-bold
-                            </v-icon>
-                          </span>
-                          {{ item.realGene }}
-                        </div>
+                        {{ geneName(item) }}
+                        <span v-if="isSynonym(item)">
+                          <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
+                          {{ realGeneName(item) }}
+                        </span>
                       </v-chip>
                     </td>
                   </tr>
@@ -129,9 +121,9 @@
           <b>{{ $t('panel-result.result.title') }}:</b>
           {{ symbolOrSynonymLength }}
         </div>
-        <div class="text-left" v-if="notFoundLength > 0">
-          <b>{{ $t('panel-result.result.not-found-genes-title') }}:</b>
-          {{ notFoundLength }}
+        <div class="text-left" v-if="invalidLength > 0">
+          <b>{{ $t('panel-result.result.invalidGenesTitle') }}:</b>
+          {{ invalidLength }}
         </div>
         <v-data-table
           :headers="tableHeaders"
@@ -204,6 +196,7 @@ import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import {
+  FullGene,
   Institution,
   PanelGenes,
   PanelResultFormattedRow,
@@ -215,6 +208,7 @@ import {
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import DialogTemplate from '@/components/DialogTemplate.vue'
 import { GeneState, ListItem } from '@/types/ui-types'
+import { formatStateColor } from '@/utils/formatting'
 
 export default Vue.extend({
   components: {
@@ -276,10 +270,10 @@ export default Vue.extend({
       institutionsByPanel: 'getInstitutionsByPanel',
       chipOutlined: 'getChipOutlined',
     }),
-    notFoundLength() {
+    invalidLength() {
       let length = 0
-      if (this.parsedGenes && this.parsedGenes.notFoundGenes) {
-        length = this.parsedGenes.notFoundGenes.length
+      if (this.parsedGenes && this.parsedGenes.invalidGenes) {
+        length = this.parsedGenes.invalidGenes.length
       }
       return length
     },
@@ -376,15 +370,6 @@ export default Vue.extend({
       }
       return 0
     },
-    formatState(item: ParsedGene): string {
-      let color = 'success'
-
-      if (item.state == GeneState.SYNONYM) {
-        color = 'warning'
-      }
-
-      return color
-    },
     notEmpty(item: PanelResultFormattedRow) {
       return (
         item.panelGenes.genesInPanel.length > 0 ||
@@ -393,6 +378,23 @@ export default Vue.extend({
     },
     hiddenClass(items: ParsedGene[]) {
       return items.length === 0 ? 'hidden' : ''
+    },
+    isSynonym(match: ParsedGene) {
+      return match.state === GeneState.SYNONYM
+    },
+    isFusionIntron(item: ParsedGene) {
+      return item.state === GeneState.FUSION || item.state === GeneState.INTRON
+    },
+    geneName(match: ParsedGene) {
+      const gene = match.gene ? match.gene.name : (match as any).name
+      return gene
+    },
+    realGeneName(match: ParsedGene) {
+      const gene = match.realGene ? (match.realGene as FullGene).symbol : '?'
+      return gene
+    },
+    formatState(match: ParsedGene) {
+      return formatStateColor(match.state)
     },
   },
 })

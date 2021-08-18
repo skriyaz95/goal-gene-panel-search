@@ -280,7 +280,7 @@ export default Vue.extend({
     $getFindGenesWorker().onmessage = (event: any) => {
       if (event.data.todo == 'parseUserGenes') {
         this.formattedGenes = new ParsedGenes()
-        this.formattedGenes.notFoundGenes = event.data.parsedGenes.notFoundGenes
+        this.formattedGenes.invalidGenes = event.data.parsedGenes.invalidGenes
         this.formattedGenes.synonymFoundGenes =
           event.data.parsedGenes.synonymFoundGenes
         this.formattedGenes.symbolFoundGenes =

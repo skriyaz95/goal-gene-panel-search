@@ -15,7 +15,10 @@ export function formatStateColor(state: string | undefined) {
   ) {
     return "warning"
   }
-  return "error"
+  if (state === GeneState.NOT_FOUND) {
+    return "blue-grey lighten-3"
+  }
+  return "error" //INVALID
 }
 
 export function formatStateIcon(state: string | undefined) {

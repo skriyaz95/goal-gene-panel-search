@@ -56,11 +56,11 @@
                 </v-col>
                 <v-col cols="8" align-self="end">
                   <v-chip
-                    :color="notFoundColor"
+                    :color="invalidColor"
                     class="mr-2"
                     :outlined="chipOutlined"
                   >
-                    {{ $t('parsedInput.notFound.text') }}
+                    {{ $t('parsedInput.invalid.text') }}
                   </v-chip>
                   <v-chip
                     :color="synonymColor"
@@ -150,8 +150,8 @@ export default Vue.extend({
     ...mapGetters({
       chipOutlined: 'getChipOutlined',
     }),
-    notFoundColor() {
-      return formatStateColor(GeneState.NOT_FOUND)
+    invalidColor() {
+      return formatStateColor(GeneState.INVALID)
     },
     symbolColor() {
       return formatStateColor(GeneState.SYMBOL)

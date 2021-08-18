@@ -338,7 +338,7 @@ export default Vue.extend({
     $getFindGenesWorker().onmessage = (event: any) => {
       if (event.data.todo == 'findPanelGenes') {
         const parsedGenes = new ParsedGenes()
-        parsedGenes.notFoundGenes = event.data.parsedGenes.notFoundGenes
+        parsedGenes.invalidGenes = event.data.parsedGenes.invalidGenes
         parsedGenes.synonymFoundGenes = event.data.parsedGenes.synonymFoundGenes
         parsedGenes.symbolFoundGenes = event.data.parsedGenes.symbolFoundGenes
         parsedGenes.fusionFoundGenes = event.data.parsedGenes.fusionFoundGenes

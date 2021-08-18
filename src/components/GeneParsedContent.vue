@@ -3,9 +3,9 @@
   <div>
     <parsed-list-item
       v-if="showGenes[0]"
-      :color="notFoundColor"
-      :items="parsedGenes.notFoundGenes"
-      :title="$t('parsedInput.notFound.text')"
+      :color="invalidColor"
+      :items="parsedGenes.invalidGenes"
+      :title="$t('parsedInput.invalid.text')"
       class="pb-2"
       :showLargeSets="showLargeSets"
     />
@@ -60,8 +60,8 @@ export default Vue.extend({
   data: () => ({}),
   methods: {},
   computed: {
-    notFoundColor() {
-      return formatStateColor(GeneState.NOT_FOUND)
+    invalidColor() {
+      return formatStateColor(GeneState.INVALID)
     },
     symbolColor() {
       return formatStateColor(GeneState.SYMBOL)

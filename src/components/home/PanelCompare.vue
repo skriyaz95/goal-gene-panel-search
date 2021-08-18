@@ -173,7 +173,6 @@ export default Vue.extend({
       return gene
     },
     realGeneName(match: ParsedGene) {
-      console.log(match)
       const gene = match.realGene ? (match.realGene as FullGene).symbol : '?'
       return gene
     },
@@ -234,7 +233,7 @@ export default Vue.extend({
         for (let i = 0; i < this.filteredHeaders.length; i++) {
           const h = this.filteredHeaders[i]
           const result = (this.items as any)[j][h.value]
-          //skip notFound results
+          //skip invalid results
           if (result && result.length > 0) {
             const genes: string[] = []
             result.forEach((r: ParsedGene) => {

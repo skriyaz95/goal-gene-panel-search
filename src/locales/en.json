@@ -236,7 +236,7 @@
     "result": {
       "name": "Panel Results",
       "title": "Genes Evaluated (Symbol & Synonyms)",
-      "not-found-genes-title": "Entries Ignored (Invalid)"
+      "invalidGenesTitle": "Entries Ignored (Invalid)"
     },
     "table": {
       "headers": {
@@ -257,8 +257,8 @@
       "institution-website-link": "Go to Website",
       "title": "Panel Details",
       "table": {
-        "genes-found": "Genes Found",
-        "genes-not-found": "Genes Not Found"
+        "genesFound": "Genes Found",
+        "genesNotFound": "Genes Not Found"
       },
       "button": {
         "close": "Close",
@@ -299,9 +299,9 @@
       "examplePart1": "Eg. Synonym",
       "examplePart2": " is replaced by Symbol"
     },
-    "notFound": {
-      "text": "Not Found",
-      "tooltip": "Not Found: It could be a typo or a non-standard gene."
+    "invalid": {
+      "text": "Invalid",
+      "tooltip": "Invalid: It could be a typo or a non-standard gene."
     },
     "empty": {
       "text": "Nothing yet. Type some genes above first."
@@ -525,8 +525,8 @@
       "synonyms": {
         "tooltip": "Synonyms: The panel contains synonym(s) with corresponding symbol(s)."
       },
-      "notFound": {
-        "tooltip": "Not Found: The panel contains genes not recognized (and ignored during search)"
+      "invalid": {
+        "tooltip": "Invalid: The panel contains genes not recognized (and ignored during search)"
       }
     }
   },

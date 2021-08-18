@@ -62,25 +62,25 @@
             <span>{{ $t('explore.panelDetails.genesInPanel.text') }}:</span>
             <v-fade-transition>
               <span class="ml-3" v-show="showAny">
-                <span v-show="showNotFound">
+                <span v-show="showInvalid">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
                       <v-chip
                         :outlined="chipOutlined"
-                        :color="notFoundColor"
+                        :color="invalidColor"
                         class="ml-1 mr-1"
                         v-on="on"
                       >
-                        {{ $t('parsedInput.notFound.text') }} ({{
+                        {{ $t('parsedInput.invalid.text') }} ({{
                           $tc(
                             'count.gene',
-                            $n(formattedGenes.notFoundGenes.length)
+                            $n(formattedGenes.invalidGenes.length)
                           )
                         }})
                       </v-chip>
                     </template>
                     <span>{{
-                      $t('explore.panelDetails.notFound.tooltip')
+                      $t('explore.panelDetails.invalid.tooltip')
                     }}</span>
                   </v-tooltip>
                 </span>
@@ -179,7 +179,7 @@
         <div v-show="showAny" class="pl-15 ml-6">
           <gene-parsed-content
             :show-genes="[
-              showNotFound,
+              showInvalid,
               showSynonym,
               showSymbol,
               showFusion,
@@ -274,13 +274,13 @@ export default Vue.extend({
       } else {
         parsedGenes.intronFoundGenes = []
       }
-      parsedGenes.notFoundGenes = this.panel.item.notFound.map(
-        (g: Gene) => new ParsedGene(g, GeneState.NOT_FOUND)
+      parsedGenes.invalidGenes = this.panel.item.invalid.map(
+        (g: Gene) => new ParsedGene(g, GeneState.INVALID)
       )
       return parsedGenes
     },
-    showNotFound(): boolean {
-      return this.formattedGenes.notFoundGenes.length > 0
+    showInvalid(): boolean {
+      return this.formattedGenes.invalidGenes.length > 0
     },
     showSynonym(): boolean {
       return this.formattedGenes.synonymFoundGenes.length > 0
@@ -296,15 +296,15 @@ export default Vue.extend({
     },
     showAny(): boolean {
       return (
-        this.showNotFound ||
+        this.showInvalid ||
         this.showSynonym ||
         this.showSymbol ||
         this.showFusion ||
         this.showIntron
       )
     },
-    notFoundColor() {
-      return formatStateColor(GeneState.NOT_FOUND)
+    invalidColor() {
+      return formatStateColor(GeneState.INVALID)
     },
     symbolColor() {
       return formatStateColor(GeneState.SYMBOL)

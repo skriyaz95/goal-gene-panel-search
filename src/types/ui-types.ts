@@ -52,7 +52,8 @@ export class ListItem {
 export enum GeneState {
   SYMBOL = "symbol",
   SYNONYM = "synonym",
-  NOT_FOUND = "notFound",
+  NOT_FOUND = "notFound", // as in not found in panel (use with tables)
+  INVALID = "invalid", // as in not a real gene (use with parsed input)
   SYNONYM_TO_SYMBOL = "synonymToSymbol",
   SYMBOL_TO_SYNONYM = "symbolToSynonym",
   FUSION = "fusion",
