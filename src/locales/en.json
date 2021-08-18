@@ -370,7 +370,7 @@
       }
     },
     "panelResults": {
-      "part1a": " shows the panels containing genes",
+      "part1a": "counts the gene matches in each panel",
       "part1b": " from the items in ",
       "part2a": "Click on a cell to get more information about each value"
     },
@@ -378,7 +378,7 @@
       "example": "Here is an example",
       "part1a": " shows each Symbol and Synonym from ",
       "part1b": "and which panel has those genes.",
-      "part2": "The user input (leftmost column) may match a gene symbol or a synonym in each panel (column)",
+      "part2": "The user input (leftmost column) may match a gene symbol, fusion, intron, or a synonym in each panel (column)",
       "part3": {
         "exactMatch": "has the exact ",
         "anyMatch": "has a ",

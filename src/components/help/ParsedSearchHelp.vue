@@ -13,7 +13,9 @@ or a help card or other tutorial content
     <div class="pb-2">{{ $t('help.parsedInput.part2') }}</div>
     <div class="pl-2">- {{ $t('parsedInput.invalid.tooltip') }}</div>
     <div class="pl-2">- {{ $t('parsedInput.synonyms.tooltip') }}</div>
-    <div class="pl-2 pb-2">- {{ $t('parsedInput.symbols.tooltip') }}</div>
+    <div class="pl-2">- {{ $t('parsedInput.symbols.tooltip') }}</div>
+    <div class="pl-2">- {{ $t('parsedInput.fusions.tooltip') }}</div>
+    <div class="pl-2 pb-2">- {{ $t('parsedInput.introns.tooltip') }}</div>
     <div>
       {{ $t('help.parsedInput.part3a') }}
       <b>{{ $t('panel-result.result.name') }}</b>
