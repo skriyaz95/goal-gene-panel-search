@@ -79,20 +79,12 @@
               <tr v-for="item in items" :key="item.geneId">
                 <td v-for="header in filteredHeaders" :key="header.value">
                   <template v-for="(match, index) in getMatches(item, header)">
-                    <v-chip
-                      class="ma-1"
-                      :key="index"
-                      :outlined="chipOutlined"
+                    <gene-entry
                       v-if="showChip(match)"
-                      :color="formatState(match)"
-                    >
-                      <v-icon left v-text="formatIcon(match)"> </v-icon>
-                      {{ geneName(match) }}
-                      <span v-if="isSynonym(match)">
-                        <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
-                        {{ realGeneName(match) }}
-                      </span>
-                    </v-chip>
+                      :key="index"
+                      :parsedGene="match"
+                      icon
+                    ></gene-entry>
                   </template>
                 </td>
               </tr>
@@ -109,12 +101,10 @@ import Vue from 'vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import PanelCompareHelp from '@/components/help/PanelCompareHelp.vue'
-import { mapGetters } from 'vuex'
 import { ActiveState, GeneState, TableHeader } from '@/types/ui-types'
 import download from '@/utils/download'
 import Papa from 'papaparse'
-import { formatStateColor, formatStateIcon } from '@/utils/formatting'
-import { FullGene, ParsedGene } from '@/types/panel-types'
+import { ParsedGene } from '@/types/panel-types'
 // import { transpose } from '@/utils/arrays'
 
 export default Vue.extend({
@@ -149,9 +139,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    ...mapGetters({
-      chipOutlined: 'getChipOutlined',
-    }),
     filteredHeaders(): Array<TableHeader> {
       const fHeaders = new Array<TableHeader>()
       for (let i = 0; i < this.headers.length; i++) {
@@ -168,26 +155,12 @@ export default Vue.extend({
     handleHelp() {
       this.$emit('help')
     },
-    geneName(match: ParsedGene) {
-      const gene = match.gene ? match.gene.name : (match as any).name
-      return gene
-    },
-    realGeneName(match: ParsedGene) {
-      const gene = match.realGene ? (match.realGene as FullGene).symbol : '?'
-      return gene
-    },
     showChip(match: ParsedGene) {
       return match && match.state !== GeneState.NOT_FOUND
     },
-    formatState(match: ParsedGene) {
-      return formatStateColor(match.state)
-    },
-    formatIcon(match: ParsedGene) {
-      return formatStateIcon(match.state)
-    },
-    getMatches(item: any, header: any) {
+    getMatches(item: any, header: any): ParsedGene[] {
       const label: string = header.value
-      return item[label]
+      return item[label] as ParsedGene[]
     },
     customSort(items: any[], sortBy: string[], sortDesc: boolean[]): any[] {
       items.sort((a: any, b: any) => {
@@ -254,9 +227,6 @@ export default Vue.extend({
         data: csvItems,
       })
       download('compare_panels.csv', csv, 'text/csv')
-    },
-    isSynonym(match: ParsedGene) {
-      return match.state === GeneState.SYNONYM
     },
   },
   mounted() {},

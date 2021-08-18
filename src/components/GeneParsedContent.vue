@@ -38,6 +38,7 @@
       :items="parsedGenes.intronFoundGenes"
       :title="$t('parsedInput.introns.text')"
       :showLargeSets="showLargeSets"
+      :label="true"
     />
   </div>
 </template>

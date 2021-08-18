@@ -527,6 +527,12 @@
       },
       "invalid": {
         "tooltip": "Invalid: The panel contains genes not recognized (and ignored during search)"
+      },
+      "fusions": {
+        "tooltip": "Fusions:  The panel contains genes formatted as <GENE>_FUSION eg. ALK_FUSION"
+      },
+      "introns": {
+        "tooltip": "Introns:  The panel contains genes formatted as <GENE>_INTRON eg. BCL6_INTRON1"
       }
     }
   },

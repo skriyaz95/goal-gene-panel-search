@@ -32,3 +32,10 @@ export function formatStateIcon(state: string | undefined) {
   }
   return "mdi-approximately-equal"
 }
+
+export function formatStateShape(state: string | undefined) {
+  if (state === GeneState.INTRON) {
+    return true
+  }
+  return false
+}

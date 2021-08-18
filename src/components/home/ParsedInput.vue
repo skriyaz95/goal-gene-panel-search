@@ -34,101 +34,44 @@
       <v-fade-transition>
         <span class="text-xs-left" v-show="showAny">
           <span v-show="showInvalid">
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-chip
-                  :outlined="chipOutlined"
-                  :color="invalidColor"
-                  class="ml-1 mr-1 mb-1"
-                  v-on="on"
-                >
-                  {{ $t('parsedInput.invalid.text') }} ({{
-                    $tc('count.gene', $n(formattedGenes.invalidGenes.length))
-                  }})
-                </v-chip>
-              </template>
-              <span>{{ $t('parsedInput.invalid.tooltip') }}</span>
-            </v-tooltip>
+            <gene-entry-title
+              :state="geneState.INVALID"
+              :count="formattedGenes.invalidGenes.length"
+              :tooltip="$t('parsedInput.invalid.tooltip').toString()"
+            >
+            </gene-entry-title>
           </span>
           <span v-show="showSynonym">
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-chip
-                  :outlined="chipOutlined"
-                  :color="synonymColor"
-                  class="ml-1 mr-1 mb-1"
-                  v-on="on"
-                >
-                  {{ $t('parsedInput.synonyms.text') }} ({{
-                    $tc(
-                      'count.gene',
-                      $n(formattedGenes.synonymFoundGenes.length)
-                    )
-                  }})
-                </v-chip>
-              </template>
-              <span>{{ $t('parsedInput.synonyms.tooltip') }}</span>
-            </v-tooltip>
+            <gene-entry-title
+              :state="geneState.SYNONYM"
+              :count="formattedGenes.synonymFoundGenes.length"
+              :tooltip="$t('parsedInput.synonyms.tooltip').toString()"
+            >
+            </gene-entry-title>
           </span>
           <span v-show="showSymbol">
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-chip
-                  :outlined="chipOutlined"
-                  :color="symbolColor"
-                  class="ml-1 mr-1 mb-1"
-                  v-on="on"
-                >
-                  {{ $t('parsedInput.symbols.text') }} ({{
-                    $tc(
-                      'count.gene',
-                      $n(formattedGenes.symbolFoundGenes.length)
-                    )
-                  }})
-                </v-chip>
-              </template>
-              <span>{{ $t('parsedInput.symbols.tooltip') }}</span>
-            </v-tooltip>
+            <gene-entry-title
+              :state="geneState.SYMBOL"
+              :count="formattedGenes.symbolFoundGenes.length"
+              :tooltip="$t('parsedInput.symbols.tooltip').toString()"
+            >
+            </gene-entry-title>
           </span>
           <span v-show="showFusion">
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-chip
-                  :outlined="chipOutlined"
-                  :color="fusionColor"
-                  class="ml-1 mr-1 mb-1"
-                  v-on="on"
-                >
-                  {{ $t('parsedInput.fusions.text') }} ({{
-                    $tc(
-                      'count.gene',
-                      $n(formattedGenes.fusionFoundGenes.length)
-                    )
-                  }})
-                </v-chip>
-              </template>
-              <span>{{ $t('parsedInput.fusions.tooltip') }}</span>
-            </v-tooltip>
+            <gene-entry-title
+              :state="geneState.FUSION"
+              :count="formattedGenes.fusionFoundGenes.length"
+              :tooltip="$t('parsedInput.fusions.tooltip').toString()"
+            >
+            </gene-entry-title>
           </span>
           <span v-show="showIntron">
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-chip
-                  :outlined="chipOutlined"
-                  :color="intronColor"
-                  class="ml-1 mr-1 mb-1"
-                  v-on="on"
-                >
-                  {{ $t('parsedInput.introns.text') }} ({{
-                    $tc(
-                      'count.gene',
-                      $n(formattedGenes.intronFoundGenes.length)
-                    )
-                  }})
-                </v-chip>
-              </template>
-              <span>{{ $t('parsedInput.introns.tooltip') }}</span>
-            </v-tooltip>
+            <gene-entry-title
+              :state="geneState.INTRON"
+              :count="formattedGenes.intronFoundGenes.length"
+              :tooltip="$t('explore.panelDetails.introns.tooltip').toString()"
+            >
+            </gene-entry-title>
           </span>
         </span>
       </v-fade-transition>
@@ -165,10 +108,16 @@ import download from '@/utils/download'
 import Papa from 'papaparse'
 import { transpose } from '@/utils/arrays'
 import { GeneState } from '@/types/ui-types'
-import { formatStateColor } from '@/utils/formatting'
+import GeneEntryTitle from '@/components/GeneEntryTitle.vue'
 
 export default Vue.extend({
-  components: { GeneParsedContent, ParsedSearchHelp, HelpButton, InfoAlert },
+  components: {
+    GeneParsedContent,
+    ParsedSearchHelp,
+    HelpButton,
+    InfoAlert,
+    GeneEntryTitle,
+  },
   name: 'ParsedInput',
   props: {
     help: {
@@ -183,7 +132,9 @@ export default Vue.extend({
       type: ParsedGenes,
     },
   },
-  data: () => ({}),
+  data: () => ({
+    geneState: GeneState,
+  }),
   computed: {
     ...mapGetters({
       // userGenes: 'getUserGenesSorted',
@@ -222,21 +173,6 @@ export default Vue.extend({
         !this.showFusion &&
         !this.showIntron
       )
-    },
-    invalidColor() {
-      return formatStateColor(GeneState.INVALID)
-    },
-    symbolColor() {
-      return formatStateColor(GeneState.SYMBOL)
-    },
-    synonymColor() {
-      return formatStateColor(GeneState.SYNONYM)
-    },
-    fusionColor() {
-      return formatStateColor(GeneState.FUSION)
-    },
-    intronColor() {
-      return formatStateColor(GeneState.INTRON)
     },
   },
   watch: {

@@ -87,6 +87,7 @@
                     :color="intronColor"
                     class="mr-2"
                     :outlined="chipOutlined"
+                    :label="true"
                   >
                     {{ $t('parsedInput.introns.text') }}
                   </v-chip>

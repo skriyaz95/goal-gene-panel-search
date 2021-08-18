@@ -39,17 +39,7 @@
                     :key="index"
                   >
                     <td>
-                      <v-chip
-                        class="ma-1"
-                        :outlined="chipOutlined"
-                        :color="formatState(item)"
-                      >
-                        {{ geneName(item) }}
-                        <span v-if="isSynonym(item)">
-                          <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
-                          {{ realGeneName(item) }}
-                        </span>
-                      </v-chip>
+                      <gene-entry :parsedGene="item"></gene-entry>
                     </td>
                   </tr>
                 </tbody>
@@ -72,17 +62,7 @@
                     :key="index"
                   >
                     <td>
-                      <v-chip
-                        class="ma-1"
-                        :outlined="chipOutlined"
-                        :color="formatState(item)"
-                      >
-                        {{ geneName(item) }}
-                        <span v-if="isSynonym(item)">
-                          <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
-                          {{ realGeneName(item) }}
-                        </span>
-                      </v-chip>
+                      <gene-entry :parsedGene="item"></gene-entry>
                     </td>
                   </tr>
                 </tbody>
@@ -154,7 +134,6 @@
                     :outlined="chipOutlined"
                     color="primary"
                     :class="hiddenClass(item.panelGenes.genesInPanel)"
-                    @click.stop="openDialog(item)"
                   >
                     {{ item.panelGenes.genesInPanel.length }}
                   </v-chip>
@@ -163,7 +142,6 @@
                     :outlined="chipOutlined"
                     :class="hiddenClass(item.panelGenes.genesNotInPanel)"
                     color="warning"
-                    @click.stop="openDialog(item)"
                   >
                     {{ item.panelGenes.genesNotInPanel.length }}
                   </v-chip>
@@ -196,7 +174,6 @@ import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import {
-  FullGene,
   Institution,
   PanelGenes,
   PanelResultFormattedRow,
@@ -208,7 +185,6 @@ import {
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import DialogTemplate from '@/components/DialogTemplate.vue'
 import { GeneState, ListItem } from '@/types/ui-types'
-import { formatStateColor } from '@/utils/formatting'
 
 export default Vue.extend({
   components: {
@@ -384,17 +360,6 @@ export default Vue.extend({
     },
     isFusionIntron(item: ParsedGene) {
       return item.state === GeneState.FUSION || item.state === GeneState.INTRON
-    },
-    geneName(match: ParsedGene) {
-      const gene = match.gene ? match.gene.name : (match as any).name
-      return gene
-    },
-    realGeneName(match: ParsedGene) {
-      const gene = match.realGene ? (match.realGene as FullGene).symbol : '?'
-      return gene
-    },
-    formatState(match: ParsedGene) {
-      return formatStateColor(match.state)
     },
   },
 })
