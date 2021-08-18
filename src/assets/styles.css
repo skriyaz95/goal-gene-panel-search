@@ -1,0 +1,8 @@
+.fusionBackground {
+  background: linear-gradient(-45deg, #81c784 50%, #4caf50 50%) !important;
+}
+
+/** Trying out 2 colors in the table of genes found / genes not found**/
+.foundNotFoundBackground {
+  background: linear-gradient(-45deg, #E57373 50%, #81c784 50%) !important;
+}

@@ -10,7 +10,8 @@ across the app
       <v-chip
         :outlined="chipOutlined"
         v-on="on"
-        class="ma-1"
+        :dark="isFusion"
+        :class="[isFusion ? 'fusionBackground' : '', 'ma-1']"
         :color="formatColor"
         :label="formatShape"
       >
@@ -70,6 +71,9 @@ export default Vue.extend({
     },
     formatIcon() {
       return formatStateIcon(this.state)
+    },
+    isFusion() {
+      return this.state === GeneState.FUSION
     },
   },
   watch: {},

@@ -7,9 +7,11 @@ across the app
 <template>
   <v-chip
     :outlined="chipOutlined"
-    class="ma-1"
+    :dark="isFusion"
+    :class="[isFusion ? 'fusionBackground' : '', 'ma-1']"
     :color="formatColor"
     :label="formatShape"
+    :gradient="['#f72047', '#ffd200', '#1feaea']"
   >
     <div class="d-flex align-center">
       <v-icon v-if="icon" left v-text="formatIcon"> </v-icon>
@@ -72,6 +74,9 @@ export default Vue.extend({
     formatIcon() {
       return formatStateIcon((this.parsedGene as ParsedGene).state)
     },
+    isFusion() {
+      return (this.parsedGene as ParsedGene).state === GeneState.FUSION
+    },
   },
   watch: {},
   mounted() {},
@@ -79,3 +84,4 @@ export default Vue.extend({
   methods: {},
 })
 </script>
+

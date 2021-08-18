@@ -55,42 +55,46 @@
                   <div>{{ $t('themePicker.logo.explain.text') }}</div>
                 </v-col>
                 <v-col cols="8" align-self="end">
-                  <v-chip
-                    :color="invalidColor"
-                    class="mr-2"
-                    :outlined="chipOutlined"
+                  <gene-entry-title
+                    :state="geneState.INVALID"
+                    :count="1"
+                    :tooltip="
+                      $t('explore.panelDetails.invalid.tooltip').toString()
+                    "
                   >
-                    {{ $t('parsedInput.invalid.text') }}
-                  </v-chip>
-                  <v-chip
-                    :color="synonymColor"
-                    class="mr-2"
-                    :outlined="chipOutlined"
+                  </gene-entry-title>
+                  <gene-entry-title
+                    :state="geneState.SYNONYM"
+                    :count="2"
+                    :tooltip="
+                      $t('explore.panelDetails.invalid.tooltip').toString()
+                    "
                   >
-                    {{ $t('parsedInput.synonyms.text') }}
-                  </v-chip>
-                  <v-chip
-                    :color="symbolColor"
-                    class="mr-2"
-                    :outlined="chipOutlined"
+                  </gene-entry-title>
+                  <gene-entry-title
+                    :state="geneState.SYMBOL"
+                    :count="3"
+                    :tooltip="
+                      $t('explore.panelDetails.invalid.tooltip').toString()
+                    "
                   >
-                    {{ $t('parsedInput.symbols.text') }}
-                  </v-chip>
-                  <v-chip
-                    :color="fusionColor"
-                    class="mr-2"
-                    :outlined="chipOutlined"
+                  </gene-entry-title>
+                  <gene-entry-title
+                    :state="geneState.FUSION"
+                    :count="4"
+                    :tooltip="
+                      $t('explore.panelDetails.invalid.tooltip').toString()
+                    "
                   >
-                    {{ $t('parsedInput.fusions.text') }}
-                  </v-chip>
-                  <v-chip
-                    :color="intronColor"
-                    class="mr-2"
-                    :outlined="chipOutlined"
-                    :label="true"
+                  </gene-entry-title>
+                  <gene-entry-title
+                    :state="geneState.INTRON"
+                    :count="5"
+                    :tooltip="
+                      $t('explore.panelDetails.invalid.tooltip').toString()
+                    "
                   >
-                    {{ $t('parsedInput.introns.text') }}
-                  </v-chip>
+                  </gene-entry-title>
                 </v-col>
                 <v-col cols="4">
                   <v-switch
@@ -129,16 +133,17 @@ import { lightThemes } from '@/plugins/vuetify'
 import { mapGetters, mapActions } from 'vuex'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import { GeneState } from '@/types/ui-types'
-import { formatStateColor } from '@/utils/formatting'
+import GeneEntryTitle from '@/components/GeneEntryTitle.vue'
 
 export default Vue.extend({
   name: 'ThemePicker',
-  components: { ColorPicker, MainContentTemplate },
+  components: { ColorPicker, MainContentTemplate, GeneEntryTitle },
   data: () => ({
     themeSelected: -1,
     themes: lightThemes,
     hueRotation: 0,
     saturation: 1,
+    geneState: GeneState,
   }),
   computed: {
     theme() {
@@ -151,21 +156,6 @@ export default Vue.extend({
     ...mapGetters({
       chipOutlined: 'getChipOutlined',
     }),
-    invalidColor() {
-      return formatStateColor(GeneState.INVALID)
-    },
-    symbolColor() {
-      return formatStateColor(GeneState.SYMBOL)
-    },
-    synonymColor() {
-      return formatStateColor(GeneState.SYNONYM)
-    },
-    fusionColor() {
-      return formatStateColor(GeneState.FUSION)
-    },
-    intronColor() {
-      return formatStateColor(GeneState.INTRON)
-    },
   },
   mounted() {
     this.changeTheme()

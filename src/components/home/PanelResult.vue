@@ -146,6 +146,18 @@
                     {{ item.panelGenes.genesNotInPanel.length }}
                   </v-chip>
                 </v-btn>
+                <!-- alternative button style -->
+                <!-- <v-btn
+                  dark
+                  text
+                  @click="openDialog(item)"
+                  v-on="on"
+                  class="foundNotFoundBackground"
+                >
+                  {{ item.panelGenes.genesInPanel.length }}
+                  <span class="mx-2"> </span>
+                  {{ item.panelGenes.genesNotInPanel.length }}
+                </v-btn> -->
               </template>
               <span>{{ $t('panel-result.chip.show-genes') }}</span>
             </v-tooltip>
