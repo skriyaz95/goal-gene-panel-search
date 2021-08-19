@@ -129,7 +129,27 @@
           <template v-slot:[`item.panelGenes`]="{ item }">
             <v-tooltip bottom v-if="notEmpty(item)">
               <template v-slot:activator="{ on }">
-                <v-btn text @click="openDialog(item)" v-on="on">
+                <v-progress-linear
+                  :value="countFoundNotFound(item)"
+                  color="primary"
+                  background-color="warning lighten-1"
+                  height="25"
+                  dark
+                  v-on="on"
+                  @click="openDialog(item)"
+                  class="sim-button"
+                >
+                  <div class="d-flex justify-space-between col-12">
+                    <span>
+                      {{ item.panelGenes.genesInPanel.length }}
+                    </span>
+                    <span>
+                      {{ item.panelGenes.genesNotInPanel.length }}
+                    </span>
+                  </div>
+                </v-progress-linear>
+                <!-- original 2 button-style -->
+                <!-- <v-btn text @click="openDialog(item)" v-on="on">
                   <v-chip
                     :outlined="chipOutlined"
                     color="primary"
@@ -145,7 +165,8 @@
                   >
                     {{ item.panelGenes.genesNotInPanel.length }}
                   </v-chip>
-                </v-btn>
+                </v-btn> -->
+
                 <!-- alternative button style -->
                 <!-- <v-btn
                   dark
@@ -196,7 +217,7 @@ import {
 } from '@/types/panel-types'
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import DialogTemplate from '@/components/DialogTemplate.vue'
-import { GeneState, ListItem } from '@/types/ui-types'
+import { ListItem } from '@/types/ui-types'
 
 export default Vue.extend({
   components: {
@@ -367,11 +388,13 @@ export default Vue.extend({
     hiddenClass(items: ParsedGene[]) {
       return items.length === 0 ? 'hidden' : ''
     },
-    isSynonym(match: ParsedGene) {
-      return match.state === GeneState.SYNONYM
-    },
-    isFusionIntron(item: ParsedGene) {
-      return item.state === GeneState.FUSION || item.state === GeneState.INTRON
+    countFoundNotFound(item: PanelResultFormattedRow) {
+      return (
+        (item.panelGenes.genesInPanel.length /
+          (item.panelGenes.genesInPanel.length +
+            item.panelGenes.genesNotInPanel.length)) *
+        100
+      )
     },
   },
 })

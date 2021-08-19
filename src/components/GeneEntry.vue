@@ -8,7 +8,7 @@ across the app
   <v-chip
     :outlined="chipOutlined"
     :dark="isFusion"
-    :class="[isFusion ? 'fusionBackground' : '', 'ma-1']"
+    :class="[isFusion ? 'fusion-background' : '', 'ma-1']"
     :color="formatColor"
     :label="formatShape"
     :gradient="['#f72047', '#ffd200', '#1feaea']"

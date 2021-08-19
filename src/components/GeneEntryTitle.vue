@@ -11,7 +11,7 @@ across the app
         :outlined="chipOutlined"
         v-on="on"
         :dark="isFusion"
-        :class="[isFusion ? 'fusionBackground' : '', 'ma-1']"
+        :class="[isFusion ? 'fusion-background' : '', 'ma-1']"
         :color="formatColor"
         :label="formatShape"
       >

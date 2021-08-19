@@ -1,8 +1,17 @@
-.fusionBackground {
+.fusion-background {
   background: linear-gradient(-45deg, #81c784 50%, #4caf50 50%) !important;
 }
 
 /** Trying out 2 colors in the table of genes found / genes not found**/
 .foundNotFoundBackground {
   background: linear-gradient(-45deg, #E57373 50%, #81c784 50%) !important;
+}
+
+/** Use this class to make non-button change the mouse pointer when hovering **/
+.sim-button {
+  cursor: pointer;
+}
+
+.sim-button:hover {
+  opacity: 0.75
 }
