@@ -44,3 +44,11 @@ tr:nth-child(odd) {
   z-index: 9999 !important;
   background-color: inherit;
 }
+
+.dense v-expansion-panel-content__wrap {
+  margin: 0
+}
+
+.top tr {
+  vertical-align: top
+}

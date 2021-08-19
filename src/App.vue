@@ -129,31 +129,3 @@ export default Vue.extend({
 })
 </script>
 
-<style >
-.v-input.v-text-field.v-textarea .v-text-field__slot {
-  padding: 5px 10px 5px 5px; /*fix scrollbar overlapping with textarea outlined */
-}
-tr:nth-child(even) {
-  background-color: #fafafa;
-}
-tr:nth-child(odd) {
-  background-color: white;
-}
-.darker-border {
-  border-color: rgba(0, 0, 0, 0.38) !important;
-}
-
-.fixed-column table > tbody > tr > td:nth-child(1) {
-  position: sticky !important;
-  left: 0;
-  z-index: 9998;
-  background-color: inherit;
-}
-
-.fixed-column table > thead > tr > th:nth-child(1) {
-  position: sticky !important;
-  left: 0;
-  z-index: 9999 !important;
-  background-color: inherit;
-}
-</style>

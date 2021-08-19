@@ -82,15 +82,51 @@
                 <tbody>
                   <tr v-for="item in items" :key="item.geneId">
                     <td v-for="header in filteredHeaders" :key="header.value">
-                      <template
-                        v-for="(match, index) in getMatches(item, header)"
-                      >
-                        <gene-entry
-                          v-if="showChip(match)"
-                          :key="index"
-                          :parsedGene="match"
-                          icon
-                        ></gene-entry>
+                      <template v-if="getMatches(item, header).length > 1">
+                        <v-expansion-panels
+                          flat
+                          class="dense transparent"
+                          accordion
+                        >
+                          <v-expansion-panel class="transparent">
+                            <v-expansion-panel-header class="transparent">
+                              {{
+                                $tc(
+                                  'count.gene',
+                                  $n(getMatches(item, header).length)
+                                )
+                              }}
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content class="transparent">
+                              <template
+                                v-for="(match, index) in getMatches(
+                                  item,
+                                  header
+                                )"
+                              >
+                                <gene-entry
+                                  v-if="showChip(match)"
+                                  :key="index"
+                                  :parsedGene="match"
+                                  icon
+                                >
+                                </gene-entry>
+                              </template>
+                            </v-expansion-panel-content>
+                          </v-expansion-panel>
+                        </v-expansion-panels>
+                      </template>
+                      <template v-else>
+                        <template
+                          v-for="(match, index) in getMatches(item, header)"
+                        >
+                          <gene-entry
+                            v-if="showChip(match)"
+                            :key="index"
+                            :parsedGene="match"
+                            icon
+                          ></gene-entry>
+                        </template>
                       </template>
                     </td>
                   </tr>
