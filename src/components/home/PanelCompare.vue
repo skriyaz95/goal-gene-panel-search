@@ -64,33 +64,41 @@
             </v-text-field>
           </v-card-text>
         </v-card>
-
-        <v-data-table
-          :headers="filteredHeaders"
-          :items="items"
-          item-key="geneId"
-          sort-by="gene"
-          :custom-sort="customSort"
-          :custom-filter="customFilter"
-          :search="search"
-        >
-          <template v-if="items.length > 0" v-slot:body="{ items }">
-            <tbody>
-              <tr v-for="item in items" :key="item.geneId">
-                <td v-for="header in filteredHeaders" :key="header.value">
-                  <template v-for="(match, index) in getMatches(item, header)">
-                    <gene-entry
-                      v-if="showChip(match)"
-                      :key="index"
-                      :parsedGene="match"
-                      icon
-                    ></gene-entry>
-                  </template>
-                </td>
-              </tr>
-            </tbody>
+        <resizable-page>
+          <template v-slot:table="tableProps">
+            <v-data-table
+              :height="tableProps.tableHeight"
+              :headers="filteredHeaders"
+              :items="items"
+              item-key="geneId"
+              sort-by="gene"
+              :custom-sort="customSort"
+              :custom-filter="customFilter"
+              :search="search"
+              fixed-header
+              class="fixed-column"
+            >
+              <template v-if="items.length > 0" v-slot:body="{ items }">
+                <tbody>
+                  <tr v-for="item in items" :key="item.geneId">
+                    <td v-for="header in filteredHeaders" :key="header.value">
+                      <template
+                        v-for="(match, index) in getMatches(item, header)"
+                      >
+                        <gene-entry
+                          v-if="showChip(match)"
+                          :key="index"
+                          :parsedGene="match"
+                          icon
+                        ></gene-entry>
+                      </template>
+                    </td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-data-table>
           </template>
-        </v-data-table>
+        </resizable-page>
       </v-card-text>
     </v-card>
   </div>
@@ -106,12 +114,14 @@ import download from '@/utils/download'
 import Papa from 'papaparse'
 import { ParsedGene } from '@/types/panel-types'
 // import { transpose } from '@/utils/arrays'
+import ResizablePage from '@/components/ResizablePage.vue'
 
 export default Vue.extend({
   components: {
     HelpButton,
     InfoAlert,
     PanelCompareHelp,
+    ResizablePage,
   },
   name: 'PanelCompare',
   props: {
@@ -232,4 +242,3 @@ export default Vue.extend({
   mounted() {},
 })
 </script>
-

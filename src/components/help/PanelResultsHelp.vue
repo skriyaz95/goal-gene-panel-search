@@ -11,6 +11,12 @@ or a help card or other tutorial content
       {{ $t('help.panelResults.part1b') }}
       <b>{{ $t('parsedInput.title.text') }}.</b>
     </div>
+    <div class="pb-2">
+      {{ $t('help.panelResults.part1c') }}
+    </div>
+    <div class="pb-2">
+      {{ $t('help.panelResults.part1d') }}
+    </div>
     <div>{{ $t('help.panelResults.part2a') }}</div>
   </div>
 </template>

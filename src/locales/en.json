@@ -235,7 +235,7 @@
     "show-institution-details": "Show Institution Details",
     "result": {
       "name": "Panel Results",
-      "title": "Genes Evaluated (Symbol & Synonyms)",
+      "title": "Genes Evaluated (Symbols, Synonyms, Fusions, Introns)",
       "invalidGenesTitle": "Entries Ignored (Invalid)"
     },
     "table": {
@@ -372,7 +372,9 @@
     "panelResults": {
       "part1a": "counts the gene matches in each panel",
       "part1b": " from the items in ",
-      "part2a": "Click on a cell to get more information about each value"
+      "part1c": "If a search matches a Fusion or an Intron (eg.  JAK2 matches JAK2, JAK2_INTRON8, JAK2_INTRON9, etc.), a panel may display more genes than your original search.",
+      "part1d": "In the example above, searching for JAK2 could return 1 count for JAK2 and 1 count for each Intron.",
+      "part2a": "Click on a cell to get more information about each value."
     },
     "panelCompare": {
       "example": "Here is an example",
