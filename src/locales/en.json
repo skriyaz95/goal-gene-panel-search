@@ -264,6 +264,19 @@
         "close": "Close",
         "save": "Save"
       }
+    },
+    "csv" : {
+      "headers" : {
+        "panel-result" : {
+          "institution-name" : "Institution Name",
+          "institution-phone" : "Institution Phone",
+          "institution-email" : "Institution Email",
+          "institution-website" : "Institution Website",
+          "gene-panel-name" : "Gene Panel Name",
+          "genes-found" : "Genes Found",
+          "genes-not-found" : "Genes Not Found"
+        }
+      }
     }
   },
   "build-database": {

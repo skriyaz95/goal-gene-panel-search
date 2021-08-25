@@ -82,6 +82,19 @@
       <v-card-title>
         {{ $t('panel-result.result.name') }}
         <v-spacer></v-spacer>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              v-on="on"
+              :disabled="!panelContent || panelContent.length == 0"
+              icon
+              @click="downloadPanelResult()"
+            >
+              <v-icon>mdi-download </v-icon>
+            </v-btn>
+          </template>
+          <span>{{ $t('button.download.tooltip') }}</span>
+        </v-tooltip>
         <help-button @action="handleHelp()" :active="help">
           <template v-slot:content>
             <span>
@@ -148,37 +161,6 @@
                     </span>
                   </div>
                 </v-progress-linear>
-                <!-- original 2 button-style -->
-                <!-- <v-btn text @click="openDialog(item)" v-on="on">
-                  <v-chip
-                    :outlined="chipOutlined"
-                    color="primary"
-                    :class="hiddenClass(item.panelGenes.genesInPanel)"
-                  >
-                    {{ item.panelGenes.genesInPanel.length }}
-                  </v-chip>
-                  <span class="mx-2">/</span>
-                  <v-chip
-                    :outlined="chipOutlined"
-                    :class="hiddenClass(item.panelGenes.genesNotInPanel)"
-                    color="warning"
-                  >
-                    {{ item.panelGenes.genesNotInPanel.length }}
-                  </v-chip>
-                </v-btn> -->
-
-                <!-- alternative button style -->
-                <!-- <v-btn
-                  dark
-                  text
-                  @click="openDialog(item)"
-                  v-on="on"
-                  class="foundNotFoundBackground"
-                >
-                  {{ item.panelGenes.genesInPanel.length }}
-                  <span class="mx-2"> </span>
-                  {{ item.panelGenes.genesNotInPanel.length }}
-                </v-btn> -->
               </template>
               <span>{{ $t('panel-result.chip.show-genes') }}</span>
             </v-tooltip>
@@ -210,7 +192,6 @@ import {
   Institution,
   PanelGenes,
   PanelResultFormattedRow,
-  PanelSearchResult,
   ParsedGene,
   ParsedGenes,
   // ParsedGene,
@@ -218,6 +199,7 @@ import {
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import DialogTemplate from '@/components/DialogTemplate.vue'
 import { ListItem } from '@/types/ui-types'
+import Papa from "papaparse";
 
 export default Vue.extend({
   components: {
@@ -236,9 +218,9 @@ export default Vue.extend({
     parsedGenes: {
       type: ParsedGenes,
     },
-    panelSearchResults: {
+    panelContent: {
       type: Array,
-      default: () => new Array<PanelSearchResult>(),
+      default: () => new Array<PanelResultFormattedRow>(),
     },
   },
   data() {
@@ -276,7 +258,6 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
-      institutionsByPanel: 'getInstitutionsByPanel',
       chipOutlined: 'getChipOutlined',
     }),
     invalidLength() {
@@ -298,22 +279,7 @@ export default Vue.extend({
       }
       return length
     },
-    panelContent(): Array<PanelResultFormattedRow> {
-      return (this.panelSearchResults as Array<PanelSearchResult>).map(
-        (panel: PanelSearchResult) => {
-          let institution = this.institutionsByPanel.get(panel.name)
-          if (!institution) {
-            institution = {}
-          }
 
-          return new PanelResultFormattedRow(
-            panel.name,
-            new PanelGenes(panel.genesInPanel, panel.genesNotInPanel),
-            new ListItem(institution, true)
-          )
-        }
-      )
-    },
   },
   watch: {},
   methods: {
@@ -396,6 +362,41 @@ export default Vue.extend({
         100
       )
     },
+    downloadPanelResult() {
+      const headers = [];
+      headers.push(this.$t('panel-result.csv.headers.panel-result.institution-name'))
+      headers.push(this.$t('panel-result.csv.headers.panel-result.institution-phone'))
+      headers.push(this.$t('panel-result.csv.headers.panel-result.institution-email'))
+      headers.push(this.$t('panel-result.csv.headers.panel-result.institution-website'))
+      headers.push(this.$t('panel-result.csv.headers.panel-result.gene-panel-name'))
+      headers.push(this.$t('panel-result.csv.headers.panel-result.genes-found'))
+      headers.push(this.$t('panel-result.csv.headers.panel-result.genes-not-found'))
+
+      const data:any = []
+
+      this.panelContent.forEach(panelContent => {
+        const row = []
+
+        let institution : Institution = new Institution('', '', '', '', [])
+        if((panelContent as PanelResultFormattedRow).institution !== null) {
+          institution = (((panelContent as PanelResultFormattedRow).institution as ListItem).item as Institution)
+        }
+        row.push(institution.name)
+        row.push(institution.phone)
+        row.push(institution.email)
+        row.push(institution.website)
+        row.push((panelContent as PanelResultFormattedRow).name)
+        row.push((panelContent as PanelResultFormattedRow).panelGenes.genesInPanel.length)
+        row.push((panelContent as PanelResultFormattedRow).panelGenes.genesNotInPanel.length)
+        data.push(row)
+      })
+
+      const csv = Papa.unparse({
+        fields: headers,
+        data: data,
+      })
+      download('panels_result.csv', csv, 'text/csv')
+    }
   },
 })
 </script>
