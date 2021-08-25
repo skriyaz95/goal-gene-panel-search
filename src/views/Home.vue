@@ -92,7 +92,7 @@
                   @help="handleHelp"
                   :loading="searchingPanels"
                   :parsedGenes="formattedGenes"
-                  :panelSearchResults="panelSearchResults"
+                  :panelContent="panelContent"
                 />
               </v-tab-item>
               <v-tab-item value="compare">
@@ -124,7 +124,7 @@ import ParsedInput from '@/components/home/ParsedInput.vue'
 import PanelResult from '@/components/home/PanelResult.vue'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import {
-  Institution,
+  Institution, PanelGenes, PanelResultFormattedRow,
   PanelSearchResult,
   ParsedGenes,
 } from '@/types/panel-types'
@@ -132,7 +132,7 @@ import PanelCompare from '@/components/home/PanelCompare.vue'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 import { FormatCompareItemsPayload } from '@/types/payload-types'
 import { getCookie, setCookie } from '@/utils/cookies'
-import { ActiveState, TableHeader } from '@/types/ui-types'
+import {ActiveState, ListItem, TableHeader} from '@/types/ui-types'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import RecallSearches from '@/components/home/RecallSearches.vue'
 
@@ -164,10 +164,27 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       institutions: 'getInstitutionsSorted',
+      institutionsByPanel: 'getInstitutionsByPanel',
       panelsByInstitution: 'getPanelsByInstitution',
       inputNeedsReload: 'getInputNeedsReload',
       lastTab: 'getLastTabHome',
     }),
+    panelContent(): Array<PanelResultFormattedRow> {
+      return (this.panelSearchResults as Array<PanelSearchResult>).map(
+          (panel: PanelSearchResult) => {
+            let institution = this.institutionsByPanel.get(panel.name)
+            if (!institution) {
+              institution = {}
+            }
+
+            return new PanelResultFormattedRow(
+                panel.name,
+                new PanelGenes(panel.genesInPanel, panel.genesNotInPanel),
+                new ListItem(institution, true)
+            )
+          }
+      )
+    },
     tab: {
       set(tab: string) {
         this.$router.replace({ params: { ...this.$route.params, tab } })
