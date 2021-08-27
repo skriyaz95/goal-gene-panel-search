@@ -262,7 +262,7 @@
       },
       "button": {
         "close": "Close",
-        "save": "Save"
+        "download": "Download"
       }
     },
     "csv" : {

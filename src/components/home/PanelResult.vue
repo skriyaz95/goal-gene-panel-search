@@ -73,7 +73,8 @@
       </template>
       <template v-slot:action-buttons>
         <v-btn class="primary" @click="downloadGenes(panelName, panelGenes)">
-          {{ $t('panel-result.dialog.button.save') }}
+          {{ $t('panel-result.dialog.button.download') }}
+          <v-icon>mdi-download</v-icon>
         </v-btn>
       </template>
     </dialog-template>
@@ -200,6 +201,7 @@ import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import DialogTemplate from '@/components/DialogTemplate.vue'
 import { ListItem } from '@/types/ui-types'
 import Papa from "papaparse";
+import {transpose} from "@/utils/arrays";
 
 export default Vue.extend({
   components: {
@@ -298,6 +300,9 @@ export default Vue.extend({
       headers.push(this.$t('panel-result.csv.headers.panel-result.genes-found'))
       headers.push(this.$t('panel-result.csv.headers.panel-result.genes-not-found'))
 
+      const panelNames = []
+      panelNames.push(panelName)
+
       const genesInPanel = genes.genesInPanel.map(
         (geneInPanel) => geneInPanel.gene.name
       )
@@ -306,47 +311,15 @@ export default Vue.extend({
       )
 
       const data = []
-      const firstRow = []
-      firstRow.push(panelName)
-      firstRow.push(genesInPanel[0])
-      firstRow.push(genesNotInPanel[0])
-      data.push(firstRow)
-
-      let i = 1
-      let j = 1
-      while(i++ <= genesInPanel.length && j++ <= genesNotInPanel.length) {
-        const row = []
-        row.push('')
-        row.push(genesInPanel[i])
-        row.push(genesNotInPanel[j])
-        data.push(row)
-      }
-
-      if(i < genesInPanel.length) {
-        while(i++ <= genesInPanel.length) {
-          const row = []
-          row.push('')
-          row.push(genesInPanel[i])
-          row.push('')
-          data.push(row)
-        }
-      }
-
-      if(j < genesNotInPanel.length) {
-        while(j++ <= genesNotInPanel.length) {
-          const row = []
-          row.push('')
-          row.push('')
-          row.push(genesNotInPanel[j])
-          data.push(row)
-        }
-      }
+      data.push(panelNames)
+      data.push(genesInPanel)
+      data.push(genesNotInPanel)
 
       const csv = Papa.unparse({
         fields: headers,
-        data: data,
+        data: transpose(data),
       })
-      download(panelName + '.csv', csv, 'text/csv')
+      download('search_results_' + panelName + '.csv', csv, 'text/csv')
     },
     formatResult(panel: any, pretty: boolean) {
       return formatObjetToJson(panel, pretty)
