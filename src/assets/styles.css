@@ -48,7 +48,3 @@ tr:nth-child(odd) {
 .dense v-expansion-panel-content__wrap {
   margin: 0
 }
-
-.top tr {
-  vertical-align: top
-}
