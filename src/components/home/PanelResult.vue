@@ -72,7 +72,7 @@
         </v-row>
       </template>
       <template v-slot:action-buttons>
-        <v-btn class="primary" @click="downloadGenes(panelGenes)">
+        <v-btn class="primary" @click="downloadGenes(panelName, panelGenes)">
           {{ $t('panel-result.dialog.button.save') }}
         </v-btn>
       </template>
@@ -168,7 +168,7 @@
           <template v-slot:[`item.actions`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn icon v-on="on" @click.stop="downloadResult(item)">
+                <v-btn icon v-on="on" @click.stop="downloadGenes(item.name, item.panelGenes)">
                   <v-icon>mdi-download</v-icon>
                 </v-btn>
               </template>
@@ -292,25 +292,61 @@ export default Vue.extend({
       this.currentInstitution = institution
       this.institutionDialog = true
     },
-    downloadGenes(genes: PanelGenes) {
+    downloadGenes(panelName:string, genes: PanelGenes) {
+      const headers = []
+      headers.push(this.$t('panel-result.csv.headers.panel-result.gene-panel-name'))
+      headers.push(this.$t('panel-result.csv.headers.panel-result.genes-found'))
+      headers.push(this.$t('panel-result.csv.headers.panel-result.genes-not-found'))
+
       const genesInPanel = genes.genesInPanel.map(
         (geneInPanel) => geneInPanel.gene.name
       )
       const genesNotInPanel = genes.genesNotInPanel.map(
         (geneNotInPanel) => geneNotInPanel.gene.name
       )
-      const result = {
-        name: this.panelName,
-        'genes-in-panel': genesInPanel,
-        'genes-not-in-panel': genesNotInPanel,
+
+      const data = []
+      const firstRow = []
+      firstRow.push(panelName)
+      firstRow.push(genesInPanel[0])
+      firstRow.push(genesNotInPanel[0])
+      data.push(firstRow)
+
+      let i = 1
+      let j = 1
+      while(i++ <= genesInPanel.length && j++ <= genesNotInPanel.length) {
+        const row = []
+        row.push('')
+        row.push(genesInPanel[i])
+        row.push(genesNotInPanel[j])
+        data.push(row)
       }
-      this.downloadResult(result)
-      //this.showDialog = false;
-    },
-    downloadResult(panel: any) {
-      const content = this.formatResult(panel, false)
-      const filename = panel.name.replaceAll(/[ ]+/g, '_') + '.json'
-      download(filename, content, 'text/json')
+
+      if(i < genesInPanel.length) {
+        while(i++ <= genesInPanel.length) {
+          const row = []
+          row.push('')
+          row.push(genesInPanel[i])
+          row.push('')
+          data.push(row)
+        }
+      }
+
+      if(j < genesNotInPanel.length) {
+        while(j++ <= genesNotInPanel.length) {
+          const row = []
+          row.push('')
+          row.push('')
+          row.push(genesNotInPanel[j])
+          data.push(row)
+        }
+      }
+
+      const csv = Papa.unparse({
+        fields: headers,
+        data: data,
+      })
+      download(panelName + '.csv', csv, 'text/csv')
     },
     formatResult(panel: any, pretty: boolean) {
       return formatObjetToJson(panel, pretty)
