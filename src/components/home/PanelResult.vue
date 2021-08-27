@@ -74,7 +74,7 @@
       <template v-slot:action-buttons>
         <v-btn class="primary" @click="downloadGenes(panelName, panelGenes)">
           {{ $t('panel-result.dialog.button.download') }}
-          <v-icon>mdi-download</v-icon>
+          <v-icon right>mdi-download</v-icon>
         </v-btn>
       </template>
     </dialog-template>
@@ -169,7 +169,11 @@
           <template v-slot:[`item.actions`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn icon v-on="on" @click.stop="downloadGenes(item.name, item.panelGenes)">
+                <v-btn
+                  icon
+                  v-on="on"
+                  @click.stop="downloadGenes(item.name, item.panelGenes)"
+                >
                   <v-icon>mdi-download</v-icon>
                 </v-btn>
               </template>
@@ -200,8 +204,8 @@ import {
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import DialogTemplate from '@/components/DialogTemplate.vue'
 import { ListItem } from '@/types/ui-types'
-import Papa from "papaparse";
-import {transpose} from "@/utils/arrays";
+import Papa from 'papaparse'
+import { transpose } from '@/utils/arrays'
 
 export default Vue.extend({
   components: {
@@ -281,7 +285,6 @@ export default Vue.extend({
       }
       return length
     },
-
   },
   watch: {},
   methods: {
@@ -294,11 +297,15 @@ export default Vue.extend({
       this.currentInstitution = institution
       this.institutionDialog = true
     },
-    downloadGenes(panelName:string, genes: PanelGenes) {
+    downloadGenes(panelName: string, genes: PanelGenes) {
       const headers = []
-      headers.push(this.$t('panel-result.csv.headers.panel-result.gene-panel-name'))
+      headers.push(
+        this.$t('panel-result.csv.headers.panel-result.gene-panel-name')
+      )
       headers.push(this.$t('panel-result.csv.headers.panel-result.genes-found'))
-      headers.push(this.$t('panel-result.csv.headers.panel-result.genes-not-found'))
+      headers.push(
+        this.$t('panel-result.csv.headers.panel-result.genes-not-found')
+      )
 
       const panelNames = []
       panelNames.push(panelName)
@@ -372,31 +379,51 @@ export default Vue.extend({
       )
     },
     downloadPanelResult() {
-      const headers = [];
-      headers.push(this.$t('panel-result.csv.headers.panel-result.institution-name'))
-      headers.push(this.$t('panel-result.csv.headers.panel-result.institution-phone'))
-      headers.push(this.$t('panel-result.csv.headers.panel-result.institution-email'))
-      headers.push(this.$t('panel-result.csv.headers.panel-result.institution-website'))
-      headers.push(this.$t('panel-result.csv.headers.panel-result.gene-panel-name'))
+      const headers = []
+      headers.push(
+        this.$t('panel-result.csv.headers.panel-result.institution-name')
+      )
+      headers.push(
+        this.$t('panel-result.csv.headers.panel-result.institution-phone')
+      )
+      headers.push(
+        this.$t('panel-result.csv.headers.panel-result.institution-email')
+      )
+      headers.push(
+        this.$t('panel-result.csv.headers.panel-result.institution-website')
+      )
+      headers.push(
+        this.$t('panel-result.csv.headers.panel-result.gene-panel-name')
+      )
       headers.push(this.$t('panel-result.csv.headers.panel-result.genes-found'))
-      headers.push(this.$t('panel-result.csv.headers.panel-result.genes-not-found'))
+      headers.push(
+        this.$t('panel-result.csv.headers.panel-result.genes-not-found')
+      )
 
-      const data:any = []
+      const data: any = []
 
-      this.panelContent.forEach(panelContent => {
+      this.panelContent.forEach((panelContent) => {
         const row = []
 
-        let institution : Institution = new Institution('', '', '', '', [])
-        if((panelContent as PanelResultFormattedRow).institution !== null) {
-          institution = (((panelContent as PanelResultFormattedRow).institution as ListItem).item as Institution)
+        let institution: Institution = new Institution('', '', '', '', [])
+        if ((panelContent as PanelResultFormattedRow).institution !== null) {
+          institution = (
+            (panelContent as PanelResultFormattedRow).institution as ListItem
+          ).item as Institution
         }
         row.push(institution.name)
         row.push(institution.phone)
         row.push(institution.email)
         row.push(institution.website)
         row.push((panelContent as PanelResultFormattedRow).name)
-        row.push((panelContent as PanelResultFormattedRow).panelGenes.genesInPanel.length)
-        row.push((panelContent as PanelResultFormattedRow).panelGenes.genesNotInPanel.length)
+        row.push(
+          (panelContent as PanelResultFormattedRow).panelGenes.genesInPanel
+            .length
+        )
+        row.push(
+          (panelContent as PanelResultFormattedRow).panelGenes.genesNotInPanel
+            .length
+        )
         data.push(row)
       })
 
@@ -405,7 +432,7 @@ export default Vue.extend({
         data: data,
       })
       download('panels_result.csv', csv, 'text/csv')
-    }
+    },
   },
 })
 </script>
