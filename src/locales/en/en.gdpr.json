@@ -2,7 +2,7 @@
   "gdpr": {
     "title": "This site uses cookies",
     "doNotTrack": "We do not track you.",
-    "cookieUsage": "We use cookies to remember you came here and localStorage for your last 3 gene searches.",
+    "cookieUsage": "We use cookies to remember you came here and localStorage for your last 3 gene searches and language preference.",
     "learnMore": "Click here to learn more",
     "catCustomization": "Customization",
     "catAd": "Advertising cookies and technologies",

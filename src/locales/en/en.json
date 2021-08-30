@@ -1,25 +1,16 @@
 {
   "buildPanels": {
-    "existingPanels": {
-      "text": "Existing Panel Files:"
-    },
-    "rawPanels": {
-      "text": "Raw Panel Files:"
-    },
-    "panelName": {
-      "text": "Panel Name"
-    },
+    "existingPanels": {},
+    "rawPanels": {},
+    "panelName": {},
     "selectInstitution": {
       "text": "Select an institution"
     },
     "selectPanel": {
       "text": "Select a panel"
     },
-    "sourceFile": {
-      "text": "Source File"
-    },
+    "sourceFile": {},
     "new": {
-      "text": "Add New",
       "tooltip": "Add a Panel to the List"
     },
     "saveAll": {
@@ -29,7 +20,7 @@
     "resetAll": {
       "text": "Reset",
       "tooltip": {
-        "part1": "Reset panels. All changes will be lost",
+        "part1": "Reset entries. All changes will be lost",
         "part2": "(including saved data)."
       }
     },
@@ -47,76 +38,6 @@
     },
     "duplicate": {
       "text": "File already exists"
-    }
-  },
-
-  "navigation": {
-    "home": {
-      "text": "Home",
-      "toolbar": {
-        "text": "Find Genes in Panel"
-      },
-      "title": {
-        "text": "Home"
-      }
-    },
-    "mini": {
-      "text": "Hide Menu",
-      "tooltip": "Show/Hide Menu"
-    },
-    "utils": {
-      "text": "Manage",
-      "toolbar": {
-        "text": "Tools for Admins"
-      },
-      "title": {
-        "text": "Manage"
-      }
-    },
-    "explore": {
-      "text": "Explore",
-      "toolbar": {
-        "text": "Browse Data"
-      },
-      "title": {
-        "text": "Explore"
-      }
-    },
-    "error": {
-      "title": {
-        "text": "Error Page"
-      },
-      "toolbar": {
-        "text": "Oops..."
-      },
-      "content": {
-        "text": {
-          "part1": "The page you are trying to reach does not exist.",
-          "part2": "Take me home"
-        }
-      }
-    },
-    "help": {
-      "text": "Help",
-      "title": {
-        "text": "Help"
-      },
-      "toolbar": {
-        "text": "Help Section"
-      }
-    },
-    "tabs": {
-      "results": "Results",
-      "compare": "Compare",
-      "panels": "Panels",
-      "institutions": "Institutions",
-      "genome": "Genome",
-      "database": "Database",
-      "theme": "Theme",
-      "cookies": "Cookies",
-      "files": "Files",
-      "install": "Install",
-      "manage": "Manage"
     }
   },
   "themePicker": {
@@ -198,7 +119,6 @@
     },
     "dialog": {
       "title-institution-details": "Institution Details",
-      "institutionWebsite-link": "Go to Website",
       "title": "Panel Details",
       "table": {
         "genesFound": "Genes Found",
@@ -299,18 +219,12 @@
       "part2": "Replace assets/institutions.json on your server to make the changes permanent for all users."
     },
     "resetAll": {
-      "text": "Reset",
-      "tooltip": {
-        "part1": "Reset institutions. All changes will be lost",
-        "part2": "(including saved data)."
-      }
+      "tooltip": {}
     }
   },
-
   "institutionDetails": {
     "name": {
       "text": "Name",
-      "tooltip": "Institution Name",
       "rules": {
         "required": "Institution Name is required",
         "length": "Institution Name must be less than 50 characters",
@@ -319,28 +233,24 @@
     },
     "phone": {
       "text": "Phone",
-      "tooltip": "Institution Phone",
       "rules": {
         "valid": "Invalid Institution Phone Number"
       }
     },
     "email": {
       "text": "Email",
-      "tooltip": "Primary Contact Email",
       "rules": {
         "valid": "Invalid Institution E-mail"
       }
     },
     "website": {
       "text": "Website",
-      "tooltip": "Institution Website",
       "rules": {
         "valid": "Institution Website is not in proper format"
       }
     },
     "panels": {
-      "text": "Panels",
-      "tooltip": "Institution Gene Panels"
+      "text": "Panels"
     }
   },
   "explore": {

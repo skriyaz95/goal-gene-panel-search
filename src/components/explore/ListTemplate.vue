@@ -7,7 +7,7 @@
     <v-card-text>
       <slot name="info"></slot>
       <v-autocomplete
-        :label="$t(dropDownLabel)"
+        :label="dropDownLabel"
         clearable
         :items="searchableItems"
         :value="item"

@@ -7,7 +7,7 @@
           :itemsSorted="tempPanelSorted"
           :editable="editable"
           @delete="deletePanel($event)"
-          dropDownLabel="buildPanels.selectPanel.text"
+          :dropDownLabel="dropDownLabel"
           icon="mdi-dna"
         >
           <template v-slot:title>
@@ -331,6 +331,9 @@ export default Vue.extend({
     }),
     item(): number {
       return Number.parseInt(this.$route.params.item)
+    },
+    dropDownLabel(): string {
+      return this.$t('buildPanels.selectPanel.text').toString()
     },
   },
   mounted() {

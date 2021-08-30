@@ -1,0 +1,74 @@
+{
+  "navigation": {
+    "home": {
+      "text": "Home",
+      "toolbar": {
+        "text": "Find Genes in Panel"
+      },
+      "title": {
+        "text": "Home"
+      }
+    },
+    "mini": {
+      "text": "Hide Menu",
+      "tooltip": "Show/Hide Menu"
+    },
+    "utils": {
+      "text": "Manage",
+      "toolbar": {
+        "text": "Tools for Admins"
+      },
+      "title": {
+        "text": "Manage"
+      }
+    },
+    "explore": {
+      "text": "Explore",
+      "toolbar": {
+        "text": "Browse Data"
+      },
+      "title": {
+        "text": "Explore"
+      }
+    },
+    "error": {
+      "title": {
+        "text": "Error Page"
+      },
+      "toolbar": {
+        "text": "Oops..."
+      },
+      "content": {
+        "text": {
+          "part1": "The page you are trying to reach does not exist.",
+          "part2": "Take me home"
+        }
+      }
+    },
+    "help": {
+      "text": "Help",
+      "title": {
+        "text": "Help"
+      },
+      "toolbar": {
+        "text": "Help Section"
+      }
+    },
+    "tabs": {
+      "results": "Results",
+      "compare": "Compare",
+      "panels": "Panels",
+      "institutions": "Institutions",
+      "genome": "Genome",
+      "database": "Database",
+      "theme": "Theme",
+      "cookies": "Cookies",
+      "files": "Files",
+      "install": "Install",
+      "manage": "Manage"
+    },
+    "translate": {
+      "text": "Translate"
+    }
+  }
+}

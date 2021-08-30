@@ -6,7 +6,7 @@
         :itemsSorted="tempInstitutionSorted"
         :editable="editable"
         @delete="deleteInstitution($event)"
-        dropDownLabel="buildPanels.selectInstitution.text"
+        :dropDownLabel="dropDownLabel"
         icon="mdi-bank-outline"
       >
         <template v-slot:title>
@@ -236,6 +236,9 @@ export default Vue.extend({
     },
     item(): number {
       return Number.parseInt(this.$route.params.item)
+    },
+    dropDownLabel(): string {
+      return this.$t('buildPanels.selectInstitution.text').toString()
     },
   },
   mounted() {

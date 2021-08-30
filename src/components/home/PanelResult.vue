@@ -299,13 +299,9 @@ export default Vue.extend({
     },
     downloadGenes(panelName: string, genes: PanelGenes) {
       const headers = []
-      headers.push(
-        this.$t('panelResult.csv.headers.panel-result.genePanelName')
-      )
-      headers.push(this.$t('panelResult.csv.headers.panel-result.genesFound'))
-      headers.push(
-        this.$t('panelResult.csv.headers.panel-result.genesNotFound')
-      )
+      headers.push(this.$t('panelResult.csv.headers.panelResult.genePanelName'))
+      headers.push(this.$t('panelResult.csv.headers.panelResult.genesFound'))
+      headers.push(this.$t('panelResult.csv.headers.panelResult.genesNotFound'))
 
       const panelNames = []
       panelNames.push(panelName)
@@ -381,24 +377,20 @@ export default Vue.extend({
     downloadPanelResult() {
       const headers = []
       headers.push(
-        this.$t('panelResult.csv.headers.panel-result.institutionName')
+        this.$t('panelResult.csv.headers.panelResult.institutionName')
       )
       headers.push(
-        this.$t('panelResult.csv.headers.panel-result.institutionPhone')
+        this.$t('panelResult.csv.headers.panelResult.institutionPhone')
       )
       headers.push(
-        this.$t('panelResult.csv.headers.panel-result.institutionEmail')
+        this.$t('panelResult.csv.headers.panelResult.institutionEmail')
       )
       headers.push(
-        this.$t('panelResult.csv.headers.panel-result.institutionWebsite')
+        this.$t('panelResult.csv.headers.panelResult.institutionWebsite')
       )
-      headers.push(
-        this.$t('panelResult.csv.headers.panel-result.genePanelName')
-      )
-      headers.push(this.$t('panelResult.csv.headers.panel-result.genesFound'))
-      headers.push(
-        this.$t('panelResult.csv.headers.panel-result.genesNotFound')
-      )
+      headers.push(this.$t('panelResult.csv.headers.panelResult.genePanelName'))
+      headers.push(this.$t('panelResult.csv.headers.panelResult.genesFound'))
+      headers.push(this.$t('panelResult.csv.headers.panelResult.genesNotFound'))
 
       const data: any = []
 
