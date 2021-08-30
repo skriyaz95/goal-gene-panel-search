@@ -28,6 +28,7 @@ export default {
         this.footerHeight
     },
   },
+  computed: {},
   mounted() {
     this.$nextTick(() => {
       this.onResize()

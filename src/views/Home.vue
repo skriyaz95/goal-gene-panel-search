@@ -88,6 +88,7 @@
             <v-tabs-items v-model="tab" class="background">
               <v-tab-item value="results">
                 <panel-result
+                  ref="panelResult"
                   :help="showHelp"
                   @help="handleHelp"
                   :loading="searchingPanels"
@@ -97,6 +98,7 @@
               </v-tab-item>
               <v-tab-item value="compare">
                 <panel-compare
+                  ref="panelCompare"
                   :help="showHelp"
                   @help="handleHelp"
                   :loading="searchingPanels"
@@ -124,7 +126,9 @@ import ParsedInput from '@/components/home/ParsedInput.vue'
 import PanelResult from '@/components/home/PanelResult.vue'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import {
-  Institution, PanelGenes, PanelResultFormattedRow,
+  Institution,
+  PanelGenes,
+  PanelResultFormattedRow,
   PanelSearchResult,
   ParsedGenes,
 } from '@/types/panel-types'
@@ -132,7 +136,7 @@ import PanelCompare from '@/components/home/PanelCompare.vue'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 import { FormatCompareItemsPayload } from '@/types/payload-types'
 import { getCookie, setCookie } from '@/utils/cookies'
-import {ActiveState, ListItem, TableHeader} from '@/types/ui-types'
+import { ActiveState, ListItem, TableHeader } from '@/types/ui-types'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import RecallSearches from '@/components/home/RecallSearches.vue'
 
@@ -171,18 +175,18 @@ export default Vue.extend({
     }),
     panelContent(): Array<PanelResultFormattedRow> {
       return (this.panelSearchResults as Array<PanelSearchResult>).map(
-          (panel: PanelSearchResult) => {
-            let institution = this.institutionsByPanel.get(panel.name)
-            if (!institution) {
-              institution = {}
-            }
-
-            return new PanelResultFormattedRow(
-                panel.name,
-                new PanelGenes(panel.genesInPanel, panel.genesNotInPanel),
-                new ListItem(institution, true)
-            )
+        (panel: PanelSearchResult) => {
+          let institution = this.institutionsByPanel.get(panel.name)
+          if (!institution) {
+            institution = {}
           }
+
+          return new PanelResultFormattedRow(
+            panel.name,
+            new PanelGenes(panel.genesInPanel, panel.genesNotInPanel),
+            new ListItem(institution, true)
+          )
+        }
       )
     },
     tab: {
@@ -290,6 +294,16 @@ export default Vue.extend({
         tabComponent.callSlider()
       }
     },
+    resizeTables() {
+      const elt1: any = this.$refs.panelResult
+      if (elt1 !== undefined) {
+        elt1.resize()
+      }
+      const elt2: any = this.$refs.panelCompare
+      if (elt2 !== undefined) {
+        elt2.resize()
+      }
+    },
   },
   mounted() {
     document.title = 'GTI ' + this.$t('navigation.home.title.text')
@@ -325,6 +339,7 @@ export default Vue.extend({
         ) //replace placeholder with i18n value
         this.compareHeaders = event.data.headers
         this.initInstitutionVisibleState()
+        this.resizeTables()
       }
     }
     this.initVisibleInstitutions()

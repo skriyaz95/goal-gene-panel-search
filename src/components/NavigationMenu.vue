@@ -175,7 +175,6 @@ export default Vue.extend({
     mini: false,
     activeClass: 'primary lighten-1 font-weight-bold',
     activeClassExact: 'primary lighten-2 font-weight-bold',
-    currentLang: 'en',
   }),
   computed: {
     iconRotation() {
@@ -230,7 +229,11 @@ export default Vue.extend({
     },
     langs(): any[] {
       return (this.$i18n as VueI18n).availableLocales.map((l) => {
-        return { text: l.toUpperCase(), value: l }
+        let text = l.toUpperCase()
+        if (l !== 'en') {
+          text += ' (beta)'
+        }
+        return { text: text, value: l }
       })
     },
   },

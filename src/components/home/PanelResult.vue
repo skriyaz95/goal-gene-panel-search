@@ -119,68 +119,74 @@
           <b>{{ $t('panelResult.result.invalidGenesTitle') }}:</b>
           {{ invalidLength }}
         </div>
-        <v-data-table
-          :headers="tableHeaders"
-          :items="panelContent"
-          item-key="name"
-          :custom-sort="customSort"
-        >
-          <template v-slot:[`item.institution`]="{ item }">
-            <v-tooltip bottom v-if="!isInstitutionEmpty(item.institution)">
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  text
-                  v-on="on"
-                  @click.stop="openInstitutionDetails(item.institution)"
-                >
-                  {{ item.institution.item.name }}
-                  <v-icon>mdi-arrow-top-right-thick</v-icon>
-                </v-btn>
+        <resizable-page ref="resizablePage">
+          <template v-slot:table="tableProps">
+            <v-data-table
+              :height="tableProps.tableHeight"
+              :headers="tableHeaders"
+              :items="panelContent"
+              item-key="name"
+              :custom-sort="customSort"
+              fixed-header
+            >
+              <template v-slot:[`item.institution`]="{ item }">
+                <v-tooltip bottom v-if="!isInstitutionEmpty(item.institution)">
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      text
+                      v-on="on"
+                      @click.stop="openInstitutionDetails(item.institution)"
+                    >
+                      {{ item.institution.item.name }}
+                      <v-icon>mdi-arrow-top-right-thick</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>{{ $t('panelResult.showInstitutionDetails') }}</span>
+                </v-tooltip>
               </template>
-              <span>{{ $t('panelResult.showInstitutionDetails') }}</span>
-            </v-tooltip>
-          </template>
-          <template v-slot:[`item.panelGenes`]="{ item }">
-            <v-tooltip bottom v-if="notEmpty(item)">
-              <template v-slot:activator="{ on }">
-                <v-progress-linear
-                  :value="countFoundNotFound(item)"
-                  color="primary"
-                  background-color="warning lighten-1"
-                  height="25"
-                  dark
-                  v-on="on"
-                  @click="openDialog(item)"
-                  class="sim-button"
-                >
-                  <div class="d-flex justify-space-between col-12">
-                    <span>
-                      {{ item.panelGenes.genesInPanel.length }}
-                    </span>
-                    <span>
-                      {{ item.panelGenes.genesNotInPanel.length }}
-                    </span>
-                  </div>
-                </v-progress-linear>
+              <template v-slot:[`item.panelGenes`]="{ item }">
+                <v-tooltip bottom v-if="notEmpty(item)">
+                  <template v-slot:activator="{ on }">
+                    <v-progress-linear
+                      :value="countFoundNotFound(item)"
+                      color="primary"
+                      background-color="warning lighten-1"
+                      height="25"
+                      dark
+                      v-on="on"
+                      @click="openDialog(item)"
+                      class="sim-button"
+                    >
+                      <div class="d-flex justify-space-between col-12">
+                        <span>
+                          {{ item.panelGenes.genesInPanel.length }}
+                        </span>
+                        <span>
+                          {{ item.panelGenes.genesNotInPanel.length }}
+                        </span>
+                      </div>
+                    </v-progress-linear>
+                  </template>
+                  <span>{{ $t('panelResult.chip.showGenes') }}</span>
+                </v-tooltip>
               </template>
-              <span>{{ $t('panelResult.chip.showGenes') }}</span>
-            </v-tooltip>
-          </template>
-          <template v-slot:[`item.actions`]="{ item }">
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  v-on="on"
-                  @click.stop="downloadGenes(item.name, item.panelGenes)"
-                >
-                  <v-icon>mdi-download</v-icon>
-                </v-btn>
+              <template v-slot:[`item.actions`]="{ item }">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      icon
+                      v-on="on"
+                      @click.stop="downloadGenes(item.name, item.panelGenes)"
+                    >
+                      <v-icon>mdi-download</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>{{ $t('panelResult.saveResult.tooltip') }}</span>
+                </v-tooltip>
               </template>
-              <span>{{ $t('panelResult.saveResult.tooltip') }}</span>
-            </v-tooltip>
+            </v-data-table>
           </template>
-        </v-data-table>
+        </resizable-page>
       </v-card-text>
     </v-card>
   </div>
@@ -206,6 +212,7 @@ import DialogTemplate from '@/components/DialogTemplate.vue'
 import { ListItem } from '@/types/ui-types'
 import Papa from 'papaparse'
 import { transpose } from '@/utils/arrays'
+import ResizablePage from '@/components/ResizablePage.vue'
 
 export default Vue.extend({
   components: {
@@ -214,6 +221,7 @@ export default Vue.extend({
     InfoAlert,
     InstitutionDetails,
     DialogTemplate,
+    ResizablePage,
   },
   name: 'PanelResult',
   props: {
@@ -424,6 +432,12 @@ export default Vue.extend({
         data: data,
       })
       download('panels_result.csv', csv, 'text/csv')
+    },
+    resize() {
+      const elt: any = this.$refs.resizablePage
+      if (elt !== undefined) {
+        elt.onResize()
+      }
     },
   },
 })

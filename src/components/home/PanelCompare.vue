@@ -274,6 +274,12 @@ export default Vue.extend({
       })
       download('compare_panels.csv', csv, 'text/csv')
     },
+    resize() {
+      const elt: any = this.$refs.resizablePage
+      if (elt !== undefined) {
+        elt.onResize()
+      }
+    },
   },
   mounted() {},
 })
