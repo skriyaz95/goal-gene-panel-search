@@ -2,7 +2,7 @@
   <div>
     <v-card outlined :raised="firstTime">
       <v-card-title>
-        {{ $t('userInput.gene-list') }}
+        {{ $t('userInput.geneSearch') }}
         <v-spacer></v-spacer>
         <v-scroll-x-transition>
           <v-alert
@@ -43,7 +43,7 @@
         <v-form ref="form" v-model="isFormValid">
           <v-textarea
             v-model="geneList"
-            name="gene-list"
+            name="geneSearch"
             :label="$t('userInput.label')"
             :rules="geneListRules"
             clearable
@@ -120,9 +120,9 @@ export default Vue.extend({
   computed: {
     ...mapGetters({}),
     geneListRules(): any {
-      // const x = this.$t('userInput.validation.list-empty')
-      // const y = this.$t('userInput.validation.list-min-characters')
-      const z = this.$t('userInput.validation.list-regex')
+      // const x = this.$t('userInput.validation.listEmpty')
+      // const y = this.$t('userInput.validation.listMinCharacters')
+      const z = this.$t('userInput.validation.listRegex')
       // const emptyRule = (v:string) => (v != null && v.trim().length > 0) || x;
       // const lengthRule = (v: string) => (v != null && v.trim().length >= 2) || y
       const symbolRule = (v: string) => this.validCharacters.test(v) || z

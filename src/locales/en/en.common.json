@@ -1,0 +1,60 @@
+{
+  "button": {
+    "buildPanels": {
+      "text": "Build Panels",
+      "tooltip": "Parse CSV Files to JSON Gene Panels"
+    },
+    "link": {
+      "repo": {
+        "text": "Latest Version",
+        "tooltip": "Open Github in a new tab"
+      }
+    },
+    "saveAllPanels": {
+      "text": "Save All",
+      "tooltip": "Download all JSON Gene Panels"
+    },
+    "saveOnePanel": {
+      "tooltip": "Save this Panel"
+    },
+    "saveAllGenes": {
+      "tootip": "Save all Genes"
+    },
+    "cannotSaveOnePanel": {
+      "tooltip": "Cannot Save if Contains Not Found or Synonyms"
+    },
+    "saveWarning": {
+      "tooltip": "GTI will skip 'Not Found' and replace Synonyms"
+    },
+    "showHide": {
+      "tooltip": "Show/Hide"
+    },
+    "demo": {
+      "text": "Demo"
+    },
+    "help": {
+      "text": "Help"
+    },
+    "outlined": {
+      "text": "Outlined",
+      "toolip": "Use filled or outlined mode"
+    },
+    "accept": {
+      "text": "Accept"
+    },
+    "refuse": {
+      "text": "Refuse"
+    },
+    "download": {
+      "tooltip": "Download"
+    }
+  },
+  "count": {
+    "gene": "{count} gene | {count} genes"
+  },
+  "input": {
+    "details": {
+      "text": "Open Details"
+    }
+  }
+}

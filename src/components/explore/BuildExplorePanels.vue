@@ -166,7 +166,7 @@ export default Vue.extend({
       const fileName = (this.panelFile as any).name
       if (!fileName.match(/.(csv|bed)$/i)) {
         this.errorMessage = this.$t(
-          'buildPanels.validation.accepted-files'
+          'buildPanels.validation.acceptedFiles'
         ) as string
         return
       }
@@ -296,14 +296,14 @@ export default Vue.extend({
       if (extension == '.csv') {
         if (rowItems.length < 1) {
           this.errorMessage = this.$t(
-            'buildPanels.validation.csv-file-not-valid'
+            'buildPanels.validation.csvFileNotValid'
           ) as string
           return
         }
       } else {
         if (rowItems.length < 4) {
           this.errorMessage = this.$t(
-            'buildPanels.validation.bed-file-not-valid'
+            'buildPanels.validation.bedFileNotValid'
           ) as string
           return
         }

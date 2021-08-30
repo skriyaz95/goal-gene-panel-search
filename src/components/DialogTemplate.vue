@@ -16,7 +16,7 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </template>
-          <span>{{ $t('panel-result.dialog.button.close') }}</span>
+          <span>{{ $t('panelResult.dialog.button.close') }}</span>
         </v-tooltip>
       </v-toolbar>
 
@@ -27,7 +27,7 @@
         <v-spacer></v-spacer>
         <slot name="action-buttons"></slot>
         <v-btn @click="close()">
-          {{ $t('panel-result.dialog.button.close') }}
+          {{ $t('panelResult.dialog.button.close') }}
         </v-btn>
       </v-card-actions>
     </v-card>

@@ -6,7 +6,7 @@
       @closing="institutionDialog = false"
     >
       <template v-slot:title>
-        {{ $t('panel-result.dialog.title-institution-details') }}
+        {{ $t('panelResult.dialog.title-institution-details') }}
       </template>
       <template v-slot:content>
         <institution-details :institution="currentInstitution" />
@@ -18,7 +18,7 @@
       @closing="showDialog = false"
     >
       <template v-slot:title>
-        {{ $t('panel-result.dialog.title') }}:
+        {{ $t('panelResult.dialog.title') }}:
         {{ panelName }}
       </template>
       <template v-slot:content>
@@ -29,7 +29,7 @@
                 <thead class="pt-2">
                   <tr>
                     <th class="text-left">
-                      {{ $t('panel-result.dialog.table.genesFound') }}
+                      {{ $t('panelResult.dialog.table.genesFound') }}
                     </th>
                   </tr>
                 </thead>
@@ -52,7 +52,7 @@
                 <thead class="pt-2">
                   <tr>
                     <th class="text-left">
-                      {{ $t('panel-result.dialog.table.genesNotFound') }}
+                      {{ $t('panelResult.dialog.table.genesNotFound') }}
                     </th>
                   </tr>
                 </thead>
@@ -73,7 +73,7 @@
       </template>
       <template v-slot:action-buttons>
         <v-btn class="primary" @click="downloadGenes(panelName, panelGenes)">
-          {{ $t('panel-result.dialog.button.download') }}
+          {{ $t('panelResult.dialog.button.download') }}
           <v-icon right>mdi-download</v-icon>
         </v-btn>
       </template>
@@ -81,7 +81,7 @@
 
     <v-card outlined>
       <v-card-title>
-        {{ $t('panel-result.result.name') }}
+        {{ $t('panelResult.result.name') }}
         <v-spacer></v-spacer>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
@@ -112,11 +112,11 @@
           </template>
         </info-alert>
         <div class="text-left" v-if="symbolOrSynonymLength > 0">
-          <b>{{ $t('panel-result.result.title') }}:</b>
+          <b>{{ $t('panelResult.result.title') }}:</b>
           {{ symbolOrSynonymLength }}
         </div>
         <div class="text-left" v-if="invalidLength > 0">
-          <b>{{ $t('panel-result.result.invalidGenesTitle') }}:</b>
+          <b>{{ $t('panelResult.result.invalidGenesTitle') }}:</b>
           {{ invalidLength }}
         </div>
         <v-data-table
@@ -137,7 +137,7 @@
                   <v-icon>mdi-arrow-top-right-thick</v-icon>
                 </v-btn>
               </template>
-              <span>{{ $t('panel-result.show-institution-details') }}</span>
+              <span>{{ $t('panelResult.showInstitutionDetails') }}</span>
             </v-tooltip>
           </template>
           <template v-slot:[`item.panelGenes`]="{ item }">
@@ -163,7 +163,7 @@
                   </div>
                 </v-progress-linear>
               </template>
-              <span>{{ $t('panel-result.chip.show-genes') }}</span>
+              <span>{{ $t('panelResult.chip.showGenes') }}</span>
             </v-tooltip>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
@@ -177,7 +177,7 @@
                   <v-icon>mdi-download</v-icon>
                 </v-btn>
               </template>
-              <span>{{ $t('panel-result.tooltip.save-result') }}</span>
+              <span>{{ $t('panelResult.saveResult.tooltip') }}</span>
             </v-tooltip>
           </template>
         </v-data-table>
@@ -241,21 +241,21 @@ export default Vue.extend({
       panelGenes: new PanelGenes([], []),
       tableHeaders: [
         {
-          text: this.$t('panel-result.table.headers.institution-name'),
+          text: this.$t('panelResult.table.headers.institutionName'),
           align: 'start',
           value: 'institution',
         },
         {
-          text: this.$t('panel-result.table.headers.panel-name'),
+          text: this.$t('panelResult.table.headers.panelName'),
           value: 'name',
         },
         {
-          text: this.$t('panel-result.table.headers.genes'),
+          text: this.$t('panelResult.table.headers.genes'),
           value: 'panelGenes',
           sortable: false,
         },
         {
-          text: this.$t('panel-result.table.headers.actions'),
+          text: this.$t('panelResult.table.headers.actions'),
           value: 'actions',
           sortable: false,
         },
@@ -300,11 +300,11 @@ export default Vue.extend({
     downloadGenes(panelName: string, genes: PanelGenes) {
       const headers = []
       headers.push(
-        this.$t('panel-result.csv.headers.panel-result.gene-panel-name')
+        this.$t('panelResult.csv.headers.panel-result.genePanelName')
       )
-      headers.push(this.$t('panel-result.csv.headers.panel-result.genes-found'))
+      headers.push(this.$t('panelResult.csv.headers.panel-result.genesFound'))
       headers.push(
-        this.$t('panel-result.csv.headers.panel-result.genes-not-found')
+        this.$t('panelResult.csv.headers.panel-result.genesNotFound')
       )
 
       const panelNames = []
@@ -381,23 +381,23 @@ export default Vue.extend({
     downloadPanelResult() {
       const headers = []
       headers.push(
-        this.$t('panel-result.csv.headers.panel-result.institution-name')
+        this.$t('panelResult.csv.headers.panel-result.institutionName')
       )
       headers.push(
-        this.$t('panel-result.csv.headers.panel-result.institution-phone')
+        this.$t('panelResult.csv.headers.panel-result.institutionPhone')
       )
       headers.push(
-        this.$t('panel-result.csv.headers.panel-result.institution-email')
+        this.$t('panelResult.csv.headers.panel-result.institutionEmail')
       )
       headers.push(
-        this.$t('panel-result.csv.headers.panel-result.institution-website')
+        this.$t('panelResult.csv.headers.panel-result.institutionWebsite')
       )
       headers.push(
-        this.$t('panel-result.csv.headers.panel-result.gene-panel-name')
+        this.$t('panelResult.csv.headers.panel-result.genePanelName')
       )
-      headers.push(this.$t('panel-result.csv.headers.panel-result.genes-found'))
+      headers.push(this.$t('panelResult.csv.headers.panel-result.genesFound'))
       headers.push(
-        this.$t('panel-result.csv.headers.panel-result.genes-not-found')
+        this.$t('panelResult.csv.headers.panel-result.genesNotFound')
       )
 
       const data: any = []

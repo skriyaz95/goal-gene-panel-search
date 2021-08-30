@@ -1,7 +1,6 @@
 import Vue from "vue"
 import Vuetify from "vuetify/lib/framework"
 import colors from "vuetify/lib/util/colors"
-import { VuetifyThemeVariant } from "vuetify/types/services/theme"
 
 Vue.use(Vuetify)
 

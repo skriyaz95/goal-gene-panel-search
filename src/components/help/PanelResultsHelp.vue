@@ -6,7 +6,7 @@ or a help card or other tutorial content
 <template>
   <div>
     <div class="pb-2">
-      <b>{{ $t('panel-result.result.name') }}</b>
+      <b>{{ $t('panelResult.result.name') }}</b>
       {{ $t('help.panelResults.part1a') }}
       {{ $t('help.panelResults.part1b') }}
       <b>{{ $t('parsedInput.title.text') }}.</b>
