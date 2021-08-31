@@ -66,19 +66,6 @@
               />
             </v-card-text>
           </v-card>
-          <!-- <v-btn
-            class="ma-2"
-            large
-            depressed
-            color="primary"
-            :disabled="!geneList || !isFormValid"
-            @click="submitUserInput(geneList, true)"
-          >
-            {{ $t('userInput.button.submit') }}
-          </v-btn>
-          <v-btn class="ma-2" large depressed @click="clear()">
-            {{ $t('userInput.button.clear') }}
-          </v-btn> -->
         </v-form>
       </v-card-text>
     </v-card>

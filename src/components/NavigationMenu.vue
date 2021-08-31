@@ -230,7 +230,8 @@ export default Vue.extend({
     langs(): any[] {
       return (this.$i18n as VueI18n).availableLocales.map((l) => {
         let text = l.toUpperCase()
-        if (l !== 'en') {
+        console.log(l)
+        if (l !== 'en' && l !== 'fr') {
           text += ' (beta)'
         }
         return { text: text, value: l }

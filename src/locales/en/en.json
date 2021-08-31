@@ -1,8 +1,5 @@
 {
   "buildPanels": {
-    "existingPanels": {},
-    "rawPanels": {},
-    "panelName": {},
     "selectInstitution": {
       "text": "Select an institution"
     },
@@ -67,10 +64,6 @@
     }
   },
   "userInput": {
-    "button": {
-      "clear": "Clear",
-      "submit": "Submit"
-    },
     "geneSearch": "Gene Search",
     "label": "Paste or Type Genes Here",
     "validation": {
@@ -217,9 +210,6 @@
     "info": {
       "part1": "All changes are temporary. They will be lost after reload.",
       "part2": "Replace assets/institutions.json on your server to make the changes permanent for all users."
-    },
-    "resetAll": {
-      "tooltip": {}
     }
   },
   "institutionDetails": {
