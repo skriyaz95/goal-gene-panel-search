@@ -1,0 +1,33 @@
+{
+  "gdpr": {
+    "title": "Ce site utilise des cookies",
+    "doNotTrack": "Le site ne collecte pas d'information sur ses utilisateurs.",
+    "cookieUsage": "Les cookies sont utilisés pour se ne pas répeter les mêmes informations lors des visites suivantes et localStorage garde en memoire les 3 dernières recherches de gènes et les préférences de langue.",
+    "learnMore": "Cliquez ici pour en savoir plus",
+    "catCustomization": "Personnalisation",
+    "catAd": "Cookies de publicité and technologies",
+    "source": "Source",
+    "purpose": "But",
+    "validity": "Validité",
+    "customization": {
+      "cookie1": {
+        "source": "Notre logiciel",
+        "purpose": "Ouvre les panneaux d'aide lors de la 1ere visite.",
+        "validity": "1 an"
+      },
+      "cookie2": {
+        "source": "Notre logiciel",
+        "purpose": "Ouvre les conditions d'utilisation (ce message) une seule fois.",
+        "validity": "1 an"
+      }
+    },
+    "ad": {
+      "cookie1": {
+        "source": "Google",
+        "purpose": "Google utilise ce domaine pour décharger le contenu statique (code JavaScript, images et CSS) vers un nom de domaine différent dans le but de réduire l'utilisation de la bande passante et d'augmenter les performances du réseau pour l'utilisateur final."
+      }
+    },
+    "agreement": "En utilisant cette application, vous acceptez que les cookies ci-dessus soient déposés sur votre ordinateur",
+    "refusal": "Si vous n'acceptez pas, les cookies seront supprimés et vous serez redirigés vers"
+  }
+}

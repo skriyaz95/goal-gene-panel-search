@@ -3,9 +3,10 @@
     :value="value"
     @input="$emit('input', $event)"
     :max-width="maxWidth"
+    scrollable
   >
     <v-card>
-      <v-toolbar class="primary title pr-2" flat dark dense>
+      <v-toolbar fixed class="primary title pr-2" flat dark dense>
         <slot name="title"></slot>
         <v-spacer></v-spacer>
         <slot name="toolbar-buttons"></slot>
@@ -15,18 +16,18 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </template>
-          <span>{{ $t('panel-result.dialog.button.close') }}</span>
+          <span>{{ $t('panelResult.dialog.button.close') }}</span>
         </v-tooltip>
       </v-toolbar>
 
-      <v-card-text>
+      <v-card-text class="pa-3">
         <slot name="content"></slot>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <slot name="action-buttons"></slot>
         <v-btn @click="close()">
-          {{ $t('panel-result.dialog.button.close') }}
+          {{ $t('panelResult.dialog.button.close') }}
         </v-btn>
       </v-card-actions>
     </v-card>

@@ -1,0 +1,43 @@
+{
+  "button": {
+    "buildPanels": {},
+    "link": {
+      "repo": {
+        "text": "Latest Version",
+        "tooltip": "Open Github in a new tab"
+      }
+    },
+    "saveAllPanels": {},
+    "saveOnePanel": {},
+    "saveAllGenes": {
+      "tootip": "Save all Genes"
+    },
+    "showHide": {
+      "tooltip": "Show/Hide"
+    },
+    "demo": {
+      "text": "Demo"
+    },
+    "help": {
+      "text": "Help"
+    },
+    "outlined": {
+      "text": "Outlined"
+    },
+    "accept": {
+      "text": "Accept"
+    },
+    "refuse": {
+      "text": "Refuse"
+    },
+    "download": {
+      "tooltip": "Download"
+    }
+  },
+  "count": {
+    "gene": "{count} gene | {count} genes"
+  },
+  "input": {
+    "details": {}
+  }
+}

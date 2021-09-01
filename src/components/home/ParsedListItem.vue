@@ -60,15 +60,7 @@
         </div>
         <div v-else>
           <span v-for="gene in items" :key="gene.gene.name">
-            <v-chip :outlined="chipOutlined" class="ma-1" :color="color">
-              <div class="d-flex align-center">
-                {{ gene.gene.name }}
-                <span v-if="synonym">
-                  <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
-                  {{ gene.realGene.symbol }}
-                </span>
-              </div>
-            </v-chip>
+            <gene-entry :parsedGene="gene"></gene-entry>
           </span>
         </div>
       </div>
@@ -83,7 +75,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
 
 export default Vue.extend({
   name: 'ParsedListItem',
@@ -94,16 +85,17 @@ export default Vue.extend({
     synonym: Boolean,
     hidable: Boolean,
     showLargeSets: Boolean,
+    square: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     visible: true,
     textOnly: false,
   }),
   computed: {
-    ...mapGetters({
-      chipOutlined: 'getChipOutlined',
-    }),
-    tooLarge() {
+    tooLarge(): boolean {
       return this.items.length >= 500
     },
   },

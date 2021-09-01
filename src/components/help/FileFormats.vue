@@ -118,7 +118,7 @@ export default Vue.extend({
             'ETV6_Fusion',
             ':ETV6:278717_15649951_ETV6_5',
           ],
-          validation: 'ETV6_Fusion' + this.$t('help.fileFormats.notValid'),
+          validation: 'ETV6_FUSION',
         },
         {
           line: [

@@ -123,17 +123,17 @@ export default Vue.extend({
       this.recordLastSelection(to)
     })
   },
+  created() {
+    const locale = localStorage.getItem('locale')
+    if (locale) {
+      this.$i18n.locale = locale
+    } else if (navigator.language) {
+      this.$i18n.locale = navigator.language.substring(0, 2)
+    }
+  },
   destroyed() {
     $getFindGenesWorker().terminate()
   },
 })
 </script>
 
-<style>
-.v-input.v-text-field.v-textarea .v-text-field__slot {
-  padding: 5px 10px 5px 5px; /*fix scrollbar overlapping with textarea outlined */
-}
-tr:nth-child(even) {
-  background-color: #fafafa;
-}
-</style>

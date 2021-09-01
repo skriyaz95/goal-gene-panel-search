@@ -6,7 +6,7 @@
       @closing="institutionDialog = false"
     >
       <template v-slot:title>
-        {{ $t('panel-result.dialog.title-institution-details') }}
+        {{ $t('panelResult.dialog.title-institution-details') }}
       </template>
       <template v-slot:content>
         <institution-details :institution="currentInstitution" />
@@ -18,52 +18,84 @@
       @closing="showDialog = false"
     >
       <template v-slot:title>
-        <span v-if="geneType === 'genesInPanel'">
-          {{ $t('panel-result.dialog.title-genes-in-panel') }}:
-          {{ panelName }}
-        </span>
-        <span v-else>
-          {{ $t('panel-result.dialog.title-genes-not-in-panel') }}:
-          {{ panelName }}
-        </span>
+        {{ $t('panelResult.dialog.title') }}:
+        {{ panelName }}
       </template>
       <template v-slot:content>
-        <v-virtual-scroll :items="genes" height="400" item-height="64">
-          <template v-slot:default="{ item }">
-            <v-list-item :key="item">
-              <v-list-item-content>
-                <v-list-item-title>
-                  <v-chip
-                    :outlined="chipOutlined"
-                    class="ma-1"
-                    :color="formatState(item)"
+        <v-row dense>
+          <v-col cols="12" md="6">
+            <v-simple-table fixed-header>
+              <template v-slot:default>
+                <thead class="pt-2">
+                  <tr>
+                    <th class="text-left">
+                      {{ $t('panelResult.dialog.table.genesFound') }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(item, index) in panelGenes.genesInPanel"
+                    :key="index"
                   >
-                    <div class="d-flex align-center">
-                      {{ item.gene }}
-                      <span v-if="item.synonym != ''">
-                        <v-icon class="ml-1">mdi-arrow-right-bold</v-icon>
-                        {{ item.synonym }}
-                      </span>
-                    </div>
-                  </v-chip>
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider />
-          </template>
-        </v-virtual-scroll>
+                    <td>
+                      <gene-entry :parsedGene="item"></gene-entry>
+                    </td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-simple-table fixed-header>
+              <template v-slot:default>
+                <thead class="pt-2">
+                  <tr>
+                    <th class="text-left">
+                      {{ $t('panelResult.dialog.table.genesNotFound') }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(item, index) in panelGenes.genesNotInPanel"
+                    :key="index"
+                  >
+                    <td>
+                      <gene-entry :parsedGene="item"></gene-entry>
+                    </td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-col>
+        </v-row>
       </template>
       <template v-slot:action-buttons>
-        <v-btn class="primary" @click="downloadGenes(genes)">
-          {{ $t('panel-result.dialog.button.save') }}
+        <v-btn class="primary" @click="downloadGenes(panelName, panelGenes)">
+          {{ $t('panelResult.dialog.button.download') }}
+          <v-icon right>mdi-download</v-icon>
         </v-btn>
       </template>
     </dialog-template>
 
     <v-card outlined>
       <v-card-title>
-        {{ $t('panel-result.result.name') }}
+        {{ $t('panelResult.result.name') }}
         <v-spacer></v-spacer>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              v-on="on"
+              :disabled="!panelContent || panelContent.length == 0"
+              icon
+              @click="downloadPanelResult()"
+            >
+              <v-icon>mdi-download </v-icon>
+            </v-btn>
+          </template>
+          <span>{{ $t('button.download.tooltip') }}</span>
+        </v-tooltip>
         <help-button @action="handleHelp()" :active="help">
           <template v-slot:content>
             <span>
@@ -80,77 +112,81 @@
           </template>
         </info-alert>
         <div class="text-left" v-if="symbolOrSynonymLength > 0">
-          <b>{{ $t('panel-result.result.title') }}:</b>
+          <b>{{ $t('panelResult.result.title') }}:</b>
           {{ symbolOrSynonymLength }}
         </div>
-        <div class="text-left" v-if="notFoundLength > 0">
-          <b>{{ $t('panel-result.result.not-found-genes-title') }}:</b>
-          {{ notFoundLength }}
+        <div class="text-left" v-if="invalidLength > 0">
+          <b>{{ $t('panelResult.result.invalidGenesTitle') }}:</b>
+          {{ invalidLength }}
         </div>
-        <v-data-table
-          :headers="tableHeaders"
-          :items="panelContent"
-          item-key="name"
-          :custom-sort="customSort"
-        >
-          <template v-slot:[`item.institution`]="{ item }">
-            <v-tooltip bottom v-if="!isInstitutionEmpty(item.institution)">
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  text
-                  v-on="on"
-                  @click.stop="openInstitutionDetails(item.institution)"
-                >
-                  {{ item.institution.item.name }}
-                  <v-icon>mdi-arrow-top-right-thick</v-icon>
-                </v-btn>
+        <resizable-page ref="resizablePage">
+          <template v-slot:table="tableProps">
+            <v-data-table
+              :height="tableProps.tableHeight"
+              :headers="tableHeaders"
+              :items="panelContent"
+              item-key="name"
+              :custom-sort="customSort"
+              fixed-header
+            >
+              <template v-slot:[`item.institution`]="{ item }">
+                <v-tooltip bottom v-if="!isInstitutionEmpty(item.institution)">
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      text
+                      v-on="on"
+                      @click.stop="openInstitutionDetails(item.institution)"
+                    >
+                      {{ item.institution.item.name }}
+                      <v-icon>mdi-arrow-top-right-thick</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>{{ $t('panelResult.showInstitutionDetails') }}</span>
+                </v-tooltip>
               </template>
-              <span>{{ $t('panel-result.show-institution-details') }}</span>
-            </v-tooltip>
-          </template>
-          <template v-slot:[`item.countGenesInPanel`]="{ item }">
-            <v-tooltip bottom v-if="item.countGenesInPanel > 0">
-              <template v-slot:activator="{ on }">
-                <v-chip
-                  :outlined="chipOutlined"
-                  class="ma-2"
-                  color="primary"
-                  v-on="on"
-                  @click.stop="openDialog(item, 'genesInPanel')"
-                >
-                  {{ item.countGenesInPanel }}
-                </v-chip>
+              <template v-slot:[`item.panelGenes`]="{ item }">
+                <v-tooltip bottom v-if="notEmpty(item)">
+                  <template v-slot:activator="{ on }">
+                    <v-progress-linear
+                      :value="countFoundNotFound(item)"
+                      color="primary"
+                      background-color="warning lighten-1"
+                      height="25"
+                      dark
+                      v-on="on"
+                      @click="openDialog(item)"
+                      class="sim-button"
+                    >
+                      <div class="d-flex justify-space-between col-12">
+                        <span>
+                          {{ item.panelGenes.genesInPanel.length }}
+                        </span>
+                        <span>
+                          {{ item.panelGenes.genesNotInPanel.length }}
+                        </span>
+                      </div>
+                    </v-progress-linear>
+                  </template>
+                  <span>{{ $t('panelResult.chip.showGenes') }}</span>
+                </v-tooltip>
               </template>
-              <span>{{ $t('panel-result.chip.show-genes') }}</span>
-            </v-tooltip>
-          </template>
-          <template v-slot:[`item.countGenesNotInPanel`]="{ item }">
-            <v-tooltip bottom v-if="item.countGenesNotInPanel > 0">
-              <template v-slot:activator="{ on }">
-                <v-chip
-                  :outlined="chipOutlined"
-                  class="ma-2 secondary"
-                  text-color="black"
-                  v-on="on"
-                  @click.stop="openDialog(item, 'genesNotInPanel')"
-                >
-                  {{ item.countGenesNotInPanel }}
-                </v-chip>
+              <template v-slot:[`item.actions`]="{ item }">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      icon
+                      v-on="on"
+                      @click.stop="downloadGenes(item.name, item.panelGenes)"
+                    >
+                      <v-icon>mdi-download</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>{{ $t('panelResult.saveResult.tooltip') }}</span>
+                </v-tooltip>
               </template>
-              <span>{{ $t('panel-result.chip.show-genes') }}</span>
-            </v-tooltip>
+            </v-data-table>
           </template>
-          <template v-slot:[`item.actions`]="{ item }">
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn icon v-on="on" @click.stop="downloadResult(item)">
-                  <v-icon>mdi-content-save</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t('panel-result.tooltip.save-result') }}</span>
-            </v-tooltip>
-          </template>
-        </v-data-table>
+        </resizable-page>
       </v-card-text>
     </v-card>
   </div>
@@ -164,18 +200,19 @@ import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import {
-  FullGene,
-  Gene,
   Institution,
+  PanelGenes,
   PanelResultFormattedRow,
-  PanelSearchResult,
+  ParsedGene,
   ParsedGenes,
-  SynonymGene,
   // ParsedGene,
 } from '@/types/panel-types'
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import DialogTemplate from '@/components/DialogTemplate.vue'
 import { ListItem } from '@/types/ui-types'
+import Papa from 'papaparse'
+import { transpose } from '@/utils/arrays'
+import ResizablePage from '@/components/ResizablePage.vue'
 
 export default Vue.extend({
   components: {
@@ -184,6 +221,7 @@ export default Vue.extend({
     InfoAlert,
     InstitutionDetails,
     DialogTemplate,
+    ResizablePage,
   },
   name: 'PanelResult',
   props: {
@@ -194,9 +232,9 @@ export default Vue.extend({
     parsedGenes: {
       type: ParsedGenes,
     },
-    panelSearchResults: {
+    panelContent: {
       type: Array,
-      default: () => new Array<PanelSearchResult>(),
+      default: () => new Array<PanelResultFormattedRow>(),
     },
   },
   data() {
@@ -207,31 +245,25 @@ export default Vue.extend({
         new Institution('', '', '', '', []),
         true
       ),
-      geneType: new String(),
       panelName: new String(),
-      genes: new Array<SynonymGene>(),
-      expanded: [],
-      singleExpand: false,
+      panelGenes: new PanelGenes([], []),
       tableHeaders: [
         {
-          text: this.$t('panel-result.table.headers.institution-name'),
+          text: this.$t('panelResult.table.headers.institutionName'),
           align: 'start',
           value: 'institution',
         },
         {
-          text: this.$t('panel-result.table.headers.panel-name'),
+          text: this.$t('panelResult.table.headers.panelName'),
           value: 'name',
         },
         {
-          text: this.$t('panel-result.table.headers.genes-found'),
-          value: 'countGenesInPanel',
+          text: this.$t('panelResult.table.headers.genes'),
+          value: 'panelGenes',
+          sortable: false,
         },
         {
-          text: this.$t('panel-result.table.headers.genes-not-found'),
-          value: 'countGenesNotInPanel',
-        },
-        {
-          text: this.$t('panel-result.table.headers.actions'),
+          text: this.$t('panelResult.table.headers.actions'),
           value: 'actions',
           sortable: false,
         },
@@ -240,13 +272,12 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
-      institutionsByPanel: 'getInstitutionsByPanel',
       chipOutlined: 'getChipOutlined',
     }),
-    notFoundLength() {
+    invalidLength() {
       let length = 0
-      if (this.parsedGenes && this.parsedGenes.notFoundGenes) {
-        length = this.parsedGenes.notFoundGenes.length
+      if (this.parsedGenes && this.parsedGenes.invalidGenes) {
+        length = this.parsedGenes.invalidGenes.length
       }
       return length
     },
@@ -262,93 +293,44 @@ export default Vue.extend({
       }
       return length
     },
-    panelContent(): Array<PanelResultFormattedRow> {
-      return (this.panelSearchResults as Array<PanelSearchResult>).map(
-        (panel: PanelSearchResult) => {
-          const panelSymbolToSymbolMatchSet = new Set(
-            panel.panelSymbolToSymbolMatch
-          )
-          const panelSynonymToSynonymMatchSet = new Set(
-            panel.panelSynonymToSynonymMatch
-          )
-          const panelSymbolToSynonymMatchMap = new Map(
-            panel.panelSymbolToSynonymMatch.map((item: SynonymGene) => [
-              (item.gene as FullGene).symbol,
-              item,
-            ])
-          )
-          const panelSynonymToSymbolMatchMap = new Map(
-            panel.panelSynonymToSymbolMatch.map((item: SynonymGene) => [
-              item.synonym,
-              item,
-            ])
-          )
-
-          const genesInPanel = panel.genesInPanel
-            .filter((gene) => gene && gene.name)
-            .sort((a, b) => (a.name > b.name ? 1 : -1))
-            .map((gene: Gene) =>
-              this.formatGeneInfo(
-                gene,
-                panelSymbolToSymbolMatchSet,
-                panelSynonymToSynonymMatchSet,
-                panelSymbolToSynonymMatchMap,
-                panelSynonymToSymbolMatchMap
-              )
-            )
-          const genesNotInPanel = panel.genesNotInPanel
-            .sort((a, b) => (a.name > b.name ? 1 : -1))
-            .map((gene: Gene) =>
-              this.formatGeneInfo(
-                gene,
-                panelSymbolToSymbolMatchSet,
-                panelSynonymToSynonymMatchSet,
-                panelSymbolToSynonymMatchMap,
-                panelSynonymToSymbolMatchMap
-              )
-            )
-          let institution = this.institutionsByPanel.get(panel.name)
-          if (!institution) {
-            institution = {}
-          }
-
-          return new PanelResultFormattedRow(
-            panel.name,
-            genesInPanel.length,
-            genesNotInPanel.length,
-            genesInPanel,
-            genesNotInPanel,
-            new ListItem(institution, true)
-          )
-        }
-      )
-    },
   },
   watch: {},
   methods: {
-    openDialog(panel: PanelResultFormattedRow, geneType: string) {
+    openDialog(panel: PanelResultFormattedRow) {
       this.panelName = panel.name
-      this.geneType = geneType
-      this.genes =
-        geneType === 'genesInPanel' ? panel.genesInPanel : panel.genesNotInPanel
+      this.panelGenes = panel.panelGenes
       this.showDialog = true
     },
     openInstitutionDetails(institution: ListItem) {
       this.currentInstitution = institution
       this.institutionDialog = true
     },
-    downloadGenes(genes: string) {
-      const result = {
-        name: this.panelName,
-        genes: genes,
-      }
-      this.downloadResult(result)
-      //this.showDialog = false;
-    },
-    downloadResult(panel: any) {
-      const content = this.formatResult(panel, false)
-      const filename = panel.name.replaceAll(/[ ]+/g, '_') + '.json'
-      download(filename, content, 'text/json')
+    downloadGenes(panelName: string, genes: PanelGenes) {
+      const headers = []
+      headers.push(this.$t('panelResult.csv.headers.panelResult.genePanelName'))
+      headers.push(this.$t('panelResult.csv.headers.panelResult.genesFound'))
+      headers.push(this.$t('panelResult.csv.headers.panelResult.genesNotFound'))
+
+      const panelNames = []
+      panelNames.push(panelName)
+
+      const genesInPanel = genes.genesInPanel.map(
+        (geneInPanel) => geneInPanel.gene.name
+      )
+      const genesNotInPanel = genes.genesNotInPanel.map(
+        (geneNotInPanel) => geneNotInPanel.gene.name
+      )
+
+      const data = []
+      data.push(panelNames)
+      data.push(genesInPanel)
+      data.push(genesNotInPanel)
+
+      const csv = Papa.unparse({
+        fields: headers,
+        data: transpose(data),
+      })
+      download('search_results_' + panelName + '.csv', csv, 'text/csv')
     },
     formatResult(panel: any, pretty: boolean) {
       return formatObjetToJson(panel, pretty)
@@ -383,43 +365,86 @@ export default Vue.extend({
       }
       return 0
     },
-    formatGeneInfo(
-      gene: Gene,
-      symbolToSymbolMatchSet: Set<string>,
-      synonymToSynonymMatchSet: Set<string>,
-      symbolToSynonymMatchMap: Map<string, SynonymGene>,
-      synonymToSymbolMatchMap: Map<String, SynonymGene>
-    ): SynonymGene {
-      let geneName = gene.name
-
-      let resultGene = geneName.toUpperCase()
-      let synonym = ''
-
-      if (synonymToSynonymMatchSet.has(geneName)) {
-        synonym = geneName.toUpperCase()
-        resultGene = ''
-      } else if (symbolToSynonymMatchMap.has(geneName)) {
-        const symbolToSynonymMatch = symbolToSynonymMatchMap.get(geneName)
-        synonym = (symbolToSynonymMatch as SynonymGene).synonym.toUpperCase()
-      } else if (synonymToSymbolMatchMap.has(geneName)) {
-        const synonymToSymbolMatch = synonymToSymbolMatchMap.get(geneName)
-        synonym = (
-          (synonymToSymbolMatch as SynonymGene).gene as string
-        ).toUpperCase()
-      }
-
-      return new SynonymGene(synonym, resultGene)
+    notEmpty(item: PanelResultFormattedRow) {
+      return (
+        item.panelGenes.genesInPanel.length > 0 ||
+        item.panelGenes.genesNotInPanel.length > 0
+      )
     },
+    hiddenClass(items: ParsedGene[]) {
+      return items.length === 0 ? 'hidden' : ''
+    },
+    countFoundNotFound(item: PanelResultFormattedRow) {
+      return (
+        (item.panelGenes.genesInPanel.length /
+          (item.panelGenes.genesInPanel.length +
+            item.panelGenes.genesNotInPanel.length)) *
+        100
+      )
+    },
+    downloadPanelResult() {
+      const headers = []
+      headers.push(
+        this.$t('panelResult.csv.headers.panelResult.institutionName')
+      )
+      headers.push(
+        this.$t('panelResult.csv.headers.panelResult.institutionPhone')
+      )
+      headers.push(
+        this.$t('panelResult.csv.headers.panelResult.institutionEmail')
+      )
+      headers.push(
+        this.$t('panelResult.csv.headers.panelResult.institutionWebsite')
+      )
+      headers.push(this.$t('panelResult.csv.headers.panelResult.genePanelName'))
+      headers.push(this.$t('panelResult.csv.headers.panelResult.genesFound'))
+      headers.push(this.$t('panelResult.csv.headers.panelResult.genesNotFound'))
 
-    formatState(gene: SynonymGene): string {
-      let color = 'success'
+      const data: any = []
 
-      if (gene.synonym !== '') {
-        color = 'warning'
+      this.panelContent.forEach((panelContent) => {
+        const row = []
+
+        let institution: Institution = new Institution('', '', '', '', [])
+        if ((panelContent as PanelResultFormattedRow).institution !== null) {
+          institution = (
+            (panelContent as PanelResultFormattedRow).institution as ListItem
+          ).item as Institution
+        }
+        row.push(institution.name)
+        row.push(institution.phone)
+        row.push(institution.email)
+        row.push(institution.website)
+        row.push((panelContent as PanelResultFormattedRow).name)
+        row.push(
+          (panelContent as PanelResultFormattedRow).panelGenes.genesInPanel
+            .length
+        )
+        row.push(
+          (panelContent as PanelResultFormattedRow).panelGenes.genesNotInPanel
+            .length
+        )
+        data.push(row)
+      })
+
+      const csv = Papa.unparse({
+        fields: headers,
+        data: data,
+      })
+      download('panels_result.csv', csv, 'text/csv')
+    },
+    resize() {
+      const elt: any = this.$refs.resizablePage
+      if (elt !== undefined) {
+        elt.onResize()
       }
-
-      return color
     },
   },
 })
 </script>
+
+<style scoped>
+.hidden {
+  opacity: 0;
+}
+</style>

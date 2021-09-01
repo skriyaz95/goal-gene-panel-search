@@ -3,15 +3,15 @@
   <div>
     <parsed-list-item
       v-if="showGenes[0]"
-      color="error"
-      :items="parsedGenes.notFoundGenes"
-      :title="$t('parsedInput.notFound.text')"
+      :color="invalidColor"
+      :items="parsedGenes.invalidGenes"
+      :title="$t('parsedInput.invalid.text')"
       class="pb-2"
       :showLargeSets="showLargeSets"
     />
     <parsed-list-item
       v-if="showGenes[1]"
-      color="warning"
+      :color="synonymColor"
       :items="parsedGenes.synonymFoundGenes"
       :title="$t('parsedInput.synonyms.text')"
       :synonym="true"
@@ -20,10 +20,25 @@
     />
     <parsed-list-item
       v-if="showGenes[2]"
-      color="success"
+      :color="symbolColor"
       :items="parsedGenes.symbolFoundGenes"
       :title="$t('parsedInput.symbols.text')"
       :showLargeSets="showLargeSets"
+    />
+    <parsed-list-item
+      v-if="showGenes[3]"
+      :color="fusionColor"
+      :items="parsedGenes.fusionFoundGenes"
+      :title="$t('parsedInput.fusions.text')"
+      :showLargeSets="showLargeSets"
+    />
+    <parsed-list-item
+      v-if="showGenes[4]"
+      :color="intronColor"
+      :items="parsedGenes.intronFoundGenes"
+      :title="$t('parsedInput.introns.text')"
+      :showLargeSets="showLargeSets"
+      :label="true"
     />
   </div>
 </template>
@@ -32,6 +47,8 @@
 import { ParsedGenes } from '@/types/panel-types'
 import Vue from 'vue'
 import ParsedListItem from '@/components/home/ParsedListItem.vue'
+import { formatStateColor } from '@/utils/formatting'
+import { GeneState } from '@/types/ui-types'
 
 export default Vue.extend({
   name: 'GeneParseContent',
@@ -43,7 +60,23 @@ export default Vue.extend({
   },
   data: () => ({}),
   methods: {},
-  computed: {},
+  computed: {
+    invalidColor() {
+      return formatStateColor(GeneState.INVALID)
+    },
+    symbolColor() {
+      return formatStateColor(GeneState.SYMBOL)
+    },
+    synonymColor() {
+      return formatStateColor(GeneState.SYNONYM)
+    },
+    fusionColor() {
+      return formatStateColor(GeneState.FUSION)
+    },
+    intronColor() {
+      return formatStateColor(GeneState.INTRON)
+    },
+  },
   mounted() {},
 })
 </script>

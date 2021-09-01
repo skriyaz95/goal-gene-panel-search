@@ -6,10 +6,16 @@ or a help card or other tutorial content
 <template>
   <div>
     <div class="pb-2">
-      <b>{{ $t('panel-result.result.name') }}</b>
-      {{ $t('help.panelResults.part1a') }}<br />
+      <b>{{ $t('panelResult.result.name') }}</b>
+      {{ $t('help.panelResults.part1a') }}
       {{ $t('help.panelResults.part1b') }}
-      <b>{{ $t('parsedInput.title.text') }}</b>
+      <b>{{ $t('parsedInput.title.text') }}.</b>
+    </div>
+    <div class="pb-2">
+      {{ $t('help.panelResults.part1c') }}
+    </div>
+    <div class="pb-2">
+      {{ $t('help.panelResults.part1d') }}
     </div>
     <div>{{ $t('help.panelResults.part2a') }}</div>
   </div>

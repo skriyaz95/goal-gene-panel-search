@@ -6,7 +6,7 @@
       </v-toolbar-title>
       <v-spacer />
     </v-toolbar>
-    <main-content-template outter even>
+    <main-content-template outter even :hideLeft="maximized">
       <template v-slot:left-col>
         <main-content-template inner header>
           <template v-slot:header>
@@ -42,29 +42,63 @@
       <template v-slot:right-col>
         <main-content-template inner header :twoCols="false">
           <template v-slot:header>
-            <v-tabs centered v-model="tab" :background-color="background">
-              <v-tab
-                :href="'#' + tabTitle"
-                v-for="tabTitle in tabs"
-                :key="tabTitle"
-              >
-                {{ tabTitle }}
-              </v-tab>
-            </v-tabs>
+            <v-row>
+              <!-- to force an offset so that tabs are centered -->
+              <v-col cols="1"></v-col>
+              <v-col>
+                <v-tabs
+                  centered
+                  v-model="tab"
+                  :background-color="background"
+                  ref="tabs"
+                >
+                  <v-tab
+                    :href="'#' + tabTitle"
+                    v-for="tabTitle in tabs"
+                    :key="tabTitle"
+                  >
+                    {{ $t('navigation.tabs.' + tabTitle) }}
+                  </v-tab>
+                </v-tabs>
+              </v-col>
+              <v-col cols="1" align-self="end" align="end">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      v-on="on"
+                      icon
+                      @click="handleMaximize"
+                      class="primary--text"
+                    >
+                      <v-icon v-if="maximized">mdi-arrow-collapse-all</v-icon>
+                      <v-icon v-else>mdi-arrow-expand-all</v-icon>
+                    </v-btn>
+                  </template>
+                  <span v-if="maximized">
+                    {{ $t('panelCompare.shrink.tooltip') }}
+                  </span>
+                  <span v-else>
+                    {{ $t('panelCompare.expand.tooltip') }}
+                  </span>
+                </v-tooltip>
+              </v-col>
+            </v-row>
           </template>
           <template v-slot:one-col>
             <v-tabs-items v-model="tab" class="background">
               <v-tab-item value="results">
                 <panel-result
+                  ref="panelResult"
                   :help="showHelp"
                   @help="handleHelp"
                   :loading="searchingPanels"
                   :parsedGenes="formattedGenes"
-                  :panelSearchResults="panelSearchResults"
+                  :panelContent="panelContent"
                 />
               </v-tab-item>
               <v-tab-item value="compare">
                 <panel-compare
+                  ref="panelCompare"
                   :help="showHelp"
                   @help="handleHelp"
                   :loading="searchingPanels"
@@ -72,6 +106,7 @@
                   :headers="compareHeaders"
                   :visibleInstitutions="visibleInstitutions"
                   @toggleInstitution="toggleInstitution"
+                  @maximize="handleMaximize"
                 />
               </v-tab-item>
             </v-tabs-items>
@@ -92,6 +127,8 @@ import PanelResult from '@/components/home/PanelResult.vue'
 import $getFindGenesWorker from '@/utils/workers/worker-instance'
 import {
   Institution,
+  PanelGenes,
+  PanelResultFormattedRow,
   PanelSearchResult,
   ParsedGenes,
 } from '@/types/panel-types'
@@ -99,7 +136,7 @@ import PanelCompare from '@/components/home/PanelCompare.vue'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 import { FormatCompareItemsPayload } from '@/types/payload-types'
 import { getCookie, setCookie } from '@/utils/cookies'
-import { ActiveState, TableHeader } from '@/types/ui-types'
+import { ActiveState, ListItem, TableHeader } from '@/types/ui-types'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
 import RecallSearches from '@/components/home/RecallSearches.vue'
 
@@ -126,14 +163,32 @@ export default Vue.extend({
     compareHeaders: new Array<TableHeader>(),
     visibleInstitutions: new Array<ActiveState>(),
     lastSearches: [],
+    maximized: false,
   }),
   computed: {
     ...mapGetters({
       institutions: 'getInstitutionsSorted',
+      institutionsByPanel: 'getInstitutionsByPanel',
       panelsByInstitution: 'getPanelsByInstitution',
       inputNeedsReload: 'getInputNeedsReload',
       lastTab: 'getLastTabHome',
     }),
+    panelContent(): Array<PanelResultFormattedRow> {
+      return (this.panelSearchResults as Array<PanelSearchResult>).map(
+        (panel: PanelSearchResult) => {
+          let institution = this.institutionsByPanel.get(panel.name)
+          if (!institution) {
+            institution = {}
+          }
+
+          return new PanelResultFormattedRow(
+            panel.name,
+            new PanelGenes(panel.genesInPanel, panel.genesNotInPanel),
+            new ListItem(institution, true)
+          )
+        }
+      )
+    },
     tab: {
       set(tab: string) {
         this.$router.replace({ params: { ...this.$route.params, tab } })
@@ -232,6 +287,23 @@ export default Vue.extend({
         this.loadLastInput()
       })
     },
+    handleMaximize() {
+      this.maximized = !this.maximized
+      if (this.$refs.tabs !== undefined) {
+        const tabComponent = this.$refs.tabs as any
+        tabComponent.callSlider()
+      }
+    },
+    resizeTables() {
+      const elt1: any = this.$refs.panelResult
+      if (elt1 !== undefined) {
+        elt1.resize()
+      }
+      const elt2: any = this.$refs.panelCompare
+      if (elt2 !== undefined) {
+        elt2.resize()
+      }
+    },
   },
   mounted() {
     document.title = 'GTI ' + this.$t('navigation.home.title.text')
@@ -239,11 +311,15 @@ export default Vue.extend({
     $getFindGenesWorker().onmessage = (event: any) => {
       if (event.data.todo == 'parseUserGenes') {
         this.formattedGenes = new ParsedGenes()
-        this.formattedGenes.notFoundGenes = event.data.parsedGenes.notFoundGenes
+        this.formattedGenes.invalidGenes = event.data.parsedGenes.invalidGenes
         this.formattedGenes.synonymFoundGenes =
           event.data.parsedGenes.synonymFoundGenes
         this.formattedGenes.symbolFoundGenes =
           event.data.parsedGenes.symbolFoundGenes
+        this.formattedGenes.fusionFoundGenes =
+          event.data.parsedGenes.fusionFoundGenes
+        this.formattedGenes.intronFoundGenes =
+          event.data.parsedGenes.intronFoundGenes
         this.findGenesInAllPanels(this.formattedGenes)
         // })
       } else if (event.data.todo == 'findGenesInAllPanels') {
@@ -263,6 +339,7 @@ export default Vue.extend({
         ) //replace placeholder with i18n value
         this.compareHeaders = event.data.headers
         this.initInstitutionVisibleState()
+        this.resizeTables()
       }
     }
     this.initVisibleInstitutions()

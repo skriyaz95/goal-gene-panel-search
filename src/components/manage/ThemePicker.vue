@@ -55,15 +55,46 @@
                   <div>{{ $t('themePicker.logo.explain.text') }}</div>
                 </v-col>
                 <v-col cols="8" align-self="end">
-                  <v-chip color="error" class="mr-2" :outlined="chipOutlined">
-                    {{ $t('parsedInput.notFound.text') }}
-                  </v-chip>
-                  <v-chip color="warning" class="mr-2" :outlined="chipOutlined">
-                    {{ $t('parsedInput.synonyms.text') }}
-                  </v-chip>
-                  <v-chip color="success" class="mr-2" :outlined="chipOutlined">
-                    {{ $t('parsedInput.symbols.text') }}
-                  </v-chip>
+                  <gene-entry-title
+                    :state="geneState.INVALID"
+                    :count="1"
+                    :tooltip="
+                      $t('explore.panelDetails.invalid.tooltip').toString()
+                    "
+                  >
+                  </gene-entry-title>
+                  <gene-entry-title
+                    :state="geneState.SYNONYM"
+                    :count="2"
+                    :tooltip="
+                      $t('explore.panelDetails.invalid.tooltip').toString()
+                    "
+                  >
+                  </gene-entry-title>
+                  <gene-entry-title
+                    :state="geneState.SYMBOL"
+                    :count="3"
+                    :tooltip="
+                      $t('explore.panelDetails.invalid.tooltip').toString()
+                    "
+                  >
+                  </gene-entry-title>
+                  <gene-entry-title
+                    :state="geneState.FUSION"
+                    :count="4"
+                    :tooltip="
+                      $t('explore.panelDetails.invalid.tooltip').toString()
+                    "
+                  >
+                  </gene-entry-title>
+                  <gene-entry-title
+                    :state="geneState.INTRON"
+                    :count="5"
+                    :tooltip="
+                      $t('explore.panelDetails.invalid.tooltip').toString()
+                    "
+                  >
+                  </gene-entry-title>
                 </v-col>
                 <v-col cols="4">
                   <v-switch
@@ -101,15 +132,18 @@ import ColorPicker from '@/components/ColorPicker.vue'
 import { lightThemes } from '@/plugins/vuetify'
 import { mapGetters, mapActions } from 'vuex'
 import MainContentTemplate from '@/components/MainContentTemplate.vue'
+import { GeneState } from '@/types/ui-types'
+import GeneEntryTitle from '@/components/GeneEntryTitle.vue'
 
 export default Vue.extend({
   name: 'ThemePicker',
-  components: { ColorPicker, MainContentTemplate },
+  components: { ColorPicker, MainContentTemplate, GeneEntryTitle },
   data: () => ({
     themeSelected: -1,
     themes: lightThemes,
     hueRotation: 0,
     saturation: 1,
+    geneState: GeneState,
   }),
   computed: {
     theme() {

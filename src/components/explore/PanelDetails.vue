@@ -43,7 +43,11 @@
         <v-list-item-content>
           <v-list-item-title>
             {{ panel.item.sourceFile }}
-            <v-btn icon :href="rawPanels + panel.item.sourceFile" target="_blank">
+            <v-btn
+              icon
+              :href="rawPanels + panel.item.sourceFile"
+              target="_blank"
+            >
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </v-list-item-title>
@@ -58,60 +62,56 @@
             <span>{{ $t('explore.panelDetails.genesInPanel.text') }}:</span>
             <v-fade-transition>
               <span class="ml-3" v-show="showAny">
-                <v-tooltip bottom v-show="showNotFound">
-                  <template v-slot:activator="{ on }">
-                    <v-chip
-                      :outlined="chipOutlined"
-                      color="error"
-                      class="ml-1 mr-1"
-                      v-on="on"
-                    >
-                      {{ $t('parsedInput.notFound.text') }} ({{
-                        $tc(
-                          'count.gene',
-                          $n(formattedGenes.notFoundGenes.length)
-                        )
-                      }})
-                    </v-chip>
-                  </template>
-                  <span>{{ $t('explore.panelDetails.notFound.tooltip') }}</span>
-                </v-tooltip>
-                <v-tooltip bottom v-show="showSynonym">
-                  <template v-slot:activator="{ on }">
-                    <v-chip
-                      :outlined="chipOutlined"
-                      color="warning"
-                      class="ml-1 mr-1"
-                      v-on="on"
-                    >
-                      {{ $t('parsedInput.synonyms.text') }} ({{
-                        $tc(
-                          'count.gene',
-                          $n(formattedGenes.synonymFoundGenes.length)
-                        )
-                      }})
-                    </v-chip>
-                  </template>
-                  <span>{{ $t('explore.panelDetails.synonyms.tooltip') }}</span>
-                </v-tooltip>
-                <v-tooltip bottom v-show="showSymbol">
-                  <template v-slot:activator="{ on }">
-                    <v-chip
-                      :outlined="chipOutlined"
-                      color="success"
-                      class="ml-1 mr-1"
-                      v-on="on"
-                    >
-                      {{ $t('parsedInput.symbols.text') }} ({{
-                        $tc(
-                          'count.gene',
-                          $n(formattedGenes.symbolFoundGenes.length)
-                        )
-                      }})
-                    </v-chip>
-                  </template>
-                  <span>{{ $t('explore.panelDetails.symbols.tooltip') }}</span>
-                </v-tooltip>
+                <span v-show="showInvalid">
+                  <gene-entry-title
+                    :state="geneState.INVALID"
+                    :count="formattedGenes.invalidGenes.length"
+                    :tooltip="
+                      $t('explore.panelDetails.invalid.tooltip').toString()
+                    "
+                  >
+                  </gene-entry-title>
+                </span>
+                <span v-show="showSynonym">
+                  <gene-entry-title
+                    :state="geneState.SYNONYM"
+                    :count="formattedGenes.synonymFoundGenes.length"
+                    :tooltip="
+                      $t('explore.panelDetails.synonyms.tooltip').toString()
+                    "
+                  >
+                  </gene-entry-title>
+                </span>
+                <span v-show="showSymbol">
+                  <gene-entry-title
+                    :state="geneState.SYMBOL"
+                    :count="formattedGenes.symbolFoundGenes.length"
+                    :tooltip="
+                      $t('explore.panelDetails.symbols.tooltip').toString()
+                    "
+                  >
+                  </gene-entry-title>
+                </span>
+                <span v-show="showFusion">
+                  <gene-entry-title
+                    :state="geneState.FUSION"
+                    :count="formattedGenes.fusionFoundGenes.length"
+                    :tooltip="
+                      $t('explore.panelDetails.fusions.tooltip').toString()
+                    "
+                  >
+                  </gene-entry-title>
+                </span>
+                <span v-show="showIntron">
+                  <gene-entry-title
+                    :state="geneState.INTRON"
+                    :count="formattedGenes.intronFoundGenes.length"
+                    :tooltip="
+                      $t('explore.panelDetails.introns.tooltip').toString()
+                    "
+                  >
+                  </gene-entry-title>
+                </span>
               </span>
             </v-fade-transition>
           </v-list-item-title>
@@ -122,7 +122,13 @@
       <v-fade-transition>
         <div v-show="showAny" class="pl-15 ml-6">
           <gene-parsed-content
-            :show-genes="[showNotFound, showSynonym, showSymbol]"
+            :show-genes="[
+              showInvalid,
+              showSynonym,
+              showSymbol,
+              showFusion,
+              showIntron,
+            ]"
             :parsed-genes="formattedGenes"
           />
         </div>
@@ -134,6 +140,7 @@
 <script lang="ts">
 import {
   FullGene,
+  FusionIntronGene,
   Gene,
   GenePanelDetails,
   ParsedGene,
@@ -143,15 +150,17 @@ import {
 import Vue from 'vue'
 import GeneParsedContent from '@/components/GeneParsedContent.vue'
 import { mapGetters } from 'vuex'
-import {ListItem} from "@/types/ui-types";
+import { GeneState, ListItem } from '@/types/ui-types'
+import GeneEntryTitle from '@/components/GeneEntryTitle.vue'
 
 export default Vue.extend({
-  components: { GeneParsedContent },
+  components: { GeneParsedContent, GeneEntryTitle },
   name: 'PanelDetails',
   props: {
     panel: {
       type: Object,
-      default: () => new ListItem(new GenePanelDetails('', [], new ParsedGenes(), ''), true),
+      default: () =>
+        new ListItem(new GenePanelDetails('', [], new ParsedGenes(), ''), true),
     },
     institution: {
       type: String,
@@ -166,6 +175,7 @@ export default Vue.extend({
     return {
       selectedInstitution: this.institution,
       rawPanels: process.env.BASE_URL + 'raw_panels/',
+      geneState: GeneState,
     }
   },
   computed: {
@@ -175,19 +185,47 @@ export default Vue.extend({
     formattedGenes() {
       const parsedGenes = new ParsedGenes()
       parsedGenes.symbolFoundGenes = this.panel.item.symbolsOnly.map(
-        (g: Gene) => new ParsedGene(g, 'symbol')
+        (g: Gene) => new ParsedGene(g, GeneState.SYMBOL)
       )
       parsedGenes.synonymFoundGenes = this.panel.item.synonymsOnly.map(
         (sg: SynonymGene) =>
-          new ParsedGene(new Gene(sg.synonym), 'synonym', sg.gene as FullGene)
+          new ParsedGene(
+            new Gene(sg.synonym),
+            GeneState.SYNONYM,
+            sg.gene as FullGene
+          )
       )
-      parsedGenes.notFoundGenes = this.panel.item.notFound.map(
-        (g: Gene) => new ParsedGene(g, 'notFound')
+      if (this.panel.item.fusionsOnly) {
+        parsedGenes.fusionFoundGenes = this.panel.item.fusionsOnly.map(
+          (fg: FusionIntronGene) =>
+            new ParsedGene(
+              new Gene(fg.originalName),
+              GeneState.FUSION,
+              fg.gene as FullGene
+            )
+        )
+      } else {
+        parsedGenes.fusionFoundGenes = []
+      }
+      if (this.panel.item.intronsOnly) {
+        parsedGenes.intronFoundGenes = this.panel.item.intronsOnly.map(
+          (fg: FusionIntronGene) =>
+            new ParsedGene(
+              new Gene(fg.originalName),
+              GeneState.INTRON,
+              fg.gene as FullGene
+            )
+        )
+      } else {
+        parsedGenes.intronFoundGenes = []
+      }
+      parsedGenes.invalidGenes = this.panel.item.invalid.map(
+        (g: Gene) => new ParsedGene(g, GeneState.INVALID)
       )
       return parsedGenes
     },
-    showNotFound(): boolean {
-      return this.formattedGenes.notFoundGenes.length > 0
+    showInvalid(): boolean {
+      return this.formattedGenes.invalidGenes.length > 0
     },
     showSynonym(): boolean {
       return this.formattedGenes.synonymFoundGenes.length > 0
@@ -195,8 +233,20 @@ export default Vue.extend({
     showSymbol(): boolean {
       return this.formattedGenes.symbolFoundGenes.length > 0
     },
+    showFusion(): boolean {
+      return this.formattedGenes.fusionFoundGenes.length > 0
+    },
+    showIntron(): boolean {
+      return this.formattedGenes.intronFoundGenes.length > 0
+    },
     showAny(): boolean {
-      return this.showNotFound || this.showSynonym || this.showSymbol
+      return (
+        this.showInvalid ||
+        this.showSynonym ||
+        this.showSymbol ||
+        this.showFusion ||
+        this.showIntron
+      )
     },
   },
   methods: {
@@ -205,8 +255,6 @@ export default Vue.extend({
     },
   },
   watch: {},
-  mounted() {
-
-  },
+  mounted() {},
 })
 </script>

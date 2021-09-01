@@ -4,7 +4,7 @@
     <template v-slot:left-col>
       <v-card outlined>
         <v-card-title>
-          {{ $t('build-database.title.text') }}:
+          {{ $t('buildDatabase.title.text') }}:
           <v-spacer></v-spacer>
           <help-button @action="handleHelp()" :active="help">
             <template v-slot:content>
@@ -22,8 +22,8 @@
             </template>
           </info-alert>
           <div>
-            {{ $t('build-database.step.text') }} 1:
-            {{ $t('build-database.download.title.text') }}:
+            {{ $t('buildDatabase.step.text') }} 1:
+            {{ $t('buildDatabase.download.title.text') }}:
             <v-btn
               :href="sourceFileUrl"
               target="_blank"
@@ -34,7 +34,7 @@
             </v-btn>
           </div>
           <v-row align="center">
-            <v-col md="auto"> {{ $t('build-database.step.text') }} 2: </v-col>
+            <v-col md="auto"> {{ $t('buildDatabase.step.text') }} 2: </v-col>
             <v-col>
               <v-file-input
                 v-model="geneFile"
@@ -63,8 +63,8 @@
             </v-col>
           </v-row>
           <div>
-            {{ $t('build-database.step.text') }} 3:
-            {{ $t('build-database.replace.title.text') }}
+            {{ $t('buildDatabase.step.text') }} 3:
+            {{ $t('buildDatabase.replace.title.text') }}
             <span v-show="allGenes.length != 0">
               ({{ $tc('count.gene', $n(allGenes.length)) }})
             </span>

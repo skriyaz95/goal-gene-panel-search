@@ -32,8 +32,10 @@
             <panel-compare-help />
           </template>
         </info-alert>
-        <v-card outlined>
-          <v-card-title>Table Tools:</v-card-title>
+        <v-card outlined class="darker-border">
+          <v-card-title>
+            {{ $t('panelCompare.table.tools.text') }}:
+          </v-card-title>
           <v-card-text>
             <v-row>
               <v-col cols="12">
@@ -62,33 +64,77 @@
             </v-text-field>
           </v-card-text>
         </v-card>
-
-        <v-data-table
-          :headers="filteredHeaders"
-          :items="items"
-          item-key="geneId"
-          sort-by="gene"
-          :custom-sort="customSort"
-          :custom-filter="customFilter"
-          :search="search"
-        >
-          <template v-if="items.length > 0" v-slot:body="{ items }">
-            <tbody>
-              <tr v-for="item in items" :key="item.geneId">
-                <td v-for="header in filteredHeaders" :key="header.value">
-                  <v-chip
-                    :outlined="chipOutlined"
-                    v-if="showChip(item, header)"
-                    :color="formatState(item, header)"
-                  >
-                    <v-icon left v-text="formatIcon(item, header)"> </v-icon>
-                    {{ geneName(item, header) }}
-                  </v-chip>
-                </td>
-              </tr>
-            </tbody>
+        <resizable-page>
+          <template v-slot:table="tableProps">
+            <v-data-table
+              :height="tableProps.tableHeight"
+              :headers="filteredHeaders"
+              :items="items"
+              item-key="geneId"
+              sort-by="gene"
+              :custom-sort="customSort"
+              :custom-filter="customFilter"
+              :search="search"
+              fixed-header
+              class="fixed-column"
+            >
+              <template v-if="items.length > 0" v-slot:body="{ items }">
+                <tbody>
+                  <tr v-for="item in items" :key="item.geneId">
+                    <td v-for="header in filteredHeaders" :key="header.value">
+                      <template v-if="getMatches(item, header).length > 1">
+                        <v-expansion-panels
+                          flat
+                          class="dense transparent"
+                          accordion
+                        >
+                          <v-expansion-panel class="transparent">
+                            <v-expansion-panel-header class="transparent">
+                              {{
+                                $tc(
+                                  'count.gene',
+                                  $n(getMatches(item, header).length)
+                                )
+                              }}
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content class="transparent">
+                              <template
+                                v-for="(match, index) in getMatches(
+                                  item,
+                                  header
+                                )"
+                              >
+                                <gene-entry
+                                  v-if="showChip(match)"
+                                  :key="index"
+                                  :parsedGene="match"
+                                  icon
+                                >
+                                </gene-entry>
+                              </template>
+                            </v-expansion-panel-content>
+                          </v-expansion-panel>
+                        </v-expansion-panels>
+                      </template>
+                      <template v-else>
+                        <template
+                          v-for="(match, index) in getMatches(item, header)"
+                        >
+                          <gene-entry
+                            v-if="showChip(match)"
+                            :key="index"
+                            :parsedGene="match"
+                            icon
+                          ></gene-entry>
+                        </template>
+                      </template>
+                    </td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-data-table>
           </template>
-        </v-data-table>
+        </resizable-page>
       </v-card-text>
     </v-card>
   </div>
@@ -99,17 +145,19 @@ import Vue from 'vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import PanelCompareHelp from '@/components/help/PanelCompareHelp.vue'
-import { mapGetters } from 'vuex'
-import { ActiveState, TableHeader } from '@/types/ui-types'
+import { ActiveState, GeneState, TableHeader } from '@/types/ui-types'
 import download from '@/utils/download'
 import Papa from 'papaparse'
+import { ParsedGene } from '@/types/panel-types'
 // import { transpose } from '@/utils/arrays'
+import ResizablePage from '@/components/ResizablePage.vue'
 
 export default Vue.extend({
   components: {
     HelpButton,
     InfoAlert,
     PanelCompareHelp,
+    ResizablePage,
   },
   name: 'PanelCompare',
   props: {
@@ -137,9 +185,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    ...mapGetters({
-      chipOutlined: 'getChipOutlined',
-    }),
     filteredHeaders(): Array<TableHeader> {
       const fHeaders = new Array<TableHeader>()
       for (let i = 0; i < this.headers.length; i++) {
@@ -156,45 +201,20 @@ export default Vue.extend({
     handleHelp() {
       this.$emit('help')
     },
-    geneName(item: any, header: any) {
-      return item[header.value].gene.name
+    showChip(match: ParsedGene) {
+      return match && match.state !== GeneState.NOT_FOUND
     },
-    showChip(item: any, header: any) {
+    getMatches(item: any, header: any): ParsedGene[] {
       const label: string = header.value
-      // console.log(item[label])
-      return item[label] && item[label].state !== 'notFound'
-    },
-    formatState(item: any, header: any) {
-      const label: string = header.value
-      if (item[label].state === 'symbol') {
-        return 'success'
-      }
-      if (
-        item[label].state === 'synonym' ||
-        item[label].state === 'symbolToSynonym' ||
-        item[label].state === 'synonymToSymbol'
-      ) {
-        return 'warning'
-      }
-      return 'error'
-    },
-    formatIcon(item: any, header: any) {
-      const label: string = header.value
-      if (
-        item[label].state === 'symbol' ||
-        item[label].state === 'synonymToSymbol'
-      ) {
-        return 'mdi-check'
-      }
-      return 'mdi-approximately-equal'
+      return item[label] as ParsedGene[]
     },
     customSort(items: any[], sortBy: string[], sortDesc: boolean[]): any[] {
       items.sort((a: any, b: any) => {
         if (!sortBy[0]) {
           return 0
         }
-        const aItem = a[sortBy[0]].gene.name
-        const bItem = b[sortBy[0]].gene.name
+        const aItem = a[sortBy[0]][0].gene.name
+        const bItem = b[sortBy[0]][0].gene.name
         const desc = sortDesc[0]
         if (aItem > bItem) {
           return desc ? 1 : -1
@@ -232,12 +252,18 @@ export default Vue.extend({
         for (let i = 0; i < this.filteredHeaders.length; i++) {
           const h = this.filteredHeaders[i]
           const result = (this.items as any)[j][h.value]
-          //skip notFound results
-          if (result && result.state === 'notFound') {
-            row.push('')
-          } else {
-            const geneName = result.gene.name
-            row.push(geneName)
+          //skip invalid results
+          if (result && result.length > 0) {
+            const genes: string[] = []
+            result.forEach((r: ParsedGene) => {
+              if (r && r.state === GeneState.NOT_FOUND) {
+                genes.push('')
+              } else {
+                const geneName = r.gene.name
+                genes.push(geneName)
+              }
+            })
+            row.push(genes.join(' '))
           }
         }
         csvItems.push(row)
@@ -247,6 +273,12 @@ export default Vue.extend({
         data: csvItems,
       })
       download('compare_panels.csv', csv, 'text/csv')
+    },
+    resize() {
+      const elt: any = this.$refs.resizablePage
+      if (elt !== undefined) {
+        elt.onResize()
+      }
     },
   },
   mounted() {},

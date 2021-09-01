@@ -6,7 +6,7 @@ or a help card or other tutorial content
 <template>
   <div>
     <div class="pb-2">
-      <b>{{ $t('userInput.gene-list') }}</b>
+      <b>{{ $t('userInput.geneSearch') }}</b>
       {{ $t('help.geneSearch.part1a') }}
       {{ $t('help.geneSearch.part1b') }}
     </div>
