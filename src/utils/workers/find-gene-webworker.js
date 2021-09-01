@@ -440,9 +440,7 @@ function formatOnePanelOneGene(panel, currentGene) {
   if (panel.panelSynonymToSynonymMatch.length > 0) {
     const synonymSet = new Set(panel.panelSynonymToSynonymMatch)
     if (synonymSet.has(geneId)) {
-      const parsedGeneForPanel = new ParsedGene(
-        JSON.parse(JSON.stringify(currentGene.gene)),
-      )
+      const parsedGeneForPanel = JSON.parse(JSON.stringify(currentGene))
       parsedGeneForPanel.state = GeneState.SYNONYM
       row.push(parsedGeneForPanel)
       found = true
