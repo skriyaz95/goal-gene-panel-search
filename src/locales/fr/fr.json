@@ -1,0 +1,322 @@
+{
+  "buildPanels": {
+    "selectInstitution": {
+      "text": "Sélectionnez une institution"
+    },
+    "selectPanel": {
+      "text": "Sélectionnez un panel"
+    },
+    "sourceFile": {},
+    "new": {
+      "tooltip": "Ajouter un panel à la liste"
+    },
+    "saveAll": {
+      "text": "Enregistrer tout",
+      "tooltip": "Télécharger un fichier JSON des panels"
+    },
+    "resetAll": {
+      "text": "Réinitialiser",
+      "tooltip": {
+        "part1": "Réinitialise les entrées. Toutes les modifications seront perdues",
+        "part2": "(y compris les données enregistrées)."
+      }
+    },
+    "noInstitution": {
+      "text": "Sélectionnez l'institution dans l'onglet Institutions après l'enregistrement"
+    },
+    "validation": {
+      "acceptedFiles": "Seuls les fichiers .bed ou .csv sont acceptés",
+      "csvFileNotValid": "Le fichier CSV n'est pas valide. Veuillez soumettre un fichier valide",
+      "bedFileNotValid": "Le fichier BED n'est pas valide. Veuillez soumettre un fichier valide"
+    },
+    "info": {
+      "part1": "Tous les changements sont temporaires. Ils seront perdus après le rechargement.",
+      "part2": "Remplacez assets/panels.json sur votre serveur pour rendre les modifications permanentes pour tous les utilisateurs."
+    },
+    "duplicate": {
+      "text": "Le fichier existe déjà"
+    }
+  },
+  "themePicker": {
+    "button": {
+      "theme": {
+        "text": "Thème"
+      }
+    },
+    "primary": {
+      "text": "Primaire (barres d'outils et boutons)"
+    },
+    "result": {
+      "text": "Ajouter ce thème dans vuetify.ts (sous light ou dark)"
+    },
+    "secondary": {
+      "text": "Secondaire (couleur alternative)"
+    },
+    "logo": {
+      "color": {
+        "title": {
+          "text": "Couleur du logo"
+        }
+      },
+      "explain": {
+        "text": "Pour des modifications plus approfondies du logo par défaut et du titre de l'application, modifiez les images dans /src/assets/gti/ et /public/favicon.ico"
+      }
+    }
+  },
+  "userInput": {
+    "geneSearch": "Recherche de gènes",
+    "label": "Collez ou entrez les gènes ici",
+    "validation": {
+      "listEmpty": "La liste de gènes ne doit pas être vide",
+      "listMinCharacters": "La liste de gènes doit comporter au moins 2 caractères",
+      "listRegex": "Supprimer les caractères spéciaux ($%^&<> etc.)"
+    },
+    "recall": {
+      "title": {
+        "text": "Dernières recherches"
+      },
+      "clear": {
+        "text": "Effacer les recherches enregistrées"
+      },
+      "empty": {
+        "text": "Les 3 dernières recherches seront affichées ici"
+      },
+      "latest": {
+        "text": "Plus Recent"
+      }
+    },
+    "upload": {
+      "text": "Rechercher avec un fichier .bed ou un fichier .csv"
+    }
+  },
+  "panelResult": {
+    "showInstitutionDetails": "Afficher les détails de l'institution",
+    "result": {
+      "name": "Résultats des panels",
+      "title": "Gènes évalués (symboles, synonymes, fusions, introns)",
+      "invalidGenesTitle": "Entrées ignorées (non valides)"
+    },
+    "table": {
+      "headers": {
+        "institutionName": "Nom de l'institution",
+        "panelName": "Nom du panel",
+        "genes": "Gènes trouvés / non trouvés",
+        "actions": "Actions"
+      }
+    },
+    "chip": {
+      "showGenes": "Afficher les gènes"
+    },
+    "saveResult": {
+      "tooltip": "Enregistrer ce résultat"
+    },
+    "dialog": {
+      "title-institution-details": "Détails de l'institution",
+      "title": "Détails du panel",
+      "table": {
+        "genesFound": "Gènes trouvés",
+        "genesNotFound": "Gènes non trouvés"
+      },
+      "button": {
+        "close": "Fermer",
+        "download": "Télécharger"
+      }
+    },
+    "csv": {
+      "headers": {
+        "panelResult": {
+          "institutionName": "Nom de l'institution",
+          "institutionPhone": "Téléphone",
+          "institutionEmail": "Email de l'institution",
+          "institutionWebsite": "Site web",
+          "genePanelName": "Nom du panel",
+          "genesFound": "Gènes trouvés",
+          "genesNotFound": "Gènes non trouvés"
+        }
+      }
+    }
+  },
+  "buildDatabase": {
+    "title": {
+      "text": "Mettre à jour la base de données de référence génétique"
+    },
+    "step": {
+      "text": "Étape"
+    },
+    "download": {
+      "title": {
+        "text": "Télécharger et décompresser ce fichier"
+      }
+    },
+    "replace": {
+      "title": {
+        "text": "Remplacer les fichiers assets/all_genes.json & assets/synonyms.json"
+      }
+    }
+  },
+  "parsedInput": {
+    "title": {
+      "text": "Analyse de la Recherche"
+    },
+    "symbols": {
+      "text": "Symboles",
+      "tooltip": "Symboles : correspondance exacte avec un symbole."
+    },
+    "synonyms": {
+      "text": "Synonymes",
+      "tooltip": "Synonymes : vous avez soumis un synonyme. GTI a trouvé un symbole correspondant.",
+      "details": "GTI utilisera le symbole correspondant au lieu du synonyme.<br/>Utilisez un symbole valide si le remplacement par défaut ne correspond pas.",
+      "examplePart1": "Ex. Synonyme",
+      "examplePart2": " est remplacé par Symbole"
+    },
+    "invalid": {
+      "text": "Non Valide",
+      "tooltip": "Non Valide : il peut s'agir d'une faute de frappe ou d'un gène non standard."
+    },
+    "empty": {
+      "text": "Rien pour le moment. Tapez d'abord quelques gènes ci-dessus."
+    },
+    "tooMany": {
+      "text": "Trop long pour afficher (> 500)"
+    },
+    "textOnly": {
+      "tooltip": "Afficher sous forme de texte (plus long)"
+    },
+    "fusions": {
+      "text": "Fusions",
+      "tooltip": "Fusions : entrées au format <GENE>_FUSION, par exemple ALK_FUSION"
+    },
+    "introns": {
+      "text": "Introns",
+      "tooltip": "Introns : entrées au format <GENE>_INTRON, par exemple BCL6_INTRON1"
+    }
+  },
+  "buildInstitutions": {
+    "list": {
+      "text": "Institutions existantes"
+    },
+    "new": {
+      "text": "Ajouter",
+      "tooltip": "Ajouter une institution à la liste"
+    },
+    "saveAll": {
+      "text": "Enregistrer tout",
+      "tooltip": "Télécharger un fichier JSON des institutions"
+    },
+    "delete": {
+      "text": "Supprimer",
+      "tooltip": "Supprimer de la liste"
+    },
+    "info": {
+      "part1": "Tous les changements sont temporaires. Ils seront perdus après le rechargement.",
+      "part2": "Remplacez assets/institutions.json sur votre serveur pour rendre les modifications permanentes pour tous les utilisateurs."
+    }
+  },
+  "institutionDetails": {
+    "name": {
+      "text": "Nom",
+      "rules": {
+        "required": "Le nom de l'institution est requis",
+        "length": "Le nom de l'institution doit comporter moins de 50 caractères",
+        "valid": "Nom d'institution non vvalide"
+      }
+    },
+    "phone": {
+      "text": "Téléphone",
+      "rules": {
+        "valid": "Numéro de téléphone de l'institution invalide"
+      }
+    },
+    "email": {
+      "text": "Email",
+      "rules": {
+        "valid": "E-mail de l'institution invalide"
+      }
+    },
+    "website": {
+      "text": "Site Web",
+      "rules": {
+        "valid": "Le site Web de l'institution n'est pas dans le bon format"
+      }
+    },
+    "panels": {
+      "text": "Panels"
+    }
+  },
+  "explore": {
+    "panels": {
+      "list": {
+        "text": "Panels existants"
+      }
+    },
+    "genome": {
+      "title": {
+        "text": "Gènes connus"
+      },
+      "search": {
+        "text": "Recherche de symboles, synonymes, identifiants, etc."
+      },
+      "genelink": {
+        "text": "Gènes NCBI",
+        "tooltip": "Ouvre le lien vers la base de données de gènes NCBI"
+      },
+      "geneinfoSource": {
+        "text": "Fichier Gene Info",
+        "tooltip": "Télécharger le fichier gene_info à partir de la base de données de NCBI"
+      }
+    },
+    "panelDetails": {
+      "genesInPanel": {
+        "text": "Gènes dans le Panel"
+      },
+      "symbols": {
+        "tooltip": "Symboles : Le panel contient une correspondance exacte avec un symbole."
+      },
+      "synonyms": {
+        "tooltip": "Synonymes : le panel contient des synonymes avec le(s) symbole(s) correspondant(s)."
+      },
+      "invalid": {
+        "tooltip": "Non valide : le panel contient des gènes non reconnus (et ignorés lors de la recherche)"
+      },
+      "fusions": {
+        "tooltip": "Fusions : le panel contient des gènes au format <GENE>_FUSION, par exemple ALK_FUSION"
+      },
+      "introns": {
+        "tooltip": "Introns : le panel contient des gènes au format <GENE>_INTRON, par exemple BCL6_INTRON1"
+      }
+    }
+  },
+  "panelCompare": {
+    "title": {
+      "text": "Comparer les Panels"
+    },
+    "table": {
+      "headers": {
+        "gene": {
+          "text": "Recherche de gènes"
+        },
+        "panel": {
+          "text": "Panel FooBar"
+        },
+        "explanation": {
+          "text": "Explication"
+        }
+      },
+      "search": {
+        "text": "Filtrer par gènes"
+      },
+      "institutions": {
+        "text": "Afficher/Masquer les institutions"
+      },
+      "tools": {
+        "text": "Outils"
+      }
+    },
+    "expand": {
+      "tooltip": "Elargir"
+    },
+    "shrink": {
+      "tooltip": "Refermer"
+    }
+  }
+}

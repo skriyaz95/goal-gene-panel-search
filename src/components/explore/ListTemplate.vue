@@ -7,7 +7,7 @@
     <v-card-text>
       <slot name="info"></slot>
       <v-autocomplete
-        :label="$t(dropDownLabel)"
+        :label="dropDownLabel"
         clearable
         :items="searchableItems"
         :value="item"
@@ -69,7 +69,6 @@ export default Vue.extend({
   }),
   methods: {
     handleChange($event: any) {
-      console.log($event)
       const item = $event
       this.$router.replace({ params: { ...this.$route.params, item } })
       // this.$emit('change', $event)

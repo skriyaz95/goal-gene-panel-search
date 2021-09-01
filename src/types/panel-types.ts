@@ -37,8 +37,10 @@ export class GenePanelDetails {
   genes: Gene[] //all gene symbols for fast search
   symbolsOnly: Gene[]
   synonymsOnly: SynonymGene[]
-  notFound: Gene[]
+  invalid: Gene[]
   sourceFile: string
+  fusionsOnly: FusionIntronGene[]
+  intronsOnly: FusionIntronGene[]
 
   constructor(
     name: string,
@@ -52,28 +54,38 @@ export class GenePanelDetails {
     this.synonymsOnly = parsedGenes.synonymFoundGenes.map(
       (pg) => new SynonymGene(pg.gene.name, pg.realGene),
     )
-    this.notFound = parsedGenes.notFoundGenes.map((pg) => pg.gene)
+    this.invalid = parsedGenes.invalidGenes.map((pg) => pg.gene)
     this.sourceFile = sourceFile
+    this.fusionsOnly = parsedGenes.fusionFoundGenes.map(
+      (pg) => new FusionIntronGene(pg.gene.name, pg.realGene),
+    )
+    this.intronsOnly = parsedGenes.intronFoundGenes.map(
+      (pg) => new FusionIntronGene(pg.gene.name, pg.realGene),
+    )
   }
 }
 
 export class PanelSearchResult {
   name: string
-  genesInPanel: Gene[]
-  genesNotInPanel: Gene[]
+  genesInPanel: ParsedGene[]
+  genesNotInPanel: ParsedGene[]
   panelSymbolToSymbolMatch: string[]
   panelSynonymToSynonymMatch: string[]
   panelSymbolToSynonymMatch: SynonymGene[]
   panelSynonymToSymbolMatch: SynonymGene[]
+  panelFusionToFusionMatch: FusionIntronGene[]
+  panelIntronToIntronMatch: FusionIntronGene[]
 
   constructor(
     name: string,
-    genesInPanel: Gene[],
-    genesNotInPanel: Gene[],
+    genesInPanel: ParsedGene[],
+    genesNotInPanel: ParsedGene[],
     panelSymbolToSymbolMatch: string[],
     panelSynonymToSynonymMatch: string[],
     panelSymbolToSynonymMatch: SynonymGene[],
     panelSynonymToSymbolMatch: SynonymGene[],
+    panelFusionToFusionMatch: FusionIntronGene[],
+    panelIntronToIntronMatch: FusionIntronGene[],
   ) {
     this.name = name
     this.genesInPanel = genesInPanel
@@ -82,6 +94,8 @@ export class PanelSearchResult {
     this.panelSynonymToSynonymMatch = panelSynonymToSynonymMatch
     this.panelSymbolToSynonymMatch = panelSymbolToSynonymMatch
     this.panelSynonymToSymbolMatch = panelSynonymToSymbolMatch
+    this.panelFusionToFusionMatch = panelFusionToFusionMatch
+    this.panelIntronToIntronMatch = panelIntronToIntronMatch
   }
 }
 
@@ -95,7 +109,7 @@ export class Gene {
 
 /**
  * Class returned by a worker that identifies the genes found and
- * categorises it in 3 states (notFound, synonyms and symbols) (see ParsedGenes)
+ * categorises it in 3 states (invalid, synonyms and symbols) (see ParsedGenes)
  * For now, we don't need a FullGene (except for synonyms to link back to the symbol )
  * but if we need ids or location information, we might want to return a realGene for
  * all states
@@ -153,41 +167,53 @@ export class SynonymGene {
   }
 }
 
+export class FusionIntronGene {
+  originalName!: string
+  gene!: FullGene | string | undefined //use string when the full gene is not needed
+
+  constructor(originalName: string, gene: FullGene | string | undefined) {
+    this.originalName = originalName
+    this.gene = gene
+  }
+}
+
 export class PanelResultFormattedRow {
   name: string
-  countGenesInPanel: number
-  countGenesNotInPanel: number
-  genesInPanel: SynonymGene[]
-  genesNotInPanel: SynonymGene[]
-  institution: ListItem
-
+  panelGenes: PanelGenes
+  institution: ListItem | null
   constructor(
     name: string,
-    countGenesInPanel: number,
-    countGenesNotInPanel: number,
-    genesInPanel: SynonymGene[],
-    genesNotInPanel: SynonymGene[],
-    institution: ListItem,
+    panelGenes: PanelGenes,
+    institution: ListItem | null,
   ) {
     this.name = name
-    this.countGenesInPanel = countGenesInPanel
-    this.countGenesNotInPanel = countGenesNotInPanel
+    this.panelGenes = panelGenes
+    this.institution = institution
+  }
+}
+
+export class PanelGenes {
+  genesInPanel: ParsedGene[]
+  genesNotInPanel: ParsedGene[]
+
+  constructor(genesInPanel: ParsedGene[], genesNotInPanel: ParsedGene[]) {
     this.genesInPanel = genesInPanel
     this.genesNotInPanel = genesNotInPanel
-    this.institution = institution
   }
 }
 
 /**
  * Store the user input, once parsed into a ParsedGenes class
  * This will help passing the object back from the worker
- * and manipulate each category (symbol, synonym, notfound)
+ * and manipulate each category (symbol, synonym, invalid)
  * separately
  */
 export class ParsedGenes {
   symbolFoundGenes = new Array<ParsedGene>()
   synonymFoundGenes = new Array<ParsedGene>()
-  notFoundGenes = new Array<ParsedGene>()
+  invalidGenes = new Array<ParsedGene>()
+  fusionFoundGenes = new Array<ParsedGene>()
+  intronFoundGenes = new Array<ParsedGene>()
 }
 
 /**

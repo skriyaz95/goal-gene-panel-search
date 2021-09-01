@@ -127,12 +127,37 @@
         </v-list-item-icon>
         <v-list-item-title>{{ $t('navigation.help.text') }}</v-list-item-title>
       </v-list-item>
+      <v-list-item>
+        <v-list-item-icon>
+          <v-icon>mdi-translate</v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>
+          <v-menu open-on-hover offset-x close-delay="500">
+            <template v-slot:activator="{ on, attrs }">
+              <span text v-bind="attrs" v-on="on">
+                {{ $t('navigation.translate.text') }}
+                <v-icon>mdi-menu-right</v-icon>
+              </span>
+            </template>
+            <v-list dense>
+              <v-list-item
+                v-for="(item, index) in langs"
+                :key="index"
+                @click="handleLanguageChange(item.value)"
+              >
+                <v-list-item-title>{{ item.text }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import VueI18n from 'vue-i18n'
 
 export default Vue.extend({
   name: 'NavigationMenu',
@@ -202,8 +227,22 @@ export default Vue.extend({
       }
       return route.name === 'help'
     },
+    langs(): any[] {
+      return (this.$i18n as VueI18n).availableLocales.map((l) => {
+        let text = l.toUpperCase()
+        if (l !== 'en' && l !== 'fr') {
+          text += ' (beta)'
+        }
+        return { text: text, value: l }
+      })
+    },
   },
   mounted() {},
-  methods: {},
+  methods: {
+    handleLanguageChange(value: string) {
+      this.$i18n.locale = value
+      localStorage.locale = value
+    },
+  },
 })
 </script>

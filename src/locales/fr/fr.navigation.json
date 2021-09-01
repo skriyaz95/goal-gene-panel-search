@@ -1,0 +1,74 @@
+{
+  "navigation": {
+    "home": {
+      "text": "Accueil",
+      "toolbar": {
+        "text": "Recherche de genes"
+      },
+      "title": {
+        "text": "Accueil"
+      }
+    },
+    "mini": {
+      "text": "Fermer le Menu",
+      "tooltip": "Ouvrir/Fermer le Menu"
+    },
+    "utils": {
+      "text": "Outils",
+      "toolbar": {
+        "text": "Outils pour Admins"
+      },
+      "title": {
+        "text": "Outils"
+      }
+    },
+    "explore": {
+      "text": "Explorer",
+      "toolbar": {
+        "text": "Explorer les Données"
+      },
+      "title": {
+        "text": "Explorer"
+      }
+    },
+    "error": {
+      "title": {
+        "text": "Page d'Erreur"
+      },
+      "toolbar": {
+        "text": "Oops..."
+      },
+      "content": {
+        "text": {
+          "part1": "La page que vous recherchez n'existe pas.",
+          "part2": "Retour à la page d'accueil"
+        }
+      }
+    },
+    "help": {
+      "text": "Aide",
+      "title": {
+        "text": "Aide"
+      },
+      "toolbar": {
+        "text": "Page d'Aide"
+      }
+    },
+    "tabs": {
+      "results": "Resultats",
+      "compare": "Comparer",
+      "panels": "Panels",
+      "institutions": "Institutions",
+      "genome": "Génome",
+      "database": "Base de Données",
+      "theme": "Thème",
+      "cookies": "Cookies",
+      "files": "Fichiers",
+      "install": "Installation",
+      "manage": "Outils"
+    },
+    "translate": {
+      "text": "Traduction"
+    }
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "help": {
+    "parsedInput": {
+      "part1a": "Vos ",
+      "part1b": "entrés sont comparés à des gènes connus.",
+      "part2": "3 étiquettes catégorisent votre recherche:",
+      "part3a": "La table ",
+      "part3b": " rejettera tout élément",
+      "part3c": "."
+    },
+    "geneSearch": {
+      "part1a": " utilise votre liste de gènes",
+      "part1b": "pour trouver quels panels contiennent ces gènes.",
+      "part2a": "Si certains gènes soumis ne sont pas des gènes valides, ",
+      "part2b": "regardez dans ",
+      "part2c": "pour obtenir plus de détails.",
+      "part3": "Les caractères spéciaux ne sont pas autorisés.",
+      "firstTime": {
+        "text": "Aide"
+      }
+    },
+    "panelResults": {
+      "part1a": "compte les correspondances de gènes dans chaque panel",
+      "part1b": " à partir des éléments dans ",
+      "part1c": "Si une recherche correspond à une Fusion ou à un Intron (par exemple, JAK2 correspond à JAK2, JAK2_INTRON8, JAK2_INTRON9, etc.), un panel peut afficher plus de gènes que votre recherche d'origine.",
+      "part1d": "Dans l'exemple ci-dessus, la recherche de JAK2 pourrait renvoyer 1 compte pour JAK2 et 1 compte pour chaque Intron.",
+      "part2a": "Cliquez sur une cellule pour obtenir plus d'informations sur chaque valeur."
+    },
+    "panelCompare": {
+      "example": "Voici un exemple",
+      "part1a": " montre chaque symbole et synonyme de ",
+      "part1b": "et quel panel a ces gènes.",
+      "part2": "L'entrée de l'utilisateur (colonne la plus à gauche) peut correspondre à un symbole de gène, une fusion, un intron ou un synonyme dans chaque panel (colonne)",
+      "part3": {
+        "exactMatch": "a l'exact ",
+        "anyMatch": "a un ",
+        "noMatch": "n'a pas de Symbole (ou Synonyme) pour le",
+        "symbolMatching": "Symbole correspondant au",
+        "synonymMatching": "Synonyme correspondant au",
+        "symbolInput": "Symbole",
+        "synonyminput": "Synonyme"
+      }
+    },
+    "database": {
+      "purpose": "Pour savoir si une recherche utilise des symboles ou des synonymes, GTI utilise un fichier gene_info provenant de NCBI.",
+      "howTo": {
+        "part1": "Pour utiliser la dernière version de gene_info, téléchargez le fichier (étape 1) et ouvrez-le dans l'application (étape 2).",
+        "part2": "Remplacez les fichiers téléchargés sur votre serveur (étape 3)"
+      }
+    },
+    "panelExplore": {
+      "purpose": "Cliquez sur un panel de gènes ci-dessous pour voir les gènes qu'il contient et pour télécharger son fichier source (.bed ou .csv)",
+      "edit": "Ici, vous pouvez modifier ou supprimer des panneaux existants et en créer de nouveaux en important un fichier .bed ou .csv."
+    },
+    "institutionExplore": {
+      "purpose": "Cliquez sur une institution ci-dessous pour voir ses coordonnées",
+      "edit": "Ici, vous pouvez modifier ou supprimer des institutions existantes et en créer de nouvelles."
+    },
+    "fileFormats": {
+      "title": {
+        "text": "Formats de fichiers"
+      },
+      "part1": "GTI accepte deux formats de fichiers pour importer de nouveaux panneaux : .csv et .bed.",
+      "part2": "Lors de l'analyse d'un fichier, GTI utilise uniquement le nom du gène, il peut s'agir d'un symbole ou d'un synonyme.",
+      "part3": "S'il ne peut pas trouver de terme correspondant, le gène est considéré comme 'Non Valide' et ignoré lors des recherches.",
+      "csv": {
+        "part1": "C'est un simple fichier texte : une colonne avec une liste de gènes.",
+        "part2": "La première ligne doit être l'en-tête de colonne (le libellé n'a pas d'importance). Les autres colonnes sont ignorées."
+      },
+      "bed": {
+        "part1": "Les fichiers .bed ont au moins 4 colonnes, séparées par des tabulations (pas d'en-tête) :",
+        "part2": "Pour le moment, seule la colonne NAME est analysée. Le nom du gène est extrait en prenant le premier terme avant",
+        "header1": "Contenu du fichier BED",
+        "header2": "Gène extrait"
+      },
+      "notValid": " n'est pas un gène valide"
+    },
+    "installApp": {
+      "title": {
+        "text": "Installation"
+      },
+      "step": "Etape {count}",
+      "part1a": "Vous devriez installer votre propre version de l'application lorsque :",
+      "part1b": "vous souhaitez contrôler les panels, les institutions et la base de données génétique sous-jacente",
+      "part1c": "vous ne voulez pas ou ne pouvez pas nous envoyer votre (vos) panel(s)",
+      "part1d": "vous voulez avoir GTI derrière un pare-feu ou fonctionner hors ligne (sur un bureau par exemple)",
+      "part2a": "Le processus varie en fonction de vos besoins et du fait que vous ayez ou non votre propre serveur, mais il s'agit essentiellement d'une opération en 3 étapes :",
+      "part2b": " fork le repository. Vous allez essentiellement créer votre propre copie de l'application.",
+      "part2c": " déployez l'application. Des plates-formes comme CloudFlare (et d'autres) ont des moyens de déployer un site Web statique (comme celui-ci !) en se connectant directement à un repository github.",
+      "part2d": " allez vers",
+      "part2e": "pour créer les panels et les institutions que vous souhaitez et remplacer les fichiers dans votre repository github. Votre application se mettra à jour automatiquement en quelques minutes.",
+      "contact": {
+        "title": {
+          "text": "Nous sommes là pour vous aider"
+        }
+      }
+    },
+    "manageApp": {
+      "title": {
+        "text": "Gérez vos propres données"
+      },
+      "part1a": "La page",
+      "part1b": " dispose de tous les outils dont vous avez besoin pour contrôler le contenu de l'application.",
+      "part2a": "Vous pouvez :",
+      "part2b": "créer/modifier les panels",
+      "part2c": "créer/modifier les institutions",
+      "part2d": "mettre à jour la base de données des gènes (qui est utilisée pour vérifier les symboles et les synonymes)",
+      "part2e": "personnaliser l'apparence de votre application",
+      "part3a": "Chaque onglet a un bouton d'aide",
+      "part3b": "pour vous guider tout au long du processus.",
+      "part4a": "Les étapes sont similaires pour tout changement de données :",
+      "part4b": "Suivez les instructions pour créer les données.",
+      "part4c": "Téléchargez le(s) fichier(s) de données sur votre ordinateur.",
+      "part4d": "Remplacez les fichiers dans le répertoire assets pour rendre les modifications permanentes.",
+      "part4e": "Déployez les modifications sur votre serveur (via github ou manuellement selon votre configuration)",
+      "customize": {
+        "title": {
+          "text": "Personnalisez votre application"
+        },
+        "part1": "Vous pouvez changer le thème de votre application en jouant avec les sélecteurs de couleurs et autres outils disponibles.",
+        "part2": "C'est plus un terrain de jeu pour vous aider à configurer rapidement les paramètres plutôt qu'un éditeur d'interface utilisateur à part entière, mais suivre les instructions devrait vous aider à comprendre quelles variables contrôlent les couleurs et les styles de l'application.",
+        "part3": "Si vous souhaitez changer complètement le logo et même le nom de l'application, le répertoire support_files contient les images sources (format Gimp) et les polices de texte."
+      }
+    }
+  }
+}

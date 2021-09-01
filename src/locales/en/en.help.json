@@ -1,0 +1,126 @@
+{
+  "help": {
+    "parsedInput": {
+      "part1a": "Your ",
+      "part1b": "entries are compared to known genes.",
+      "part2": "3 labels categorize your input:",
+      "part3a": "The ",
+      "part3b": "table will discard any ",
+      "part3c": "items."
+    },
+    "geneSearch": {
+      "part1a": " uses your gene list",
+      "part1b": " to find which panels contain those genes.",
+      "part2a": "If some genes submitted are not valid genes, ",
+      "part2b": "look in ",
+      "part2c": " to get more details.",
+      "part3": "Special characters are not allowed.",
+      "firstTime": {
+        "text": "Help"
+      }
+    },
+    "panelResults": {
+      "part1a": "counts the gene matches in each panel",
+      "part1b": " from the items in ",
+      "part1c": "If a search matches a Fusion or an Intron (eg.  JAK2 matches JAK2, JAK2_INTRON8, JAK2_INTRON9, etc.), a panel may display more genes than your original search.",
+      "part1d": "In the example above, searching for JAK2 could return 1 count for JAK2 and 1 count for each Intron.",
+      "part2a": "Click on a cell to get more information about each value."
+    },
+    "panelCompare": {
+      "example": "Here is an example",
+      "part1a": " shows each Symbol and Synonym from ",
+      "part1b": "and which panel has those genes.",
+      "part2": "The user input (leftmost column) may match a gene symbol, fusion, intron, or a synonym in each panel (column)",
+      "part3": {
+        "exactMatch": "has the exact ",
+        "anyMatch": "has a ",
+        "noMatch": "does not have a Symbol (or Synonym) for the",
+        "symbolMatching": "Symbol matching the ",
+        "synonymMatching": "Synonym matching the ",
+        "symbolInput": "Symbol",
+        "synonyminput": "Synonym"
+      }
+    },
+    "database": {
+      "purpose": "To know if a search is using symbols or synonyms, GTI uses a gene_info file from NCBI.",
+      "howTo": {
+        "part1": "To use the latest gene_info, download the file (step 1) and open it in the app (step2).",
+        "part2": "Replace the downloaded files on your server (step 3)"
+      }
+    },
+    "panelExplore": {
+      "purpose": "Click on a gene panel below to see the genes it contains and to download its source file (.bed or .csv)",
+      "edit": "Here you can edit or delete existing panels and create new ones by importing a .bed or .csv file."
+    },
+    "institutionExplore": {
+      "purpose": "Click on an institution below to see its contact information",
+      "edit": "Here you can edit or delete existing institutions and create new ones."
+    },
+    "fileFormats": {
+      "title": {
+        "text": "File Formats"
+      },
+      "part1": "GTI accepts two file formats to import new panels: .csv and .bed.",
+      "part2": "When parsing a file, GTI only uses the gene name, it could be a symbol or a synonym.",
+      "part3": "If it cannot find a matching term, the gene is considered 'Invalid' and ignored during searches.",
+      "csv": {
+        "part1": "It's a simple text file: one column with a list of genes.",
+        "part2": "The first row needs to be the column header (the label doesn't matter). Other columns are ignored."
+      },
+      "bed": {
+        "part1": "Bed files have at least 4 columns, separated by tabs (no header):",
+        "part2": "At the moment, only the NAME column is parsed. The gene name is extracted by taking the first term before",
+        "header1": "Bed File Content",
+        "header2": "Gene Extracted"
+      },
+      "notValid": " is not a valid gene"
+    },
+    "installApp": {
+      "title": {
+        "text": "Installation"
+      },
+      "step": "Step {count}",
+      "part1a": "You should install your own version of the app when:",
+      "part1b": "you want to control panels, institutions and the underlying gene database",
+      "part1c": "you do not want or cannot send us your panel(s)",
+      "part1d": "you want to have GTI behind a firewall or run offline (on a desktop for instance)",
+      "part2a": "The process varies based on your needs and whether or not you have your own server but it's basically a 3 step operation:",
+      "part2b": " fork the repository. You will basically create your own copy of the app.",
+      "part2c": " deploy the app. Platforms like CloudFlare (and others) have ways to deploy a static website (like this one!) by linking directly to a github repository.",
+      "part2d": " go to",
+      "part2e": "to create the panels and institutions you want and overwrite the files in your github repository. Your app will update automatically within a few minutes.",
+      "contact": {
+        "title": {
+          "text": "We're here to help"
+        }
+      }
+    },
+    "manageApp": {
+      "title": {
+        "text": "Manage You Own Data"
+      },
+      "part1a": "The",
+      "part1b": " page has all the tools you need to control the content of the app.",
+      "part2a": "You can:",
+      "part2b": "create/modify panels",
+      "part2c": "create/modify institutions",
+      "part2d": "update the gene database (which is used to check symbols and synonyms)",
+      "part2e": "customize the look of your app",
+      "part3a": "Each tab has a help button",
+      "part3b": "to guide you through the process.",
+      "part4a": "The steps are similar for any data change:",
+      "part4b": "Follow the instructions to create the data.",
+      "part4c": "Download the data file(s) on your computer.",
+      "part4d": "Replace the files in the assets directory to make the changes permanent.",
+      "part4e": "Deploy the changes to your server (via github or manually depending on your setup)",
+      "customize": {
+        "title": {
+          "text": "Customize You App"
+        },
+        "part1": "You can change the theme of your app by playing with the color pickers and other tools available.",
+        "part2": "This is more of a playground to help you quickly get settings going rather than a full-fledged UI editor, but following the instructions should help you understand which variables control the colors and the styles of the app.",
+        "part3": "If you want to completely change the logo and even the name of the app, the supporting_files directory contains the source images (Gimp format) and fonts."
+      }
+    }
+  }
+}

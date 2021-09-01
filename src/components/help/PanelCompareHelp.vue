@@ -31,22 +31,16 @@ or a help card or other tutorial content
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in items" :key="item.gene">
+          <tr v-for="(item, index) in items" :key="index">
             <td>
-              <v-chip :color="item.geneColor" :outlined="chipOutlined">
-                <v-icon left v-text="item.geneIcon"> </v-icon>
-                {{ item.gene }}
-              </v-chip>
+              <gene-entry icon :parsedGene="item.geneSearch"></gene-entry>
             </td>
             <td>
-              <v-chip
-                :color="item.panelColor"
-                v-if="item.panel"
-                :outlined="chipOutlined"
-              >
-                <v-icon left v-text="item.panelIcon"> </v-icon>
-                {{ item.panel }}
-              </v-chip>
+              <gene-entry
+                icon
+                :parsedGene="item.panelGene"
+                v-if="showChip(item.panelGene)"
+              ></gene-entry>
             </td>
             <td>
               {{ $t('panelCompare.table.headers.panel.text') }}
@@ -64,72 +58,70 @@ or a help card or other tutorial content
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+import { GeneState } from '@/types/ui-types'
+import { FullGene, Gene, ParsedGene } from '@/types/panel-types'
 
 export default Vue.extend({
   name: 'PanelCompareHelp',
   props: {},
   data: () => ({}),
   computed: {
-    ...mapGetters({
-      chipOutlined: 'getChipOutlined',
-    }),
     items() {
       const it = []
       it.push({
-        gene: 'TP53',
-        panel: 'TP53',
+        geneSearch: new ParsedGene(new Gene('TP53'), GeneState.SYMBOL),
+        panelGene: new ParsedGene(new Gene('TP53'), GeneState.SYMBOL),
         explain1: this.$t('help.panelCompare.part3.exactMatch'),
         explain2: this.$t('help.panelCompare.part3.symbolMatching'),
         explain3: this.$t('help.panelCompare.part3.symbolInput'),
-        geneColor: 'success',
-        geneIcon: 'mdi-check',
-        panelColor: 'success',
-        panelIcon: 'mdi-check',
       })
       it.push({
-        gene: 'TENT5C',
-        panel: 'FAM46C',
+        geneSearch: new ParsedGene(new Gene('TENT5C'), GeneState.SYMBOL),
+        panelGene: new ParsedGene(
+          new Gene('FAM46C'),
+          GeneState.SYMBOL_TO_SYNONYM
+        ),
         explain1: this.$t('help.panelCompare.part3.anyMatch'),
         explain2: this.$t('help.panelCompare.part3.synonymMatching'),
         explain3: this.$t('help.panelCompare.part3.symbolInput'),
-        geneColor: 'success',
-        geneIcon: 'mdi-check',
-        panelColor: 'warning',
-        panelIcon: 'mdi-approximately-equal',
       })
       it.push({
-        gene: 'BRAF1',
-        panel: 'BRAF',
+        geneSearch: new ParsedGene(
+          new Gene('BRAF1'),
+          GeneState.SYNONYM,
+          new FullGene('BRAF', '', [], '', '')
+        ),
+        panelGene: new ParsedGene(
+          new Gene('BRAF'),
+          GeneState.SYNONYM_TO_SYMBOL
+        ),
         explain1: this.$t('help.panelCompare.part3.exactMatch'),
         explain2: this.$t('help.panelCompare.part3.symbolMatching'),
         explain3: this.$t('help.panelCompare.part3.synonyminput'),
-        geneColor: 'warning',
-        geneIcon: 'mdi-approximately-equal',
-        panelColor: 'success',
-        panelIcon: 'mdi-check',
       })
       it.push({
-        gene: 'KRAS1',
-        panel: 'KRAS2',
+        geneSearch: new ParsedGene(
+          new Gene('KRAS1'),
+          GeneState.SYNONYM,
+          new FullGene('KRAS', '', [], '', '')
+        ),
+        panelGene: new ParsedGene(
+          new Gene('KRAS2'),
+          GeneState.SYNONYM,
+          new FullGene('KRAS', '', [], '', '')
+        ),
         explain1: this.$t('help.panelCompare.part3.anyMatch'),
         explain2: this.$t('help.panelCompare.part3.synonymMatching'),
         explain3: this.$t('help.panelCompare.part3.synonyminput'),
-        geneColor: 'warning',
-        geneIcon: 'mdi-approximately-equal',
-        panelColor: 'warning',
-        panelIcon: 'mdi-approximately-equal',
       })
       it.push({
-        gene: 'BRCA1',
+        gene: new Gene('BRCA1'),
         panel: '',
+        geneSearch: new ParsedGene(new Gene('BRCA1'), GeneState.SYMBOL),
+        panelGene: new ParsedGene(new Gene('BRCA1'), GeneState.NOT_FOUND),
         explain1: this.$t('help.panelCompare.part3.noMatch'),
         explain2: '',
         explain3: this.$t('help.panelCompare.part3.symbolInput'),
-        geneColor: 'success',
-        geneIcon: 'mdi-check',
-        panelColor: 'success',
-        panelIcon: 'mdi-check',
       })
       return it
     },
@@ -141,14 +133,8 @@ export default Vue.extend({
   mounted() {},
   destroyed() {},
   methods: {
-    formatState(state: string) {
-      if (state == 'symbol') {
-        return 'success'
-      }
-      if (state == 'synonym') {
-        return 'warning'
-      }
-      return 'error'
+    showChip(item: ParsedGene) {
+      return item.state !== GeneState.NOT_FOUND
     },
   },
 })
