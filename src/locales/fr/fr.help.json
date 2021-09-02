@@ -17,6 +17,9 @@
       "part3": "Les caractères spéciaux ne sont pas autorisés.",
       "firstTime": {
         "text": "Aide"
+      },
+      "simple": {
+        "part1a": "compare votre liste de gènes avec les gènes de la base de données de NCBI."
       }
     },
     "panelResults": {

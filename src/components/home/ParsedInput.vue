@@ -28,7 +28,7 @@
     <v-card-text class="text-left">
       <info-alert :active="help">
         <template v-slot:content>
-          <parsed-search-help />
+          <parsed-search-help :simpleSearch="simpleSearch" />
         </template>
       </info-alert>
       <v-fade-transition>
@@ -130,6 +130,10 @@ export default Vue.extend({
     },
     formattedGenes: {
       type: ParsedGenes,
+    },
+    simpleSearch: {
+      type: Boolean,
+      default: false,
     },
   },
   data: () => ({

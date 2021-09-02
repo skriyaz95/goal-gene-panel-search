@@ -17,6 +17,9 @@
       "part3": "Special characters are not allowed.",
       "firstTime": {
         "text": "Help"
+      },
+      "simple": {
+        "part1a": "compare your gene list to existing genes from the NCBI database."
       }
     },
     "panelResults": {

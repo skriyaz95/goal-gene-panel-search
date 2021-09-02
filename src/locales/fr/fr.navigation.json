@@ -1,12 +1,21 @@
 {
   "navigation": {
     "home": {
-      "text": "Accueil",
+      "text": "Recherche",
       "toolbar": {
         "text": "Recherche de genes"
       },
       "title": {
-        "text": "Accueil"
+        "text": "Recherche"
+      }
+    },
+    "search": {
+      "text": "Recherche Simple",
+      "toolbar": {
+        "text": "Validation de Gènes"
+      },
+      "title": {
+        "text": "Recherche Simple"
       }
     },
     "mini": {

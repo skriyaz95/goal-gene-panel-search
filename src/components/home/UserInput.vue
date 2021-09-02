@@ -29,7 +29,7 @@
       <v-card-text>
         <info-alert :active="help">
           <template v-slot:content>
-            <gene-search-help />
+            <gene-search-help :simpleSearch="simpleSearch" />
             <v-btn
               class="mt-2 primary"
               @click="startDemo()"
@@ -92,6 +92,10 @@ export default Vue.extend({
       default: false,
     },
     firstTime: {
+      type: Boolean,
+      default: false,
+    },
+    simpleSearch: {
       type: Boolean,
       default: false,
     },

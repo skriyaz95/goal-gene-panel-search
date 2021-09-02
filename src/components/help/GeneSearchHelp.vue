@@ -7,8 +7,13 @@ or a help card or other tutorial content
   <div>
     <div class="pb-2">
       <b>{{ $t('userInput.geneSearch') }}</b>
-      {{ $t('help.geneSearch.part1a') }}
-      {{ $t('help.geneSearch.part1b') }}
+      <span v-if="simpleSearch">
+        {{ $t('help.geneSearch.simple.part1a') }}
+      </span>
+      <span v-else>
+        {{ $t('help.geneSearch.part1a') }}
+        {{ $t('help.geneSearch.part1b') }}
+      </span>
     </div>
     <div>
       {{ $t('help.geneSearch.part2a') }}
@@ -25,6 +30,12 @@ import Vue from 'vue'
 
 export default Vue.extend({
   name: 'GeneSearchHelp',
+  props: {
+    simpleSearch: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data: () => ({}),
   computed: {},
   watch: {},

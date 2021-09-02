@@ -1,6 +1,7 @@
 import Vue from "vue"
 import VueRouter from "vue-router"
 import Home from "@/views/Home.vue"
+import SimpleSearch from "@/views/SimpleSearch.vue"
 Vue.use(VueRouter)
 
 const routes = [
@@ -8,6 +9,11 @@ const routes = [
     path: "/:tab?",
     name: "home",
     component: Home,
+  },
+  {
+    path: "/search/simple",
+    name: "search",
+    component: SimpleSearch,
   },
   {
     path: "/utils/:tab?/:item?",

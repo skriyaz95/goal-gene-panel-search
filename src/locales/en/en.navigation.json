@@ -1,12 +1,21 @@
 {
   "navigation": {
     "home": {
-      "text": "Home",
+      "text": "Full Search",
       "toolbar": {
         "text": "Find Genes in Panel"
       },
       "title": {
-        "text": "Home"
+        "text": "Full Search"
+      }
+    },
+    "search": {
+      "text": "Simple Search",
+      "toolbar": {
+        "text": "Validate Gene Search"
+      },
+      "title": {
+        "text": "Simple Search"
       }
     },
     "mini": {

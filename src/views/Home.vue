@@ -194,7 +194,10 @@ export default Vue.extend({
         this.$router.replace({ params: { ...this.$route.params, tab } })
       },
       get(): string | (string | null)[] {
-        return this.$route.params.tab ? this.$route.params.tab : 'results'
+        if (this.$route.params.tab) {
+          return this.$route.params.tab
+        }
+        return 'results'
       },
     },
     background(): VuetifyThemeItem {

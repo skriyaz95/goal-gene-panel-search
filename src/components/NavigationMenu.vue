@@ -83,7 +83,20 @@
         <v-list-item-icon>
           <v-icon>mdi-home</v-icon>
         </v-list-item-icon>
-        <v-list-item-title>{{ $t('navigation.home.text') }}</v-list-item-title>
+        <v-list-item-title>{{ $t('navigation.home.text') }} </v-list-item-title>
+      </v-list-item>
+      <v-list-item
+        :to="{ name: 'search' }"
+        exact
+        @click.stop=""
+        :active-class="activeClassExact"
+      >
+        <v-list-item-icon>
+          <v-icon>mdi-dna</v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>
+          {{ $t('navigation.search.text') }}
+        </v-list-item-title>
       </v-list-item>
       <v-list-item
         :to="{

@@ -16,7 +16,7 @@ or a help card or other tutorial content
     <div class="pl-2">- {{ $t('parsedInput.symbols.tooltip') }}</div>
     <div class="pl-2">- {{ $t('parsedInput.fusions.tooltip') }}</div>
     <div class="pl-2 pb-2">- {{ $t('parsedInput.introns.tooltip') }}</div>
-    <div>
+    <div v-if="!simpleSearch">
       {{ $t('help.parsedInput.part3a') }}
       <b>{{ $t('panelResult.result.name') }}</b>
       {{ $t('help.parsedInput.part3b') }}
@@ -31,7 +31,12 @@ import Vue from 'vue'
 
 export default Vue.extend({
   name: 'ParsedSearchHelp',
-  props: {},
+  props: {
+    simpleSearch: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data: () => ({}),
   computed: {},
   watch: {},
