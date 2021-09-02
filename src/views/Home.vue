@@ -293,6 +293,7 @@ export default Vue.extend({
         const tabComponent = this.$refs.tabs as any
         tabComponent.callSlider()
       }
+      this.resizeTables()
     },
     resizeTables() {
       const elt1: any = this.$refs.panelResult
