@@ -182,7 +182,7 @@ export default Vue.extend({
       //just a few entries in geneList to show how the parsing works
       this.clear().then(() => {
         this.demoRunning = true
-        const text = 'TP53\nBRCA1,BRCA2\nNOT_A_GENE, ALK_FUSION\nBRAF1'.split(
+        const text = 'TP53\nBRCA1,BRCA2\nABCDE, ALK_FUSION\nBRAF1, BCL6'.split(
           ''
         )
         this.geneList = ''
