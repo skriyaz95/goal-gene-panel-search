@@ -148,7 +148,7 @@ import PanelCompareHelp from '@/components/help/PanelCompareHelp.vue'
 import { ActiveState, GeneState, TableHeader } from '@/types/ui-types'
 import download from '@/utils/download'
 import Papa from 'papaparse'
-import { ParsedGene } from '@/types/panel-types'
+import { Gene, ParsedGene } from '@/types/panel-types'
 // import { transpose } from '@/utils/arrays'
 import ResizablePage from '@/components/ResizablePage.vue'
 
@@ -245,13 +245,34 @@ export default Vue.extend({
     },
     downloadComparePanels() {
       //use filteredHeaders to remove geneId and hidden columns
-      const csvHeaders = this.filteredHeaders.map((h) => h.text)
+      const csvHeaders = this.filteredHeaders.map((h) => h.text).slice()
+      csvHeaders.splice(1, 0, 'HGNC')
+      const filteredHeaderValues = this.filteredHeaders
+        .map((h) => h.value)
+        .slice()
+      filteredHeaderValues.splice(1, 0, 'HGNC')
       const csvItems = []
       for (let j = 0; j < this.items.length; j++) {
         const row = []
-        for (let i = 0; i < this.filteredHeaders.length; i++) {
-          const h = this.filteredHeaders[i]
-          const result = (this.items as any)[j][h.value]
+        for (let i = 0; i < filteredHeaderValues.length; i++) {
+          const h = filteredHeaderValues[i]
+          let result = null
+          if (h === 'HGNC') {
+            //use Gene Search to output HGNC symbol value in 2nd column
+            const firstCol = this.filteredHeaders[0].value
+            const currentParsedGene = (this.items as any)[j][firstCol][0]
+            result = [new ParsedGene(currentParsedGene.gene)]
+            result[0].state = GeneState.SYMBOL
+            if (
+              currentParsedGene.state === GeneState.SYNONYM ||
+              currentParsedGene.state === GeneState.FUSION ||
+              currentParsedGene.state === GeneState.INTRON
+            ) {
+              result[0].gene = new Gene(currentParsedGene.realGene.symbol)
+            }
+          } else {
+            result = (this.items as any)[j][h]
+          }
           //skip invalid results
           if (result && result.length > 0) {
             const genes: string[] = []
