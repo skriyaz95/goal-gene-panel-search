@@ -200,6 +200,7 @@ import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import {
+  FullGene,
   Institution,
   PanelGenes,
   PanelResultFormattedRow,
@@ -209,9 +210,9 @@ import {
 } from '@/types/panel-types'
 import InstitutionDetails from '@/components/InstitutionDetails.vue'
 import DialogTemplate from '@/components/DialogTemplate.vue'
-import { ListItem } from '@/types/ui-types'
+import { GeneState, ListItem } from '@/types/ui-types'
 import Papa from 'papaparse'
-import { transpose } from '@/utils/arrays'
+// import { transpose } from '@/utils/arrays'
 import ResizablePage from '@/components/ResizablePage.vue'
 
 export default Vue.extend({
@@ -307,28 +308,88 @@ export default Vue.extend({
     },
     downloadGenes(panelName: string, genes: PanelGenes) {
       const headers = []
-      headers.push(this.$t('panelResult.csv.headers.panelResult.genePanelName'))
+      headers.push(this.$t('panelResult.csv.headers.panelResult.geneSearch'))
+      headers.push(this.$t('panelResult.csv.headers.panelResult.hgnc'))
       headers.push(this.$t('panelResult.csv.headers.panelResult.genesFound'))
       headers.push(this.$t('panelResult.csv.headers.panelResult.genesNotFound'))
+      headers.push(this.$t('panelResult.csv.headers.panelResult.invalid'))
 
-      const panelNames = []
-      panelNames.push(panelName)
+      const rows: Array<Array<String>> = []
+      for (let i = 0; i < genes.genesInPanel.length; i++) {
+        const items: Array<String> = []
+        const currentGene = genes.genesInPanel[i]
+        //gene search
+        items.push(currentGene.fromSearch as string)
+        if (
+          currentGene.state === GeneState.SYNONYM ||
+          currentGene.state === GeneState.FUSION ||
+          currentGene.state === GeneState.INTRON
+        ) {
+          //hgnc
+          items.push((currentGene.realGene as FullGene).symbol)
+        } else {
+          //hgnc
+          items.push(currentGene.gene.name)
+        }
+        //found
+        items.push(currentGene.gene.name)
+        //not found
+        items.push('')
+        //invalid
+        items.push('')
+        rows.push(items)
+      }
+      for (let i = 0; i < genes.genesNotInPanel.length; i++) {
+        const items: Array<String> = []
+        const currentGene = genes.genesNotInPanel[i]
+        //gene search
+        items.push(currentGene.fromSearch as string)
+        //hgnc
+        items.push(currentGene.realGene as string)
+        //found
+        items.push('')
+        //not found
+        items.push(currentGene.gene.name)
+        //invalid
+        items.push('')
+        rows.push(items)
+      }
 
-      const genesInPanel = genes.genesInPanel.map(
-        (geneInPanel) => geneInPanel.gene.name
-      )
-      const genesNotInPanel = genes.genesNotInPanel.map(
-        (geneNotInPanel) => geneNotInPanel.gene.name
-      )
+      //Invalid genes
+      for (let i = 0; i < this.parsedGenes.invalidGenes.length; i++) {
+        const items: Array<String> = []
+        const currentGene = this.parsedGenes.invalidGenes[i]
+        //gene search
+        items.push(currentGene.gene.name)
+        //hgnc
+        items.push('')
+        //found
+        items.push('')
+        //not found
+        items.push('')
+        //invalid
+        items.push(currentGene.gene.name)
+        rows.push(items)
+      }
 
-      const data = []
-      data.push(panelNames)
-      data.push(genesInPanel)
-      data.push(genesNotInPanel)
+      // const panelNames = []
+      // panelNames.push(panelName)
+
+      // const genesInPanel = genes.genesInPanel.map(
+      //   (geneInPanel) => geneInPanel.gene.name
+      // )
+      // const genesNotInPanel = genes.genesNotInPanel.map(
+      //   (geneNotInPanel) => geneNotInPanel.gene.name
+      // )
+
+      // const data = []
+      // data.push(panelNames)
+      // data.push(genesInPanel)
+      // data.push(genesNotInPanel)
 
       const csv = Papa.unparse({
         fields: headers,
-        data: transpose(data),
+        data: rows,
       })
       download('search_results_' + panelName + '.csv', csv, 'text/csv')
     },
