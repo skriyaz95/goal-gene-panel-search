@@ -35,7 +35,7 @@
     }
   },
   "count": {
-    "gene": "{count} gène | {count} gènes"
+    "gene": "{count} entrée | {count} entrées"
   },
   "input": {
     "details": {}

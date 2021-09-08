@@ -1,9 +1,13 @@
 import { GeneState } from "@/types/ui-types"
 
 export function formatStateColor(state: string | undefined) {
-  if (state === GeneState.SYMBOL || state === GeneState.INTRON) {
+  if (state === GeneState.SYMBOL) {
     return "success"
   }
+  if (state === GeneState.INTRON) {
+    return "green lighten-3"
+  }
+
   if (state === GeneState.FUSION) {
     return null
   }
