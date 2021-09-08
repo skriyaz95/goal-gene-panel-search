@@ -86,7 +86,7 @@
       }
     },
     "upload": {
-      "text": "Search with a bed file or csv file"
+      "text": "Search with a csv file"
     }
   },
   "panelResult": {

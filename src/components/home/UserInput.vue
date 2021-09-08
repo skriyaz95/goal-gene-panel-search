@@ -58,8 +58,8 @@
               <div>{{ $t('userInput.upload.text') }}:</div>
               <v-file-input
                 v-model="geneFile"
-                accept=".bed,.csv"
-                label=".bed,.csv"
+                accept=".csv"
+                label=".csv"
                 prepend-icon="mdi-paperclip"
                 @change="handleFileUpload"
                 class="pr-2 pb-2"
@@ -219,7 +219,7 @@ export default Vue.extend({
       }
     },
     parseContent(fileName: string, content: string) {
-      const extension = /\.csv$/.test(fileName) ? '.csv' : '.bed'
+      const extension = '.csv'
       const allRows = content.split(/\r?\n|\r/)
       const genes = getPanelGenes(allRows, extension)
       this.geneList = genes.map((g) => g.name).join('\n')
