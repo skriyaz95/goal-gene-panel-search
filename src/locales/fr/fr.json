@@ -93,7 +93,7 @@
     "showInstitutionDetails": "Afficher les détails de l'institution",
     "result": {
       "name": "Résultats des panels",
-      "title": "Gènes évalués (symboles, synonymes, fusions, introns)",
+      "title": "Entrées évalués (symboles, synonymes, fusions, introns)",
       "invalidGenesTitle": "Entrées ignorées (non valides)"
     },
     "table": {
@@ -131,7 +131,9 @@
           "institutionWebsite": "Site web",
           "genePanelName": "Nom du panel",
           "genesFound": "Gènes trouvés",
-          "genesNotFound": "Gènes non trouvés"
+          "genesNotFound": "Gènes non trouvés",
+          "hgnc": "HGNC",
+          "invalid": "Non Valide"
         }
       }
     }

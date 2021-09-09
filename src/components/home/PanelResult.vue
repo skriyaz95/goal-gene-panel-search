@@ -111,9 +111,9 @@
             <panel-results-help />
           </template>
         </info-alert>
-        <div class="text-left" v-if="symbolOrSynonymLength > 0">
+        <div class="text-left" v-if="anyitemLength > 0">
           <b>{{ $t('panelResult.result.title') }}:</b>
-          {{ symbolOrSynonymLength }}
+          {{ anyitemLength }}
         </div>
         <div class="text-left" v-if="invalidLength > 0">
           <b>{{ $t('panelResult.result.invalidGenesTitle') }}:</b>
@@ -282,7 +282,7 @@ export default Vue.extend({
       }
       return length
     },
-    symbolOrSynonymLength() {
+    anyitemLength() {
       let length = 0
       if (this.parsedGenes) {
         if (this.parsedGenes.synonymFoundGenes) {
@@ -290,6 +290,12 @@ export default Vue.extend({
         }
         if (this.parsedGenes.symbolFoundGenes) {
           length += this.parsedGenes.symbolFoundGenes.length
+        }
+        if (this.parsedGenes.fusionFoundGenes) {
+          length += this.parsedGenes.fusionFoundGenes.length
+        }
+        if (this.parsedGenes.intronFoundGenes) {
+          length += this.parsedGenes.intronFoundGenes.length
         }
       }
       return length
