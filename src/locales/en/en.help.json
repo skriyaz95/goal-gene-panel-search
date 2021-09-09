@@ -44,6 +44,23 @@
         "synonyminput": "Synonym"
       }
     },
+    "panelResult": {
+      "example": "Here is an example",
+      "part1a": " shows all Symbols and Synonyms found and not found from ",
+      "part1b": "in the panel.",
+      "part2": "The user input (leftmost column) may match a gene symbol, fusion, intron, or a synonym in each panel (column)",
+      "part3": {
+        "exactMatch": "has the exact ",
+        "anyMatch": "has a",
+        "noMatch": "does not have a Symbol (or Synonym) for the",
+        "symbolMatching": "Symbol matching the ",
+        "synonymMatching": "Synonym matching the ",
+        "fusionMatching": "Fusion matching the ",
+        "intronMatching": "Intron matching the ",
+        "symbolInput": "Symbol",
+        "synonyminput": "Synonym"
+      }
+    },
     "database": {
       "purpose": "To know if a search is using symbols or synonyms, GTI uses a gene_info file from NCBI.",
       "howTo": {
