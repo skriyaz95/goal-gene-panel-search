@@ -1,7 +1,7 @@
 import { Gene } from "@/types/panel-types"
 
 export function getPanelGenes(allRows: string[], extension: string): Gene[] {
-  const uniqueRows = parseCSV(allRows)
+  const uniqueRows = extension == ".csv" ? parseCSV(allRows) : parseBED(allRows)
   const uniqueRowsArray = Array.from(uniqueRows)
   const panelGenes: Gene[] = []
   for (let j = 0; j < uniqueRowsArray.length; j++) {

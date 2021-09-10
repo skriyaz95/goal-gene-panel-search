@@ -219,7 +219,7 @@ export default Vue.extend({
       }
     },
     parseContent(fileName: string, content: string) {
-      const extension = '.csv'
+      const extension = /\.csv$/.test(fileName) ? '.csv' : '.bed'
       const allRows = content.split(/\r?\n|\r/)
       const genes = getPanelGenes(allRows, extension)
       this.geneList = genes.map((g) => g.name).join('\n')

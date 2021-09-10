@@ -6,7 +6,7 @@ or a help card or other tutorial content
 <template>
   <div>
     <div class="pb-2">
-      <b>{{ $t('panelResult.title.text') }}</b>
+      <b>{{ $t('panelResult.result.name') }}</b>
       {{ $t('help.panelResult.part1a') }}
       <b>{{ $t('parsedInput.title.text') }}</b>
       {{ $t('help.panelResult.part1b') }}
@@ -88,7 +88,7 @@ export default Vue.extend({
       })
       it.push({
         geneSearch: new ParsedGene(new Gene('ABL1'), GeneState.NOT_FOUND),
-        explain1: this.$t('help.panelResult.part3.anyMatch'),
+        explain1: '',
         explain2: this.$t('help.panelResult.part3.noMatch'),
         explain3: this.$t('help.panelResult.part3.symbolInput'),
       })

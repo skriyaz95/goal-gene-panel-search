@@ -90,9 +90,6 @@
     }
   },
   "panelResult": {
-    "title": {
-      "text": "Panel Results"
-    },
     "showInstitutionDetails": "Show Institution Details",
     "result": {
       "name": "Panel Results",

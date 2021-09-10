@@ -72,7 +72,6 @@ export default Vue.extend({
   destroyed() {},
   methods: {
     close() {
-      console.log(this.help)
       this.$emit('closing')
     },
     handleHelp() {
