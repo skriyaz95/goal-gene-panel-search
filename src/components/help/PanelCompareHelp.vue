@@ -97,7 +97,7 @@ export default Vue.extend({
         ),
         explain1: this.$t('help.panelCompare.part3.exactMatch'),
         explain2: this.$t('help.panelCompare.part3.symbolMatching'),
-        explain3: this.$t('help.panelCompare.part3.synonyminput'),
+        explain3: this.$t('help.panelCompare.part3.synonymInput'),
       })
       it.push({
         geneSearch: new ParsedGene(
@@ -112,7 +112,7 @@ export default Vue.extend({
         ),
         explain1: this.$t('help.panelCompare.part3.anyMatch'),
         explain2: this.$t('help.panelCompare.part3.synonymMatching'),
-        explain3: this.$t('help.panelCompare.part3.synonyminput'),
+        explain3: this.$t('help.panelCompare.part3.synonymInput'),
       })
       it.push({
         gene: new Gene('BRCA1'),

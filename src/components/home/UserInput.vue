@@ -58,7 +58,7 @@
               <div>{{ $t('userInput.upload.text') }}:</div>
               <v-file-input
                 v-model="geneFile"
-                accept=".csv"
+                accept=".csv, .bed"
                 label=".csv"
                 prepend-icon="mdi-paperclip"
                 @change="handleFileUpload"
@@ -182,9 +182,10 @@ export default Vue.extend({
       //just a few entries in geneList to show how the parsing works
       this.clear().then(() => {
         this.demoRunning = true
-        const text = 'TP53\nBRCA1, BRCA2\nRS7525559,\nBRAF1, BCL6\nALK_FUSION'.split(
-          ''
-        )
+        const text =
+          'TP53\nBRCA1, BRCA2\nRS7525559,\nBRAF1,\nBCL6\nALK_FUSION\nJAK2_INTRON8'.split(
+            ''
+          )
         this.geneList = ''
         const interval = 75
         for (let i = 0; i < text.length; i++) {

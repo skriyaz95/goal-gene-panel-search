@@ -6,7 +6,7 @@ or a help card or other tutorial content
 <template>
   <div>
     <div class="pb-2">
-      <b>{{ $t('panelResult.result.name') }}</b>
+      <b>{{ $t('panelResult.dialog.title') }}</b>
       {{ $t('help.panelResult.part1a') }}
       <b>{{ $t('parsedInput.title.text') }}</b>
       {{ $t('help.panelResult.part1b') }}
@@ -14,7 +14,7 @@ or a help card or other tutorial content
     <div class="pb-2">
       {{ $t('help.panelResult.part2') }}
     </div>
-    <div>{{ $t('help.panelResult.example') }}:</div>
+    <div>{{ $t('help.panelCompare.example') }}:</div>
     <v-simple-table light>
       <template v-slot:default>
         <thead>
@@ -30,7 +30,10 @@ or a help card or other tutorial content
         <tbody>
           <tr v-for="(item, index) in items" :key="index">
             <td>
-              <gene-entry :icon="false" :parsedGene="item.geneSearch"></gene-entry>
+              <gene-entry
+                :icon="false"
+                :parsedGene="item.geneSearch"
+              ></gene-entry>
             </td>
             <td>
               {{ $t('panelResult.table.headers.gene.text') }}
@@ -60,9 +63,9 @@ export default Vue.extend({
       const it = []
       it.push({
         geneSearch: new ParsedGene(new Gene('TP53'), GeneState.SYMBOL),
-        explain1: this.$t('help.panelResult.part3.exactMatch'),
-        explain2: this.$t('help.panelResult.part3.symbolMatching'),
-        explain3: this.$t('help.panelResult.part3.symbolInput'),
+        explain1: this.$t('help.panelCompare.part3.exactMatch'),
+        explain2: this.$t('help.panelCompare.part3.symbolMatching'),
+        explain3: this.$t('help.panelCompare.part3.symbolInput'),
       })
       it.push({
         geneSearch: new ParsedGene(
@@ -70,27 +73,27 @@ export default Vue.extend({
           GeneState.SYNONYM,
           new FullGene('BRAF', '', [], '', '')
         ),
-        explain1: this.$t('help.panelResult.part3.exactMatch'),
-        explain2: this.$t('help.panelResult.part3.symbolMatching'),
-        explain3: this.$t('help.panelResult.part3.synonyminput'),
+        explain1: this.$t('help.panelCompare.part3.exactMatch'),
+        explain2: this.$t('help.panelCompare.part3.symbolMatching'),
+        explain3: this.$t('help.panelCompare.part3.synonymInput'),
       })
       it.push({
         geneSearch: new ParsedGene(new Gene('ALK_FUSION'), GeneState.FUSION),
         explain1: this.$t('help.panelResult.part3.anyMatch'),
         explain2: this.$t('help.panelResult.part3.fusionMatching'),
-        explain3: this.$t('help.panelResult.part3.symbolInput'),
+        explain3: this.$t('help.panelCompare.part3.symbolInput'),
       })
       it.push({
         geneSearch: new ParsedGene(new Gene('BCL6_INTRON1'), GeneState.INTRON),
         explain1: this.$t('help.panelResult.part3.anyMatch'),
         explain2: this.$t('help.panelResult.part3.intronMatching'),
-        explain3: this.$t('help.panelResult.part3.symbolInput'),
+        explain3: this.$t('help.panelCompare.part3.symbolInput'),
       })
       it.push({
         geneSearch: new ParsedGene(new Gene('ABL1'), GeneState.NOT_FOUND),
         explain1: '',
-        explain2: this.$t('help.panelResult.part3.noMatch'),
-        explain3: this.$t('help.panelResult.part3.symbolInput'),
+        explain2: this.$t('help.panelCompare.part3.noMatch'),
+        explain3: this.$t('help.panelCompare.part3.symbolInput'),
       })
       return it
     },
