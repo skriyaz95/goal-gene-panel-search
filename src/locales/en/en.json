@@ -93,7 +93,7 @@
     "showInstitutionDetails": "Show Institution Details",
     "result": {
       "name": "Panel Results",
-      "title": "Genes Evaluated (Symbols, Synonyms, Fusions, Introns)",
+      "title": "Entries Evaluated (Symbols, Synonyms, Fusions, Introns)",
       "invalidGenesTitle": "Entries Ignored (Invalid)"
     },
     "table": {
@@ -129,9 +129,12 @@
           "institutionPhone": "Institution Phone",
           "institutionEmail": "Institution Email",
           "institutionWebsite": "Institution Website",
-          "genePanelName": "Gene Panel Name",
-          "genesFound": "Genes Found",
-          "genesNotFound": "Genes Not Found"
+          "geneSearch": "Gene Search",
+          "genesFound": "Genes Found in Panel",
+          "genesNotFound": "Genes Not Found in Panel",
+          "hgnc": "HGNC",
+          "invalid": "Invalid",
+          "genePanelName": "Gene Panel Name"
         }
       }
     }

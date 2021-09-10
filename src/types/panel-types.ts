@@ -118,11 +118,18 @@ export class ParsedGene {
   gene: Gene
   state!: string | undefined
   realGene!: FullGene | string | undefined //only synonyms would have a realGene value
+  fromSearch!: string | undefined
 
-  constructor(gene: Gene, state?: string, realGene?: FullGene) {
+  constructor(
+    gene: Gene,
+    state?: string,
+    realGene?: FullGene,
+    fromSearch?: string,
+  ) {
     this.gene = gene
     this.state = state ? state : undefined
     this.realGene = realGene ? realGene : undefined
+    this.fromSearch = fromSearch ? fromSearch : undefined
   }
 }
 

@@ -409,7 +409,7 @@ function formatCompareItems(payload) {
         row[value] = [] // parsedGeneForPanel
       }
       const panel = panelSearchResultsMap.get(value)
-      row[value].push(...formatOnePanelOneGene(panel, allFound[g], value))
+      row[value].push(...formatOnePanelOneGene(panel, allFound[g]))
     }
     rows.push(row)
   }
@@ -433,6 +433,7 @@ function formatOnePanelOneGene(panel, currentGene) {
         JSON.parse(JSON.stringify(currentGene.gene)),
       )
       parsedGeneForPanel.state = GeneState.SYMBOL
+      parsedGeneForPanel.fromSearch = geneId
       row.push(parsedGeneForPanel)
       found = true
     }
@@ -442,6 +443,7 @@ function formatOnePanelOneGene(panel, currentGene) {
     if (synonymSet.has(geneId)) {
       const parsedGeneForPanel = JSON.parse(JSON.stringify(currentGene))
       parsedGeneForPanel.state = GeneState.SYNONYM
+      parsedGeneForPanel.fromSearch = geneId
       row.push(parsedGeneForPanel)
       found = true
     }
@@ -456,6 +458,7 @@ function formatOnePanelOneGene(panel, currentGene) {
         parsedGeneForPanel.state = GeneState.SYMBOL_TO_SYNONYM
         parsedGeneForPanel.gene.name = s.synonym
         parsedGeneForPanel.realGene = s.gene
+        parsedGeneForPanel.fromSearch = geneId
         row.push(parsedGeneForPanel)
         found = true
         break
@@ -472,6 +475,7 @@ function formatOnePanelOneGene(panel, currentGene) {
         parsedGeneForPanel.state = GeneState.SYNONYM_TO_SYMBOL
         parsedGeneForPanel.gene.name = s.synonym
         parsedGeneForPanel.realGene = s.gene
+        parsedGeneForPanel.fromSearch = geneId
         row.push(parsedGeneForPanel)
         found = true
         break
@@ -488,6 +492,7 @@ function formatOnePanelOneGene(panel, currentGene) {
         parsedGeneForPanel.state = GeneState.FUSION
         parsedGeneForPanel.gene.name = f.originalName
         parsedGeneForPanel.realGene = f.gene
+        parsedGeneForPanel.fromSearch = geneId
         row.push(parsedGeneForPanel)
         found = true
       }
@@ -503,6 +508,7 @@ function formatOnePanelOneGene(panel, currentGene) {
         parsedGeneForPanel.state = GeneState.INTRON
         parsedGeneForPanel.gene.name = f.originalName
         parsedGeneForPanel.realGene = f.gene
+        parsedGeneForPanel.fromSearch = geneId
         row.push(parsedGeneForPanel)
         found = true
       }
@@ -513,6 +519,17 @@ function formatOnePanelOneGene(panel, currentGene) {
       JSON.parse(JSON.stringify(currentGene.gene)),
     )
     parsedGeneForPanel.state = GeneState.NOT_FOUND
+    parsedGeneForPanel.fromSearch = geneId
+    if (currentGene.state === GeneState.SYMBOL) {
+      parsedGeneForPanel.realGene = currentGene.gene.name
+    } else if (
+      currentGene.state === GeneState.SYNONYM ||
+      currentGene.state === GeneState.FUSION ||
+      currentGene.state === GeneState.INTRON
+    ) {
+      parsedGeneForPanel.realGene = currentGene.realGene.symbol
+    }
+
     row.push(parsedGeneForPanel)
   }
   return row
