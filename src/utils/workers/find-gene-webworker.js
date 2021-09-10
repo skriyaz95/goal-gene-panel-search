@@ -198,7 +198,7 @@ function findGenesInSelectedPanel(_allMatches, panel, parsedGenes) {
   })
   //look for intron to intron match
   //need to separate the _INTRON part eb. _INTRON1 _INTRON2 etc.
-  const intronsInPanelArray = panel.fusionsOnly.map((g) => g.originalName)
+  const intronsInPanelArray = panel.intronsOnly.map((g) => g.originalName)
   const intronsInPanel = new Set(intronsInPanelArray)
   parsedGenes.intronFoundGenes.forEach((parsedGene) => {
     if (intronsInPanel.has(parsedGene.gene.name)) {
@@ -360,7 +360,6 @@ function findAllMatches(parsedGenes) {
     geneSet.add(name)
     intronSet.add(name)
   })
-
   return { geneSet, symbolSet, synonymSet, fusionSet, intronSet }
 }
 
