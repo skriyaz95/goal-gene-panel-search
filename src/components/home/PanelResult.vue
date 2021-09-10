@@ -14,14 +14,21 @@
     </dialog-template>
     <dialog-template
       max-width="800px"
+      :help="false"
       v-model="showDialog"
       @closing="showDialog = false"
+      @help="handleHelp"
     >
       <template v-slot:title>
         {{ $t('panelResult.dialog.title') }}:
         {{ panelName }}
       </template>
       <template v-slot:content>
+        <info-alert :active="help">
+          <template v-slot:content>
+            <panel-results-dialog-help />
+          </template>
+        </info-alert>
         <v-row dense>
           <v-col cols="12" md="6">
             <v-simple-table fixed-header>
@@ -197,6 +204,7 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import download, { formatObjetToJson } from '@/utils/download'
 import PanelResultsHelp from '@/components/help/PanelResultsHelp.vue'
+import PanelResultsDialogHelp from "@/components/help/PanelResultsDialogHelp.vue";
 import HelpButton from '@/components/help/HelpButton.vue'
 import InfoAlert from '@/components/help/InfoAlert.vue'
 import {
@@ -217,6 +225,7 @@ import ResizablePage from '@/components/ResizablePage.vue'
 
 export default Vue.extend({
   components: {
+    PanelResultsDialogHelp,
     PanelResultsHelp,
     HelpButton,
     InfoAlert,

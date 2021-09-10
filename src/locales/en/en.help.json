@@ -41,7 +41,17 @@
         "symbolMatching": "Symbol matching the ",
         "synonymMatching": "Synonym matching the ",
         "symbolInput": "Symbol",
-        "synonyminput": "Synonym"
+        "synonymInput": "Synonym"
+      }
+    },
+    "panelResult": {
+      "part1a": " shows all Symbols and Synonyms found and not found from ",
+      "part1b": "in the panel.",
+      "part2": "Your input (leftmost column) may match a gene symbol, fusion, intron, or a synonym in each panel (column)",
+      "part3": {
+        "anyMatch": "has",
+        "fusionMatching": "a Fusion matching the ",
+        "intronMatching": "an Intron matching the "
       }
     },
     "database": {

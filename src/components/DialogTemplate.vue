@@ -10,6 +10,14 @@
         <slot name="title"></slot>
         <v-spacer></v-spacer>
         <slot name="toolbar-buttons"></slot>
+        <help-button @action="handleHelp()" :active="help">
+          <template v-slot:content>
+            <span>
+              {{ $t('button.showHide.tooltip') }}
+              {{ $t('button.help.text') }}
+            </span>
+          </template>
+        </help-button>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-btn v-on="on" @click="close()" icon dark small>
@@ -36,10 +44,27 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import HelpButton from '@/components/help/HelpButton.vue'
 
 export default Vue.extend({
   name: 'DialogTemplate',
-  props: ['value', 'maxWidth'],
+  components: {
+    HelpButton,
+  },
+  props: {
+    value: {
+      type: Boolean,
+      default: false,
+    },
+    maxWidth: {
+      type: String,
+      default: '',
+    },
+    help: {
+      type: Boolean,
+      default: true,
+    },
+  },
   data: () => ({}),
   computed: {},
   watch: {},
@@ -49,6 +74,9 @@ export default Vue.extend({
     close() {
       this.$emit('closing')
     },
+    handleHelp() {
+      this.$emit('help')
+    }
   },
 })
 </script>

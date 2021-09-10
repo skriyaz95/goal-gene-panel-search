@@ -37,11 +37,21 @@
       "part3": {
         "exactMatch": "a l'exact ",
         "anyMatch": "a un ",
-        "noMatch": "n'a pas de Symbole (ou Synonyme) pour le",
-        "symbolMatching": "Symbole correspondant au",
-        "synonymMatching": "Synonyme correspondant au",
-        "symbolInput": "Symbole",
-        "synonyminput": "Synonyme"
+        "noMatch": "n'a pas de Symbole (ou Synonyme) pour l'",
+        "symbolMatching": "Symbole correspondant à l'",
+        "synonymMatching": "Synonyme correspondant à l'",
+        "symbolInput": ": Symbole",
+        "synonymInput": ": Synonyme"
+      }
+    },
+    "panelResult": {
+      "part1a": " montre tous les symboles et synonymes trouvés et non trouvés par l'",
+      "part1b": "dans le panel.",
+      "part2": "Vos entrées (colonne la plus à gauche) peuvent correspondre à un symbole, une fusion, un intron ou un synonyme dans chaque panel (colonne)",
+      "part3": {
+        "anyMatch": "a",
+        "fusionMatching": "une Fusion correspondant à l'",
+        "intronMatching": "un Intron correspondant à l'"
       }
     },
     "database": {
@@ -123,6 +133,15 @@
         "part1": "Vous pouvez changer le thème de votre application en jouant avec les sélecteurs de couleurs et autres outils disponibles.",
         "part2": "C'est plus un terrain de jeu pour vous aider à configurer rapidement les paramètres plutôt qu'un éditeur d'interface utilisateur à part entière, mais suivre les instructions devrait vous aider à comprendre quelles variables contrôlent les couleurs et les styles de l'application.",
         "part3": "Si vous souhaitez changer complètement le logo et même le nom de l'application, le répertoire support_files contient les images sources (format Gimp) et les polices de texte."
+      }
+    }
+  },
+  "panelResult": {
+    "table": {
+      "headers": {
+        "explanation": {
+          "text": "Explication"
+        }
       }
     }
   }

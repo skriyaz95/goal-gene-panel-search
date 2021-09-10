@@ -221,6 +221,10 @@ export default Vue.extend({
       this.showHelp = !this.showHelp
       this.firstTime = false
       setCookie('firstTime', true, 365)
+      setTimeout(() => {
+        //hack to resize once the help is gone
+        this.resizeTables()
+      }, 1000)
     },
     handleFirstTime(): any {
       const cookie = getCookie('firstTime')

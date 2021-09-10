@@ -86,7 +86,7 @@
       }
     },
     "upload": {
-      "text": "Search with a bed file or csv file"
+      "text": "Search with a csv file"
     }
   },
   "panelResult": {
@@ -98,6 +98,13 @@
     },
     "table": {
       "headers": {
+        "gene": {
+          "header": "Gene Panel",
+          "text": "Gene Panel Entry"
+        },
+        "explanation": {
+          "text": "Explanation"
+        },
         "institutionName": "Institution Name",
         "panelName": "Gene Panel Name",
         "genes": "Genes Found / Not Found",

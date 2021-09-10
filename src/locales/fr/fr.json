@@ -101,7 +101,11 @@
         "institutionName": "Nom de l'institution",
         "panelName": "Nom du panel",
         "genes": "Gènes trouvés / non trouvés",
-        "actions": "Actions"
+        "actions": "Actions",
+        "gene": {
+          "header": "Foobar",
+          "text": "L'entrée dans le panel"
+        }
       }
     },
     "chip": {
